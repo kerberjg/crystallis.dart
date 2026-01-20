@@ -15,7 +15,14 @@ class RegEx extends Validator {
       if (!regex.hasMatch(value)) {
         return ValidationException(this, value);
       }
+
+      return null;
+    } else {
+      return ValidationException(
+        this,
+        value,
+        'Value must be a String type (is ${value.runtimeType})',
+      );
     }
-    return null;
   }
 }

@@ -12,5 +12,7 @@ dependencies:
 
 dev_dependencies:
   build: ^4.0.4
+  build_test: ^3.5.5
   source_gen: ^4.2.0
   analyzer: ^10.0.1
+  test: ^1.29.0
