@@ -28,3 +28,11 @@ class Range extends Validator {
     return null;
   }
 }
+
+class Min extends Range {
+  const Min(num min, {super.inclusive}) : super(min: min);
+}
+
+class Max extends Range {
+  const Max(num max, {super.inclusive}) : super(max: max);
+}
