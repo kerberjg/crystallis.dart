@@ -98,8 +98,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<DataClass> {
     // metadata
     buffer.write('  ');
     buffer.writeln(metadataDoc);
-    buffer.writeln(
-        '  static final Map<String, FieldMetadata> _metadata = Map.unmodifiable({');
+    buffer.writeln('  static const Map<String, FieldMetadata> _metadata = {');
 
     for (final f in fields) {
       final validators = _validatorsForField(f);
@@ -111,7 +110,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<DataClass> {
       buffer.writeln('    ),');
     }
 
-    buffer.writeln('  });');
+    buffer.writeln('  };');
     buffer.writeln();
 
     buffer.write('  ');
