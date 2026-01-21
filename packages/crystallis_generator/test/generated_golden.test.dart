@@ -2,7 +2,7 @@ import 'package:build/src/builder.dart';
 import 'package:build_test/build_test.dart';
 import 'package:test/test.dart';
 
-import 'package:crystallis/codegen/generator.dart';
+import 'package:crystallis_generator/crystallis_generator.dart';
 
 void main() {
   group('crystallis builder (golden-ish)', () {

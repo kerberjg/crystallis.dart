@@ -1,7 +1,7 @@
 import 'package:crystallis/crystallis.dart';
 
 @CrystallisData(mutable: true)
-class $UserData {
+class User {
   @Range(min: 1)
   int id;
 
@@ -19,7 +19,7 @@ class $UserData {
   @AllowedValues({'admin', 'user', 'guest'})
   String role;
 
-  $UserData({
+  User({
     required this.id,
     required this.name,
     required this.email,

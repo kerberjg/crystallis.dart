@@ -8,7 +8,7 @@ targets:
 
 builders:
   crystallis:
-    import: "package:crystallis/codegen/generator.dart"
+    import: "package:crystallis_generator/crystallis_generator.dart"
     builder_factories: ["crystallisBuilder"]
     build_extensions: {".dart": [".data.g.dart"]}
     auto_apply: dependents
