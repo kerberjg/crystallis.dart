@@ -1,8 +1,11 @@
 import '../runtime/validator.dart';
 
+// ignore: public_member_api_docs
 class Length extends Validator {
+  /// The exact length required.
   final int count;
 
+  /// [Validator] that checks if a String value has the exact given length.
   const Length(this.count);
 
   @override
@@ -14,11 +17,19 @@ class Length extends Validator {
   }
 }
 
+// ignore: public_member_api_docs
 class LengthRange extends Validator {
+  /// (optional) The minimum length to check against.
   final int? min;
+
+  /// (optional) The maximum length to check against.
   final int? max;
+
+  /// Whether the range is inclusive (default: true).
   final bool inclusive;
 
+  /// [Validator] that checks if the length falls within a specified range.
+  /// Either [min], [max], or both must be provided.
   const LengthRange({this.min, this.max, this.inclusive = true});
 
   @override

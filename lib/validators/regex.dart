@@ -2,9 +2,12 @@ import 'dart:core';
 
 import '../runtime/validator.dart';
 
+// ignore: public_member_api_docs
 class RegEx extends Validator {
+  /// The regex pattern to validate against.
   final String pattern;
 
+  /// [Validator] that checks if a String value matches the given regex pattern.
   const RegEx(this.pattern);
 
   @override

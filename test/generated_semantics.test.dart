@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 import 'package:crystallis/crystallis.dart';
 
-class MutableUser with DataSubclass {
+class MutableUser with CrystallisMixin {
   MutableUser({required this.name});
 
   String name;
@@ -52,7 +52,7 @@ class MutableUser with DataSubclass {
   }
 }
 
-class ImmutableUser with DataSubclass {
+class ImmutableUser with CrystallisMixin {
   const ImmutableUser({required this.name});
 
   final String name;

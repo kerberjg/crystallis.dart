@@ -1,0 +1,17 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+  errors:
+    unused_import: warning
+    dead_code: warning
+    public_member_api_docs: error
+
+linter:
+  rules:
+    - public_member_api_docs
+
+formatter:
+  page_width: 120

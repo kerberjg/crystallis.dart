@@ -1,8 +1,15 @@
 import 'field_metadata.dart';
 import 'validator.dart';
 
-abstract mixin class DataSubclass {
+/// Mixin class that provides validation functionality for data classes.
+/// Applied to classes generated with [CrystallisData].
+abstract mixin class CrystallisMixin {
+  /// Per-field metadata of this data class.
   Map<String, FieldMetadata> get metadata;
+
+  /// Get the value of a field by name.
+  /// To see what type it might be, check [metadata].
+  /// (see [FieldMetadata.type])
   Object? get(String field);
 
   /// Validate a single field

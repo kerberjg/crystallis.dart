@@ -12,7 +12,7 @@ library example;
 
 import 'package:crystallis/crystallis.dart';
 
-@DataClass()
+@CrystallisData()
 class $UserData {
   @NotEmpty()
   String name;
@@ -49,7 +49,7 @@ library example;
 
 import 'package:crystallis/crystallis.dart';
 
-@DataClass()
+@CrystallisData()
 class UserData {
   String name;
   UserData({required this.name});
@@ -71,7 +71,7 @@ library example;
 
 import 'package:crystallis/crystallis.dart';
 
-@DataClass()
+@CrystallisData()
 class $Bad {
   final String name;
   $Bad({required this.name});
@@ -94,7 +94,7 @@ library example;
 
 import 'package:crystallis/crystallis.dart';
 
-@DataClass(mutable: false)
+@CrystallisData(mutable: false)
 class $Bad {
   String name;
   const $Bad({required this.name});
@@ -117,7 +117,7 @@ library example;
 
 import 'package:crystallis/crystallis.dart';
 
-@DataClass(mutable: false)
+@CrystallisData(mutable: false)
 class $UserData {
   @NotEmpty()
   final String name;
@@ -186,9 +186,9 @@ export 'validators/not_empty.dart';
 ''';
 
 const _annotationsLibrary = r'''
-class DataClass {
+class CrystallisData {
   final bool mutable;
-  const DataClass({this.mutable = true});
+  const CrystallisData({this.mutable = true});
 }
 
 export 'runtime/validator.dart';

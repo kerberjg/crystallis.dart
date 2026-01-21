@@ -1,11 +1,23 @@
 import '../runtime/validator.dart';
 
+// ignore: public_member_api_docs
 class Range extends Validator {
+  /// (optional) The minimum value to check against.
   final num? min;
+
+  /// (optional) The maximum value to check against.
   final num? max;
+
+  /// Whether the range is inclusive (default: true).
   final bool inclusive;
 
-  const Range({this.min, this.max, this.inclusive = true});
+  /// [Validator] that checks if a [num] value falls within a specified range.
+  /// Either [min], [max], or both must be provided.
+  const Range({this.min, this.max, this.inclusive = true})
+      : assert(
+          min != null || max != null,
+          'At least one of min or max must be provided.',
+        );
 
   @override
   ValidationException? validate(Object? value) {
@@ -29,10 +41,16 @@ class Range extends Validator {
   }
 }
 
+// ignore: public_member_api_docs
 class Min extends Range {
+  /// [Validator] that checks if a [num] value is (equals or) above a minimum.
+  /// (see [inclusive])
   const Min(num min, {super.inclusive}) : super(min: min);
 }
 
+// ignore: public_member_api_docs
 class Max extends Range {
+  /// [Validator] that checks if a [num] value is (equals or) below a maximum.
+  /// (see [inclusive])
   const Max(num max, {super.inclusive}) : super(max: max);
 }

@@ -1,6 +1,9 @@
 import '../runtime/validator.dart';
 
+// ignore: public_member_api_docs
 class NotEmpty extends Validator {
+  /// [Validator] that checks if a value is not empty.
+  /// Works on [String], [Iterable], [Map] fields.
   const NotEmpty();
 
   @override

@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
@@ -15,9 +17,8 @@ Builder crystallisBuilder(BuilderOptions options) {
   );
 }
 
-class CrystallisGenerator extends GeneratorForAnnotation<DataClass> {
-  static final _validatorChecker =
-      TypeChecker.typeNamed(Validator, inPackage: 'crystallis');
+class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
+  static final _validatorChecker = TypeChecker.typeNamed(Validator, inPackage: 'crystallis');
 
   @override
   String generateForAnnotatedElement(
@@ -27,7 +28,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<DataClass> {
   ) {
     if (element is! ClassElement) {
       throw InvalidGenerationSourceError(
-        '@DataClass can only be applied to classes.',
+        '@CrystallisData can only be applied to classes.',
         element: element,
       );
     }
@@ -36,7 +37,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<DataClass> {
     final String className = element.name ?? "";
     if (!className.startsWith(definitionPrefix)) {
       throw InvalidGenerationSourceError(
-        'DataClass source classes must start with "$definitionPrefix"',
+        'CrystallisData source classes must start with "$definitionPrefix"',
         element: element,
       );
     }
@@ -44,21 +45,18 @@ class CrystallisGenerator extends GeneratorForAnnotation<DataClass> {
     final mutable = annotation.peek('mutable')?.boolValue ?? true;
     final publicName = className.substring(1);
 
-    final fields = element.fields
-        .where((f) => !f.isStatic)
-        .where((f) => f.getter != null)
-        .toList();
+    final fields = element.fields.where((f) => !f.isStatic).where((f) => f.getter != null).toList();
 
     for (final f in fields) {
       if (mutable && f.isFinal) {
         throw InvalidGenerationSourceError(
-          'Mutable DataClass fields must not be final: ${f.name}',
+          'Mutable CrystallisData fields must not be final: ${f.name}',
           element: f,
         );
       }
       if (!mutable && !f.isFinal) {
         throw InvalidGenerationSourceError(
-          'Immutable DataClass fields must be final: ${f.name}',
+          'Immutable CrystallisData fields must be final: ${f.name}',
           element: f,
         );
       }
@@ -76,7 +74,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<DataClass> {
     if (!mutable) {
       buffer.writeln("@immutable");
     }
-    buffer.writeln('class $publicName extends $className with DataSubclass {');
+    buffer.writeln('class $publicName extends $className with CrystallisMixin {');
 
     // constructor
     if (!mutable && element.constructors.any((c) => c.isConst)) {
@@ -92,8 +90,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<DataClass> {
     buffer.writeln('});');
     buffer.writeln();
 
-    const String metadataDoc =
-        "/// Static immutable [FieldMetadata] for the fields of this data class.";
+    const String metadataDoc = "/// Static immutable [FieldMetadata] for the fields of this data class.";
 
     // metadata
     buffer.write('  ');
@@ -115,8 +112,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<DataClass> {
 
     buffer.write('  ');
     buffer.writeln(metadataDoc);
-    buffer.writeln(
-        '  static Map<String, FieldMetadata> get metadataStatic => _metadata;');
+    buffer.writeln('  static Map<String, FieldMetadata> get metadataStatic => _metadata;');
     buffer.writeln();
 
     buffer.write('  ');
@@ -132,8 +128,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<DataClass> {
     for (final f in fields) {
       buffer.writeln("      case '${f.name}': return ${f.name};");
     }
-    buffer
-        .writeln('      default: throw ArgumentError.value(field, \'field\');');
+    buffer.writeln('      default: throw ArgumentError.value(field, \'field\');');
     buffer.writeln('    }');
     buffer.writeln('  }');
     buffer.writeln();
@@ -146,10 +141,8 @@ class CrystallisGenerator extends GeneratorForAnnotation<DataClass> {
     }
 
     buffer.writeln('    final meta = metadata[field];');
-    buffer.writeln(
-        '    if (meta == null) throw ArgumentError.value(field, \'field\');');
-    buffer
-        .writeln('    if (value == null || value.runtimeType != meta.type) {');
+    buffer.writeln('    if (meta == null) throw ArgumentError.value(field, \'field\');');
+    buffer.writeln('    if (value == null || value.runtimeType != meta.type) {');
     buffer.writeln('      throw ArgumentError.value(value, \'value\');');
     buffer.writeln('    }');
 
@@ -178,8 +171,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<DataClass> {
         buffer.writeln(');');
       }
     }
-    buffer
-        .writeln('      default: throw ArgumentError.value(field, \'field\');');
+    buffer.writeln('      default: throw ArgumentError.value(field, \'field\');');
     buffer.writeln('    }');
     buffer.writeln('  }');
     buffer.writeln();

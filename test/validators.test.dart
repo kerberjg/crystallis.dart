@@ -115,7 +115,7 @@ void main() {
 
   group('Values', () {
     test('uses List.contains equality', () {
-      const v = AllowedValues(['admin', 'user', 1]);
+      const v = AllowedValues({'admin', 'user', 1});
 
       expect(v.validate('admin'), isNull);
       expect(v.validate(1), isNull);

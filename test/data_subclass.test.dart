@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 import 'package:crystallis/crystallis.dart';
 
-class _ValidateHarness with DataSubclass {
+class _ValidateHarness with CrystallisMixin {
   _ValidateHarness(this._x);
 
   final String _x;
