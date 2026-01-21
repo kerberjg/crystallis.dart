@@ -1,6 +1,6 @@
 import 'package:crystallis/crystallis.dart';
 
-@DataClass() // mutable by default
+@CrystallisData(mutable: true)
 class $UserData {
   @Range(min: 1)
   int id;
@@ -16,7 +16,7 @@ class $UserData {
   @LengthRange(min: 3, max: 20)
   String username;
 
-  @AllowedValues(['admin', 'user', 'guest'])
+  @AllowedValues({'admin', 'user', 'guest'})
   String role;
 
   $UserData({
