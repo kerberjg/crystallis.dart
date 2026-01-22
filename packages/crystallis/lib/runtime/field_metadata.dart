@@ -3,7 +3,6 @@ import 'package:meta/meta.dart';
 import 'validator.dart';
 
 /// Metadata of a field in a [CrystallisData] class.
-@immutable
 class FieldMetadata {
   /// Name of the field.
   final String name;

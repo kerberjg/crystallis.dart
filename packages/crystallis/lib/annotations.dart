@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 export 'validators/range.dart';
 export 'validators/not_empty.dart';
 export 'validators/email.dart';
@@ -9,7 +7,6 @@ export 'validators/values.dart';
 export 'validators/regex.dart';
 
 /// Creates a [CrystallisData] annotation.
-@immutable
 class CrystallisData {
   /// Whether the generated data class is mutable.
   /// (default: true)

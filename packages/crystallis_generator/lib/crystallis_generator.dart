@@ -33,17 +33,10 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
       );
     }
 
-    const String definitionPrefix = '\$';
+    const String crystallisSuffix = 'Data';
     final String className = element.name ?? "";
-    if (!className.startsWith(definitionPrefix)) {
-      throw InvalidGenerationSourceError(
-        'CrystallisData source classes must start with "$definitionPrefix"',
-        element: element,
-      );
-    }
-
-    final mutable = annotation.peek('mutable')?.boolValue ?? true;
-    final publicName = className.substring(1);
+    final String publicName = className + crystallisSuffix;
+    final bool mutable = annotation.peek('mutable')?.boolValue ?? true;
 
     final fields = element.fields
         .where((f) => !f.isStatic)
