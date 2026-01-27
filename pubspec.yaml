@@ -6,4 +6,5 @@ environment:
 
 workspace:
   - packages/crystallis
+  - packages/crystallis/example
   - packages/crystallis_generator

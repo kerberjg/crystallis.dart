@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 import 'validator.dart';
 
 /// Metadata of a field in a [CrystallisData] class.

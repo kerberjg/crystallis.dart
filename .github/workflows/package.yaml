@@ -1,0 +1,54 @@
+name: "package"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - develop
+      - 'release/**'
+    paths:
+      - '**.dart'
+      - './*.yaml'
+      - .github/workflows/_base-dart.yaml
+      - .github/workflows/package.yaml
+  release:
+    types: [published]
+
+
+# call the base workflow with the package path
+jobs:
+  dart:
+    uses: ./.github/workflows/_base-dart.yaml
+    strategy:
+      matrix:
+        package:
+          - crystallis
+          - crystallis_generator
+    with:
+      path: 'packages/${{ matrix.package }}'
+
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package:
+          - crystallis
+          - crystallis_generator
+    # Needs dart job to complete successfully, only skipped if it is failed, but not skipped
+    needs: [dart]
+    if: ${{ always() && (needs.dart.result == 'success') && (needs.dart.result != 'failure') && ((github.event_name == 'release' && github.event.action == 'published') || github.ref == 'refs/heads/main') }}
+    defaults:
+      run:
+        working-directory: packages/${{ matrix.package }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Get dependencies
+        run: dart pub get
+
+      - name: Publish to pub.dev (dry run)
+        run: dart pub publish --dry-run

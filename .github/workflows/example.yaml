@@ -1,0 +1,37 @@
+name: "example"
+
+on:
+  workflow_dispatch:
+  # pull_request:
+  # push:
+  #   branches:
+  #     - main
+  #     - develop
+  #     - 'release/**'
+  #   paths:
+  #     - 'example/**/*.dart'
+  #     - 'example/**/*.yaml'
+  #     - .github/workflows/_base-dart.yaml
+  #     - .github/workflows/_base-flutter.yaml
+  #     - .github/workflows/example.yaml
+  # release:
+  #   types: [published]
+
+jobs:
+  dart:
+    strategy:
+      matrix:
+        example: [ basic, advanced_example ]
+    name: "${{ matrix.example }}"
+    uses: ./.github/workflows/_base-dart.yaml
+    with:
+      path: "example/${{ matrix.example }}"
+
+  flutter:
+    strategy:
+      matrix:
+        example: [ basic, advanced_example ]
+    name: "${{ matrix.example }}"
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "example/${{ matrix.example }}"

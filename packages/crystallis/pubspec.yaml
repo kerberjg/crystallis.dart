@@ -1,5 +1,5 @@
 name: crystallis
-description: 💠✨ Data class codegen w/ validation & runtime metadata for Dart
+description: Data class codegen w/ validation & runtime metadata for Dart
 version: 0.0.1
 repository: https://github.com/kerberjg/crystallis.dart
 license: MPL-2.0
