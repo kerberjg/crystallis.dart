@@ -1,5 +1,5 @@
 name: crystallis_generator
-description: Codegen utility for the Crysallis package
+description: Compile-time codegen utility for the Crystallis package (use with `dev_dependencies`)
 version: 0.0.1
 repository: https://github.com/kerberjg/crystallis.dart
 license: MPL-2.0

@@ -7,17 +7,19 @@
 dart pub get crystallis
 ```
 
+_also see [`crystallis_codegen`](https://github.com/kerberjg/crystallis_generator) ([pub.dev](https://pub.dev/packages/crystallis_generator))_
+
 <!-- Badges -->
 <!-- remember to update these badges when using the template! -->
 
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](LICENSE)
 [![build](https://github.com/kerberjg/crystallis.dart/actions/workflows/package.yaml/badge.svg)](https://github.com/kerberjg/crystallis.dart/actions/workflows/package.yaml)
 [![example](https://github.com/kerberjg/crystallis.dart/actions/workflows/example.yaml/badge.svg)](https://github.com/kerberjg/crystallis.dart/actions/workflows/example.yaml)
-[![stars](https://img.shields.io/github/stars/kerberjg/crystallis.svg)](https://github.com/kerberjg/crystallis.dart/stargazers)
+[![stars](https://img.shields.io/github/stars/kerberjg/crystallis.dart.svg)](https://github.com/kerberjg/crystallis.dart/stargazers)
 <br/>
 [![pub package](https://img.shields.io/pub/v/crystallis?logo=dart)](https://pub.dev/packages/crystallis)
 [![pub score](https://img.shields.io/pub/points/crystallis?logo=dart)](https://pub.dev/packages/crystallis/score)
-[![likes](https://img.shields.io/pub/likes/crystallis?logo=dart)](https://pub.dev/packages/crystallis/likes)
+[![likes](https://img.shields.io/pub/likes/crystallis?logo=dart)](https://pub.dev/packages/crystallis/score)
 
 </div>
 
