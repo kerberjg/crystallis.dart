@@ -8,6 +8,7 @@ analyzer:
     unused_import: warning
     dead_code: warning
     public_member_api_docs: error
+    unnecessary_this: ignore
 
 linter:
   rules:

@@ -279,7 +279,22 @@ void main() {
       }
     });
 
-    test('immutable: set<T> returns new instance (signature check)', () async {
+    test('set<T> calls the validators and throws on error', () async {
+      final input = _testClasses['mutableWithValidation']!;
+
+      final outputs = await _runBuilder(
+        inputDartPath: '$outputPackage|lib/user.dart',
+        inputDart: input,
+      );
+
+      final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
+      expect(
+        generated,
+        contains('if (errors.isNotEmpty) throw errors;'),
+      );
+    });
+
+    test('set<T> errors out on immutable', () async {
       final input = _testClasses['immutableWithValidation']!;
 
       final outputs = await _runBuilder(
@@ -289,8 +304,12 @@ void main() {
 
       final generated =
           outputs['$outputPackage|lib/user_immutable.data.g.dart']!;
-      expect(generated, contains('UserData set<T>(String field, T value)'));
-      expect(generated, contains('return UserData('));
+      expect(
+        generated,
+        contains(
+          "throw StateError('Cannot set field on immutable type UserData.')",
+        ),
+      );
     });
   });
 

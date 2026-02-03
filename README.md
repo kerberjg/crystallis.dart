@@ -30,10 +30,12 @@ _also see [`crystallis_codegen`](https://github.com/kerberjg/crystallis_generato
 
 
 ## ✨ Features
-- Codegen-based data classes (`copyWith`, constructors, get/set, etc)
+- Codegen-based data classes (`copyWith`, constructors, get/set, equality, etc)
 - Supports both mutable and immutable classes!
 - Per-field validation via annotations (`@Min(1)`, `@Max(100)`, `@Regex('^[a-z]+\$')`, etc)
-- Metadata available at runtime
+- Runtime reflection (field metadata available for all annotated classes)
+- `copyFrom`: copy compatible fields between different data classes
+- Optional per-class deep copying/equality for collections
 - Full-object validation
 - String-named getter/setter methods
 - Optimized for runtime performance and minimal overhead

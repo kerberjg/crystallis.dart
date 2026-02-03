@@ -12,6 +12,9 @@ abstract mixin class CrystallisMixin {
   /// (see [FieldMetadata.type])
   Object? get(String field);
 
+  /// Set the value of a field by name.
+  void set<T>(String field, T value);
+
   /// Validate a single field
   List<ValidationException> validateField(String field) {
     final meta = metadata[field];
@@ -41,5 +44,32 @@ abstract mixin class CrystallisMixin {
     }
 
     return result;
+  }
+
+  /// Copies compatible fields from any [other] instance of [CrystallisMixin].
+  /// Incompatible fields (missing or type-mismatched) are skipped.
+  /// Null values are skipped.
+  void copyFrom(CrystallisMixin other) {
+    // skip this both this and other are of the same type
+    final bool isSameType = this.runtimeType != other.runtimeType;
+
+    for (final name in metadata.keys) {
+      if (!isSameType) {
+        final field = metadata[name]!;
+        final otherMeta = other.metadata[name];
+
+        // skip missing or type-mismatched fields
+        if (otherMeta == null || otherMeta.type != field.type) {
+          continue;
+        }
+      }
+
+      final value = other.get(name);
+
+      // skip null values
+      if (value != null) {
+        set(name, value);
+      }
+    }
   }
 }

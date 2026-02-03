@@ -34,6 +34,11 @@ class _ValidateHarness with CrystallisMixin {
         throw ArgumentError.value(field, 'field');
     }
   }
+
+  @override
+  void set<T>(String field, T value) {
+    throw UnimplementedError();
+  }
 }
 
 void main() {

@@ -165,48 +165,49 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
     buffer.writeln();
 
     // set()
+    buffer.writeln('  void set<T>(String field, T value) {');
     if (mutable) {
-      buffer.writeln('  void set<T>(String field, T value) {');
-    } else {
-      buffer.writeln('  $publicName set<T>(String field, T value) {');
-    }
+      buffer.writeln('    final meta = metadata[field];');
+      buffer.writeln(
+          '    if (meta == null) throw ArgumentError.value(field, \'field\');');
+      buffer.writeln(
+          '    if (value == null || value.runtimeType != meta.type) {');
+      buffer.writeln('      throw ArgumentError.value(value, \'value\');');
+      buffer.writeln('    }');
 
-    buffer.writeln('    final meta = metadata[field];');
-    buffer.writeln(
-        '    if (meta == null) throw ArgumentError.value(field, \'field\');');
-    buffer
-        .writeln('    if (value == null || value.runtimeType != meta.type) {');
-    buffer.writeln('      throw ArgumentError.value(value, \'value\');');
-    buffer.writeln('    }');
+      buffer.writeln('    final errors = <ValidationException>[];');
+      buffer.writeln('    for (final v in meta.validators) {');
+      buffer.writeln('      final err = v.validate(value);');
+      buffer.writeln('      if (err != null) errors.add(err);');
+      buffer.writeln('    }');
+      buffer.writeln('    if (errors.isNotEmpty) throw errors;');
 
-    buffer.writeln('    final errors = <ValidationException>[];');
-    buffer.writeln('    for (final v in meta.validators) {');
-    buffer.writeln('      final err = v.validate(value);');
-    buffer.writeln('      if (err != null) errors.add(err);');
-    buffer.writeln('    }');
-    buffer.writeln('    if (errors.isNotEmpty) throw errors;');
-
-    buffer.writeln('    switch (field) {');
-    for (final f in fields) {
-      buffer.writeln("      case '${f.name}':");
-      if (mutable) {
-        buffer.writeln('        ${f.name} = value as ${_castType(f.type)};');
-        buffer.writeln('        return;');
-      } else {
-        buffer.write('        return $publicName(');
-        for (final other in fields) {
-          if (other == f) {
-            buffer.write('${other.name}: value as ${_castType(other.type)},');
-          } else {
-            buffer.write('${other.name}: ${other.name},');
+      buffer.writeln('    switch (field) {');
+      for (final f in fields) {
+        buffer.writeln("      case '${f.name}':");
+        if (mutable) {
+          buffer.writeln('        ${f.name} = value as ${_castType(f.type)};');
+          buffer.writeln('        return;');
+        } else {
+          buffer.write('        return $publicName(');
+          for (final other in fields) {
+            if (other == f) {
+              buffer.write('${other.name}: value as ${_castType(other.type)},');
+            } else {
+              buffer.write('${other.name}: ${other.name},');
+            }
           }
+          buffer.writeln(');');
         }
-        buffer.writeln(');');
       }
+      buffer.writeln(
+          '      default: throw ArgumentError.value(field, \'field\');');
+      buffer.writeln('    }');
+    } else {
+      // immutable: throw error
+      buffer.writeln(
+          "    throw StateError('Cannot set field on immutable type $publicName.');");
     }
-    buffer
-        .writeln('      default: throw ArgumentError.value(field, \'field\');');
-    buffer.writeln('    }');
     buffer.writeln('  }');
     buffer.writeln();
 
