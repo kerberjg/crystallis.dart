@@ -7,6 +7,7 @@ export 'validators/values.dart';
 export 'validators/regex.dart';
 
 // External exports
+export 'package:meta/meta.dart' show immutable;
 export 'package:collection/collection.dart' show DeepCollectionEquality;
 
 /// Creates a [CrystallisData] annotation.

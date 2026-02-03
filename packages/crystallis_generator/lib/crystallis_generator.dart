@@ -91,7 +91,6 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
     final buffer = StringBuffer();
 
     // imports
-    if (!mutable) buffer.writeln("import 'package:meta/meta.dart';");
     buffer.writeln("import 'package:crystallis/crystallis.dart';");
     buffer.writeln("import '${buildStep.inputId.uri}';");
     buffer.writeln();
