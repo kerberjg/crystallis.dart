@@ -72,4 +72,25 @@ abstract mixin class CrystallisMixin {
       }
     }
   }
+
+  /// Serializes this object into a [Map<String, dynamic>]
+  Map<String, dynamic> serialize() {
+    final result = <String, dynamic>{};
+
+    for (final field in metadata.keys) {
+      final value = get(field);
+      final serializer = metadata[field]!.serializer;
+      result[field] = serializer.serializeUntyped(value);
+    }
+
+    return result;
+  }
+
+  // TODO(kerberjg): deserialize factory method?
+  // Should:
+  // - be a callable from a factory constructor in the generated class
+  // - take a Map<String, dynamic>
+  // - return an instance of the generated class
+  // - use the per-field serializers to deserialize each field
+  // - validate each field after deserialization
 }

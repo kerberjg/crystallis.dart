@@ -1,3 +1,4 @@
+import 'package:crystallis/runtime/serializer.dart';
 import 'package:test/test.dart';
 import 'package:crystallis/crystallis.dart';
 
@@ -102,12 +103,45 @@ class ImmutableUser with CrystallisMixin {
   }
 }
 
+class CustomData with CrystallisMixin {
+  CustomData(this.value);
+
+  final String value;
+
+  static final Map<String, FieldMetadata> _meta = Map.unmodifiable({
+    'value': FieldMetadata(
+      name: 'value',
+      type: DateTime,
+      validators: const [],
+      serializer: Serializer<String, String>(
+        serialize: (dt) => "serialized",
+        deserialize: (s) => "deserialized",
+      ),
+    ),
+  });
+
+  @override
+  Map<String, FieldMetadata> get metadata => _meta;
+
+  @override
+  Object? get(String field) {
+    switch (field) {
+      case 'value':
+        return value;
+      default:
+        throw ArgumentError.value(field, 'field');
+    }
+  }
+
+  @override
+  void set<T>(String field, T value) {
+    throw UnimplementedError();
+  }
+}
+
 void main() {
   test('metadata is unmodifiable', () {
-    expect(
-        () => MutableUser._meta['x'] =
-            FieldMetadata(name: 'x', type: int, validators: const []),
-        throwsA(anything));
+    expect(() => MutableUser._meta['x'] = FieldMetadata(name: 'x', type: int, validators: const []), throwsA(anything));
   });
 
   test('set enforces meta.type (runtimeType equality)', () {
@@ -115,9 +149,7 @@ void main() {
     expect(() => u.set('name', 123), throwsA(isA<ArgumentError>()));
   });
 
-  test(
-      'set collects all validation errors and throws List<ValidationException>',
-      () {
+  test('set collects all validation errors and throws List<ValidationException>', () {
     final u = MutableUser(name: 'ok');
 
     try {
@@ -127,8 +159,7 @@ void main() {
       expect(e, isA<List<ValidationException>>());
       final errs = e as List<ValidationException>;
       expect(errs.length, 2);
-      expect(errs.map((x) => x.validator.runtimeType).toSet(),
-          {NotEmpty, LengthRange});
+      expect(errs.map((x) => x.validator.runtimeType).toSet(), {NotEmpty, LengthRange});
     }
   });
 
@@ -143,5 +174,11 @@ void main() {
     final u2 = u.set('name', 'ab');
     expect(u.name, 'ok');
     expect(u2.name, 'ab');
+  });
+
+  test('toMap uses custom serializer', () {
+    final d = CustomData('test');
+    final m = d.serialize();
+    expect(m['value'], 'serialized');
   });
 }

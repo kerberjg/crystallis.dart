@@ -1,3 +1,5 @@
+import 'package:crystallis/crystallis.dart';
+
 export 'validators/range.dart';
 export 'validators/not_empty.dart';
 export 'validators/email.dart';
@@ -53,6 +55,10 @@ class CrystallisData {
   /// (default: false)
   final bool useDeepCopy;
 
+  /// The [Crystallis] configuration for this data class
+  Crystallis get config => _config ?? Crystallis.i;
+  final Crystallis? _config;
+
   /// Annotation to configure data class behavior.
   /// Allows specifying whether the generated data class is [mutable].
   const CrystallisData({
@@ -64,8 +70,12 @@ class CrystallisData {
     this.useDeepEquality = false,
     bool copyWith = true,
     this.useDeepCopy = false,
+
+    /// (see [config])
+    Crystallis? config,
   })  : enableToString = toString,
         enableEquals = equals,
         enableHashCode = hashCode,
-        enableCopyWith = copyWith;
+        enableCopyWith = copyWith,
+        _config = config;
 }

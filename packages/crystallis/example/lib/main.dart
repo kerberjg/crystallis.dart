@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:crystallis/crystallis.dart';
 import 'user_data.data.g.dart';
 
@@ -52,4 +54,12 @@ void main() {
   final all2 = user.validate();
   print('Final validation:');
   all2.forEach((k, v) => print('  $k: ${v.length} error(s)'));
+
+  // Print serialized form
+  final serialized = user.serialize();
+
+  // prertty-print as JSON
+  final encoder = JsonEncoder.withIndent('  ');
+  final prettyJson = encoder.convert(serialized);
+  print('Serialized form:\n$prettyJson');
 }

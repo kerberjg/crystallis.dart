@@ -1,3 +1,5 @@
+import 'package:crystallis/runtime/serializer.dart';
+
 import 'validator.dart';
 
 /// Metadata of a field in a [CrystallisData] class.
@@ -11,10 +13,14 @@ class FieldMetadata {
   /// List of applied validators.
   final List<Validator> validators;
 
+  /// Custom serializer for the field.
+  final Serializer serializer;
+
   /// Creates a [FieldMetadata].
   const FieldMetadata({
     required this.name,
     required this.type,
     required this.validators,
+    this.serializer = defaultSerializer,
   });
 }

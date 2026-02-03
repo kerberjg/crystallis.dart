@@ -1,3 +1,4 @@
+import 'package:crystallis/runtime/serializer.dart';
 import 'package:test/test.dart';
 import 'package:crystallis/crystallis.dart';
 
@@ -18,6 +19,15 @@ class _ValidateHarness with CrystallisMixin {
       type: int,
       validators: const [],
     ),
+    'custom': FieldMetadata(
+      name: 'custom',
+      type: String,
+      validators: const [],
+      serializer: Serializer<String, String>(
+        serialize: (value) => 'serialized',
+        deserialize: (value) => 'deserialized',
+      ),
+    ),
   });
 
   @override
@@ -30,6 +40,8 @@ class _ValidateHarness with CrystallisMixin {
         return _x;
       case 'y':
         return 123;
+      case 'custom':
+        return 'value';
       default:
         throw ArgumentError.value(field, 'field');
     }
@@ -46,7 +58,7 @@ void main() {
     final h = _ValidateHarness('ok');
 
     final m = h.validate();
-    expect(m.keys.toSet(), {'x', 'y'});
+    expect(m.keys.toSet(), {'x', 'y', 'custom'});
 
     expect(m['y'], isNotNull);
     expect(m['y']!, isEmpty);
@@ -57,7 +69,24 @@ void main() {
 
     final errs = h.validateField('x');
     expect(errs.length, 2);
-    expect(errs.map((e) => e.validator.runtimeType).toSet(),
-        {NotEmpty, LengthRange});
+    expect(
+      errs.map((e) => e.validator.runtimeType).toSet(),
+      {NotEmpty, LengthRange},
+    );
+  });
+
+  test('toMap calls defaultSerializer by default', () {
+    final h = _ValidateHarness('value');
+
+    final m = h.serialize();
+    expect(m['x'], equals('value'));
+    expect(m['y'], equals(123));
+  });
+
+  test('serialize uses custom serializer if provided', () {
+    final h = _ValidateHarness('value');
+
+    final m = h.serialize();
+    expect(m['custom'], equals('serialized'));
   });
 }
