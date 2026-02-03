@@ -310,7 +310,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
       }
     }
 
-    return out.isEmpty ? 'const []' : '[${out.join(',')}]';
+    return '[${out.join(',')}]';
   }
 
   String _castType(DartType type) => type.getDisplayString();
