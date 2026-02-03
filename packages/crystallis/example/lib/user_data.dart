@@ -1,6 +1,6 @@
 import 'package:crystallis/crystallis.dart';
 
-@CrystallisData(mutable: true, useDeepEquality: true)
+@CrystallisData(mutable: true, useDeepEquality: true, useDeepCopy: true)
 class User {
   @Range(min: 1)
   int id;

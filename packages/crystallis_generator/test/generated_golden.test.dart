@@ -51,6 +51,36 @@ class User {
   const User({required this.name});
 }''',
   //
+  'immutableWithShallowCopy': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@CrystallisData(mutable: false, copyWith: true, useDeepCopy: false)
+class User {
+  final String name;
+  final List<String> friends;
+  
+  const User({
+    required this.name,
+    required this.friends,
+  });
+}''',
+  //
+  'immutableWithDeepCopy': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@CrystallisData(mutable: false, copyWith: true, useDeepCopy: true)
+class User {
+  final String name;
+  final List<String> friends;
+  
+  const User({
+    required this.name,
+    required this.friends,
+  });
+}''',
+  //
   'immutableWithMutableField': r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -330,6 +360,32 @@ void main() {
     expect(generated, contains('int get hashCode {'));
     expect(
         generated, contains('const DeepCollectionEquality().hash(position)'));
+  });
+
+  test("generates a valid copyWith method with shallow copy", () async {
+    final input = _testClasses['immutableWithShallowCopy']!;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/user.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
+    expect(generated, contains('UserData copyWith({'));
+    expect(generated, contains('friends: friends ?? this.friends'));
+  });
+
+  test("generates a valid copyWith method with deep copy", () async {
+    final input = _testClasses['immutableWithDeepCopy']!;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/user.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
+    expect(generated, contains('UserData copyWith({'));
+    expect(generated, contains('friends: [...(friends ?? this.friends)],'));
   });
 }
 

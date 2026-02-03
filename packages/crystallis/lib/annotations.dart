@@ -45,6 +45,14 @@ class CrystallisData {
   /// (default: false)
   final bool useDeepEquality;
 
+  /// Whether a `copyWith` method should be generated.
+  /// (default: true)
+  final bool enableCopyWith;
+
+  /// Whether `copyWith` should use deep collection copy for lists, sets, and maps.
+  /// (default: false)
+  final bool useDeepCopy;
+
   /// Annotation to configure data class behavior.
   /// Allows specifying whether the generated data class is [mutable].
   const CrystallisData({
@@ -54,7 +62,10 @@ class CrystallisData {
     bool equals = true,
     bool hashCode = true,
     this.useDeepEquality = false,
+    bool copyWith = true,
+    this.useDeepCopy = false,
   })  : enableToString = toString,
         enableEquals = equals,
-        enableHashCode = hashCode;
+        enableHashCode = hashCode,
+        enableCopyWith = copyWith;
 }

@@ -42,6 +42,8 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
     final bool enableHashCode = annotation.peek('hashCode')?.boolValue ?? true;
     final bool useDeepEquality =
         annotation.peek('useDeepEquality')?.boolValue ?? true;
+    final bool enableCopyWith = annotation.peek('copyWith')?.boolValue ?? true;
+    final bool useDeepCopy = annotation.peek('useDeepCopy')?.boolValue ?? false;
 
     final fields = element.fields
         .where((f) => !f.isStatic)
@@ -209,19 +211,34 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
     buffer.writeln();
 
     // copyWith
-    buffer.write('  $publicName copyWith({');
-    for (final f in fields) {
-      buffer.write('${_nullableType(f.type)} ${f.name},');
-    }
-    buffer.writeln('}) {');
+    if (enableCopyWith) {
+      buffer.write('  $publicName copyWith({');
+      for (final f in fields) {
+        buffer.write('${_nullableType(f.type)} ${f.name},');
+      }
+      buffer.writeln('}) {');
 
-    buffer.write('    return $publicName(');
-    for (final f in fields) {
-      buffer.write('${f.name}: ${f.name} ?? this.${f.name},');
+      buffer.write('    return $publicName(');
+      for (final f in fields) {
+        if (useDeepCopy &&
+            (f.type.isDartCoreList ||
+                f.type.isDartCoreSet ||
+                f.type.isDartCoreMap)) {
+          final bool curly = !f.type.isDartCoreList;
+          String open = curly ? '{' : '[';
+          String close = curly ? '}' : ']';
+
+          buffer.write(
+            '${f.name}: ${open}...(${f.name} ?? this.${f.name})${close},',
+          );
+        } else {
+          buffer.write('${f.name}: ${f.name} ?? this.${f.name},');
+        }
+      }
+      buffer.writeln(');');
+      buffer.writeln('  }');
+      buffer.writeln();
     }
-    buffer.writeln(');');
-    buffer.writeln('  }');
-    buffer.writeln();
 
     // toString
     if (enableToString) {
