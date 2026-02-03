@@ -37,12 +37,18 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
     final String className = element.name ?? "";
     final String publicName = className + crystallisSuffix;
     final bool mutable = annotation.peek('mutable')?.boolValue ?? true;
+    final bool enableToString = annotation.peek('toString')?.boolValue ?? true;
+    final bool enableEquals = annotation.peek('equals')?.boolValue ?? true;
+    final bool enableHashCode = annotation.peek('hashCode')?.boolValue ?? true;
+    final bool useDeepEquality =
+        annotation.peek('useDeepEquality')?.boolValue ?? true;
 
     final fields = element.fields
         .where((f) => !f.isStatic)
         .where((f) => f.getter != null)
         .toList();
 
+    // Validate field (im)mutability
     for (final f in fields) {
       if (mutable && f.isFinal) {
         throw InvalidGenerationSourceError(
@@ -56,6 +62,30 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
           element: f,
         );
       }
+    }
+
+    // Validate `toString` generation
+    if (enableToString && element.getMethod('toString') != null) {
+      throw InvalidGenerationSourceError(
+        'Cannot generate toString() method: already defined in $className.',
+        element: element,
+      );
+    }
+
+    // Validate `equals` generation
+    if (enableEquals && element.getMethod('==') != null) {
+      throw InvalidGenerationSourceError(
+        'Cannot generate equals (==) method: already defined in $className.',
+        element: element,
+      );
+    }
+
+    // Validate `hashCode` generation
+    if (enableHashCode && element.getMethod('hashCode') != null) {
+      throw InvalidGenerationSourceError(
+        'Cannot generate hashCode method: already defined in $className.',
+        element: element,
+      );
     }
 
     final buffer = StringBuffer();
@@ -192,6 +222,73 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
     }
     buffer.writeln(');');
     buffer.writeln('  }');
+    buffer.writeln();
+
+    // toString
+    if (enableToString) {
+      buffer.writeln('  @override');
+      buffer.writeln('  String toString() {');
+      buffer.write("    return '$publicName(");
+
+      for (var i = 0; i < fields.length; i++) {
+        final f = fields[i];
+        if (i > 0) buffer.write(', ');
+        buffer.write('${f.name}: \$${f.name}');
+      }
+
+      buffer.writeln(")';");
+      buffer.writeln('  }');
+      buffer.writeln();
+    }
+
+    // equals
+    if (enableEquals) {
+      buffer.writeln('  @override');
+      buffer.writeln('  bool operator ==(Object other) {');
+      buffer.writeln('    if (identical(this, other)) return true;');
+      buffer.writeln('    if (other is! $publicName) return false;');
+      buffer.write('    return ');
+      for (var i = 0; i < fields.length; i++) {
+        final f = fields[i];
+        if (i > 0) buffer.write(' && ');
+
+        // use DeepCollectionEquality for lists, maps, sets
+        if (useDeepEquality &&
+            (f.type.isDartCoreList ||
+                f.type.isDartCoreSet ||
+                f.type.isDartCoreMap)) {
+          buffer.write(
+              'const DeepCollectionEquality().equals(other.${f.name}, ${f.name})');
+        } else {
+          buffer.write('other.${f.name} == ${f.name}');
+        }
+      }
+
+      buffer.writeln(';');
+      buffer.writeln('  }');
+      buffer.writeln();
+    }
+
+    // hashCode
+    if (enableHashCode) {
+      buffer.writeln('  @override');
+      buffer.writeln('  int get hashCode {');
+      buffer.write('    return Object.hashAll([');
+      for (final f in fields) {
+        // use DeepCollectionEquality for lists, maps, sets
+        if (useDeepEquality &&
+            (f.type.isDartCoreList ||
+                f.type.isDartCoreSet ||
+                f.type.isDartCoreMap)) {
+          buffer.write('const DeepCollectionEquality().hash(${f.name}), ');
+        } else {
+          buffer.write('${f.name}, ');
+        }
+      }
+      buffer.writeln(']);');
+      buffer.writeln('  }');
+      buffer.writeln();
+    }
 
     buffer.writeln('}');
     buffer.writeln();

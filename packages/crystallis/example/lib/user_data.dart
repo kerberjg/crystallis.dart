@@ -1,6 +1,6 @@
 import 'package:crystallis/crystallis.dart';
 
-@CrystallisData(mutable: true)
+@CrystallisData(mutable: true, useDeepEquality: true)
 class User {
   @Range(min: 1)
   int id;
@@ -19,11 +19,14 @@ class User {
   @AllowedValues({'admin', 'user', 'guest'})
   String role;
 
+  List<String> favoriteFoods;
+
   User({
     required this.id,
     required this.name,
     required this.email,
     required this.username,
     required this.role,
+    required this.favoriteFoods,
   });
 }

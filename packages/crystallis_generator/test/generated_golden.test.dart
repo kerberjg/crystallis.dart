@@ -6,22 +6,185 @@ import 'package:crystallis_generator/crystallis_generator.dart';
 
 const String outputPackage = 'a';
 
-void main() {
-  group('crystallis builder (golden-ish)', () {
-    test('generates public class from source class', () async {
-      final input = r'''
+const Map<String, String> _testClasses = {
+  //
+  'mutable': r'''
 library example;
-
 import 'package:crystallis/crystallis.dart';
 
-@CrystallisData()
+@CrystallisData(mutable: true)
+class User {
+  String name;
+
+  User({required this.name});
+}''',
+  //
+  'mutableWithImmutableField': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@CrystallisData(mutable: true)
+class User {
+  final String name;
+  User({required this.name});
+}''',
+  //
+  'mutableWithValidation': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@CrystallisData(mutable: true)
 class User {
   @NotEmpty()
   String name;
 
   User({required this.name});
-}
-''';
+}''',
+  //
+  'immutable': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@CrystallisData(mutable: false)
+class User {
+  final String name;
+  const User({required this.name});
+}''',
+  //
+  'immutableWithMutableField': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@CrystallisData(mutable: false)
+class User {
+  String name;
+  User({required this.name});
+}''',
+  //
+  'immutableWithValidation': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+@CrystallisData(mutable: false)
+class User {
+  @NotEmpty()
+  final String name;
+
+  const User({required this.name});
+}''',
+  //
+  'immutableWithToString': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+@CrystallisData(mutable: false, toString: true, equals: false, hashCode: false)
+class User {
+  final String name;
+  final int age;
+
+  const User({
+    required this.name,
+    required this.age,
+  });
+}''',
+  //
+  'immutableWithShallowEquals': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+@CrystallisData(mutable: false, toString: false, equals: true, hashCode: false, useDeepEquality: false)
+class Dot {
+  final int color;
+  final List<int> position;
+  const Dot({
+    required this.color,
+    required this.position,
+  });
+}''',
+  //
+  'immutableWithShallowHashCode': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+@CrystallisData(mutable: false, toString: false, equals: false, hashCode: true, useDeepEquality: false)
+class Dot {
+  final int color;
+  final List<int> position;
+  const Dot({
+    required this.color,
+    required this.position,
+  });
+}''',
+  //
+  'immutableWithDeepHashCode': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+@CrystallisData(mutable: false, toString: false, equals: false, hashCode: true, useDeepEquality: true)
+class Dot {
+  final int color;
+  final List<int> position;
+  const Dot({
+    required this.color,
+    required this.position,
+  });
+}''',
+  //
+  'immutableWithDeepEquals': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+@CrystallisData(mutable: false, toString: false, equals: true, hashCode: false, useDeepEquality: true)
+class Dot {
+  final int color;
+  final List<int> position;
+  const Dot({
+    required this.color,
+    required this.position,
+  });
+}''',
+  //
+  'immutableAlreadyHasToString': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+@CrystallisData(mutable: false, toString: true, equals: false, hashCode: false)
+class User {
+  final String name;
+  const User({required this.name});
+
+  @override
+  String toString() {
+    return 'Custom toString: \$name';
+  }
+}''',
+  //
+  'immutableAlreadyHasEquals': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+@CrystallisData(mutable: false, toString: false, equals: true, hashCode: false)
+class User {
+  final String name;
+  const User({required this.name});
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! User) return false;
+    return other.name == name;
+  }
+}''',
+  //
+  'immutableAlreadyHasHashCode': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+@CrystallisData(mutable: false, toString: false, equals: false, hashCode: true)
+class User {
+  final String name;
+  const User({required this.name});
+
+  @override
+  int get hashCode => name.hashCode;
+}''',
+};
+
+void main() {
+  group('crystallis builder (golden-ish)', () {
+    test('generates public class from source class', () async {
+      final input = _testClasses['mutableWithValidation']!;
 
       final outputs = await _runBuilder(
         inputDartPath: '$outputPackage|lib/user.dart',
@@ -45,17 +208,7 @@ class User {
     });
 
     test('adds suffix to source class name', () async {
-      final input = r'''
-library example;
-
-import 'package:crystallis/crystallis.dart';
-
-@CrystallisData()
-class User {
-  String name;
-  User({required this.name});
-}
-''';
+      final input = _testClasses['mutable']!;
 
       final outputs = await _runBuilder(
         inputDartPath: '$outputPackage|lib/user.dart',
@@ -71,17 +224,7 @@ class User {
     });
 
     test('mutable default: rejects final fields', () async {
-      final input = r'''
-library example;
-
-import 'package:crystallis/crystallis.dart';
-
-@CrystallisData()
-class Bad {
-  final String name;
-  $Bad({required this.name});
-}
-''';
+      final input = _testClasses['mutableWithImmutableField']!;
 
       try {
         await _runBuilder(
@@ -94,17 +237,7 @@ class Bad {
     });
 
     test('immutable: rejects non-final fields', () async {
-      final input = r'''
-library example;
-
-import 'package:crystallis/crystallis.dart';
-
-@CrystallisData(mutable: false)
-class Bad {
-  String name;
-  const $Bad({required this.name});
-}
-''';
+      final input = _testClasses['immutableWithMutableField']!;
 
       try {
         await _runBuilder(
@@ -117,19 +250,7 @@ class Bad {
     });
 
     test('immutable: set<T> returns new instance (signature check)', () async {
-      final input = r'''
-library example;
-
-import 'package:crystallis/crystallis.dart';
-
-@CrystallisData(mutable: false)
-class User {
-  @NotEmpty()
-  final String name;
-
-  const User({required this.name});
-}
-''';
+      final input = _testClasses['immutableWithValidation']!;
 
       final outputs = await _runBuilder(
         inputDartPath: '$outputPackage|lib/user_immutable.dart',
@@ -141,6 +262,74 @@ class User {
       expect(generated, contains('UserData set<T>(String field, T value)'));
       expect(generated, contains('return UserData('));
     });
+  });
+
+  test("generates a valid toString method", () async {
+    final input = _testClasses['immutableWithToString']!;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/user.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
+    expect(generated, contains("return 'UserData(name: \$name, age: \$age)';"));
+  });
+
+  test("generates a valid (shallow) equals method", () async {
+    final input = _testClasses['immutableWithShallowEquals']!;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/dot.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/dot.data.g.dart']!;
+    expect(generated, contains('if (other is! DotData) return false;'));
+    expect(generated, contains('other.position == position'));
+  });
+
+  test("generates a valid (deep) equals method", () async {
+    final input = _testClasses['immutableWithDeepEquals']!;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/dot.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/dot.data.g.dart']!;
+    expect(generated, contains('if (other is! DotData) return false;'));
+    expect(
+        generated,
+        contains(
+            'const DeepCollectionEquality().equals(other.position, position)'));
+  });
+
+  test("generates a valid (shallow) hashCode method", () async {
+    final input = _testClasses['immutableWithShallowHashCode']!;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/dot.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/dot.data.g.dart']!;
+    expect(generated, contains('int get hashCode {'));
+    expect(generated, contains('Object.hashAll([color, position]);'));
+  });
+
+  test("generates a valid (deep) hashCode method", () async {
+    final input = _testClasses['immutableWithDeepHashCode']!;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/dot.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/dot.data.g.dart']!;
+    expect(generated, contains('int get hashCode {'));
+    expect(
+        generated, contains('const DeepCollectionEquality().hash(position)'));
   });
 }
 

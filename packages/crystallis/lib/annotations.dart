@@ -6,6 +6,9 @@ export 'validators/length.dart';
 export 'validators/values.dart';
 export 'validators/regex.dart';
 
+// External exports
+export 'package:collection/collection.dart' show DeepCollectionEquality;
+
 /// Creates a [CrystallisData] annotation.
 class CrystallisData {
   /// Whether the generated data class is mutable.
@@ -24,7 +27,33 @@ class CrystallisData {
   ///  - Generated setter will return a new instance with updated fields.
   final bool mutable;
 
+  /// Whether a `toString` method should be generated.
+  /// (default: true)
+  final bool enableToString;
+
+  /// Whether an `equals` method should be generated.
+  /// (default: true)
+  final bool enableEquals;
+
+  /// Whether a `hashCode` method should be generated.
+  /// (default: true)
+  final bool enableHashCode;
+
+  /// Whether `hashCode` and `equals` should use deep collection equality
+  /// for lists, sets, and maps.
+  /// (default: false)
+  final bool useDeepEquality;
+
   /// Annotation to configure data class behavior.
   /// Allows specifying whether the generated data class is [mutable].
-  const CrystallisData({this.mutable = true});
+  const CrystallisData({
+    this.mutable = true,
+    // these are being redirected due to shorter naming
+    bool toString = true,
+    bool equals = true,
+    bool hashCode = true,
+    this.useDeepEquality = false,
+  })  : enableToString = toString,
+        enableEquals = equals,
+        enableHashCode = hashCode;
 }

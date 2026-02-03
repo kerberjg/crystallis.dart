@@ -9,6 +9,7 @@ void main() {
     email: 'alice@example.com',
     username: 'alice123',
     role: 'user',
+    favoriteFoods: ['Pizza', 'Sushi'],
   );
 
   // Metadata usage
