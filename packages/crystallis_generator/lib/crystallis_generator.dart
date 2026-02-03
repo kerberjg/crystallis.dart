@@ -165,6 +165,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
     buffer.writeln();
 
     // set()
+    buffer.writeln('  @override');
     buffer.writeln('  void set<T>(String field, T value) {');
     if (mutable) {
       buffer.writeln('    final meta = metadata[field];');
