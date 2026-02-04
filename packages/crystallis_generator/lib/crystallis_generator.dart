@@ -44,6 +44,8 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
         annotation.peek('useDeepEquality')?.boolValue ?? true;
     final bool enableCopyWith = annotation.peek('copyWith')?.boolValue ?? true;
     final bool useDeepCopy = annotation.peek('useDeepCopy')?.boolValue ?? false;
+    final bool enableDeserialize =
+        annotation.peek('deserialize')?.boolValue ?? true;
 
     final fields = element.fields
         .where((f) => !f.isStatic)
@@ -117,6 +119,32 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
     }
     buffer.writeln('});');
     buffer.writeln();
+
+    // deserializer constructor
+    if (enableDeserialize) {
+      buffer.writeln(
+          '  factory $publicName.deserialize(Map<String, dynamic> data) =>');
+      buffer.writeln('      $publicName(');
+      for (final f in fields) {
+        final type = f.type;
+
+        buffer.write(
+          "        ${f.name}: _metadata['${f.name}']!.serializer.deserialize(data['${f.name}'])",
+        );
+
+        final needsCast =
+            type is ParameterizedType && type.typeArguments.isNotEmpty;
+        final castTypes = _typeArguments(type);
+
+        if (needsCast) {
+          buffer.write('.cast<${castTypes.join(', ')}>()');
+        }
+
+        buffer.writeln(',');
+      }
+      buffer.writeln('      );');
+      buffer.writeln();
+    }
 
     const String metadataDoc =
         "/// Static immutable [FieldMetadata] for the fields of this data class.";
@@ -333,6 +361,16 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
   }
 
   String _castType(DartType type) => type.getDisplayString();
+
+  List<String> _typeArguments(DartType type) {
+    if (type is ParameterizedType) {
+      return type.typeArguments
+          .map((t) => t.getDisplayString()) //
+          .toList();
+    } else {
+      return [];
+    }
+  }
 
   /// Returns the type as a nullable type string.
   String _nullableType(DartType type) {

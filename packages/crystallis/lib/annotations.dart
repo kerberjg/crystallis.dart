@@ -55,6 +55,10 @@ class CrystallisData {
   /// (default: false)
   final bool useDeepCopy;
 
+  /// Whether a `deserialize` constructor should be generated.
+  /// (default: true)
+  final bool enableDeserialize;
+
   /// The [Crystallis] configuration for this data class
   Crystallis get config => _config ?? Crystallis.i;
   final Crystallis? _config;
@@ -70,6 +74,7 @@ class CrystallisData {
     this.useDeepEquality = false,
     bool copyWith = true,
     this.useDeepCopy = false,
+    bool deserialize = true,
 
     /// (see [config])
     Crystallis? config,
@@ -77,5 +82,6 @@ class CrystallisData {
         enableEquals = equals,
         enableHashCode = hashCode,
         enableCopyWith = copyWith,
+        enableDeserialize = deserialize,
         _config = config;
 }

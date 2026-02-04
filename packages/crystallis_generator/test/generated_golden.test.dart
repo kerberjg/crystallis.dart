@@ -406,6 +406,19 @@ void main() {
     expect(generated, contains('UserData copyWith({'));
     expect(generated, contains('friends: [...(friends ?? this.friends)],'));
   });
+
+  test("generates a deserialize constructor", () async {
+    final input = _testClasses['immutable']!;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/user.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
+    expect(generated,
+        contains('factory UserData.deserialize(Map<String, dynamic>'));
+  });
 }
 
 /// Runs the crystallis builder in-memory and returns all output assets.

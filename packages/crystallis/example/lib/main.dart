@@ -12,6 +12,7 @@ void main() {
     username: 'alice123',
     role: 'user',
     favoriteFoods: ['Pizza', 'Sushi'],
+    associations: {1: 'One', 2: 'Two'},
   );
 
   // Metadata usage
@@ -62,4 +63,27 @@ void main() {
   final encoder = JsonEncoder.withIndent('  ');
   final prettyJson = encoder.convert(serialized);
   print('Serialized form:\n$prettyJson');
+
+  // deserializer test
+  final manualJson = '''
+{
+  "id": 42,
+  "name": "Dale",
+  "email": "dale@example.org",
+  "username": "dale321",
+  "role": "user",
+  "favoriteFoods": [
+    "Cherry Pie",
+    "Coffee"
+  ],
+  "associations": {
+    "42": "meaning of life",
+    "2": "every day give yourself a treat"
+  }
+}
+''';
+
+  final decoded = json.decode(manualJson) as Map<String, dynamic>;
+  final user2 = UserData.deserialize(decoded);
+  print('Deserialized user2: id=${user2.id}, name=${user2.name}');
 }

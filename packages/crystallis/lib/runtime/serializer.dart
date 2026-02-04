@@ -43,7 +43,7 @@ dynamic serialize(dynamic value) => switch (value) {
       null => null,
       int() || double() || String() || bool() => value,
       List() => value.map(serialize).toList(),
-      Map() => value.map((k, v) => MapEntry(k.toString(), serialize(v))),
+      Map() => value.map((k, v) => MapEntry(serialize(k), serialize(v))),
       CrystallisMixin() => value.serialize(),
       _ => throw ArgumentError.value(
           value,

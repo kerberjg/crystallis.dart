@@ -21,6 +21,8 @@ class User {
 
   List<String> favoriteFoods;
 
+  Map<int, String> associations;
+
   User({
     required this.id,
     required this.name,
@@ -28,5 +30,6 @@ class User {
     required this.username,
     required this.role,
     required this.favoriteFoods,
+    required this.associations,
   });
 }
