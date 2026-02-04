@@ -33,6 +33,10 @@ _also see [`crystallis_codegen`](https://github.com/kerberjg/crystallis_generato
 - Codegen-based data classes (`copyWith`, constructors, get/set, equality, etc)
 - Supports both mutable and immutable classes!
 - Per-field validation via annotations (`@Min(1)`, `@Max(100)`, `@Regex('^[a-z]+\$')`, etc)
+- JSON-compatible de/serialization
+  - Per-field customizable serializers via `@Serializer(...)` annotation
+  - `serialize` method returning `Map<String, dynamic>`
+  - Generates a `deserialize` constructor
 - Runtime reflection (field metadata available for all annotated classes)
 - `copyFrom`: copy compatible fields between different data classes
 - Optional per-class deep copying/equality for collections
@@ -42,7 +46,6 @@ _also see [`crystallis_codegen`](https://github.com/kerberjg/crystallis_generato
 
 #### Coming up next:
 - Support for native/FFI types
-- JSON serialization/deserialization
 - `ByteBuffer` serialization/deserialization
 - More validators
 

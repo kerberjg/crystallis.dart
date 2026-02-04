@@ -1,3 +1,12 @@
+# 0.0.3
+
+- Implemented serialization!
+    - Per-field `@Serializer` annotation to customize de/serialization
+    - Built-in support for primitive types, lists, maps, and nested Crystallis data classes
+    - `serialize` method to convert to JSON-compatible `Map<String, dynamic>`
+    - Generates a `deserialize` constructor to create instances from `Map<String, dynamic>` (optional, on by default)
+- Added `copyFrom` method to copy compatible fields between different data classes
+
 # 0.0.2
 
 - Implemented generation for `toString`, `==`, and `hashCode` methods (optional, on by default)

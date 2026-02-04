@@ -8,10 +8,10 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-    crystallis: ^0.0.1
+    crystallis: ^0.0.3
 
 dev_dependencies:
-    crystallis_generator: ^0.0.1
+    crystallis_generator: ^0.0.3
     build_runner: ^2.4.0
 ```
 
