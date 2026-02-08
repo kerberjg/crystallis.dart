@@ -9,6 +9,8 @@ class User {
   @LengthRange(min: 2, max: 50)
   String name;
 
+  String? nickname;
+
   @Email()
   String email;
 
@@ -26,6 +28,7 @@ class User {
   User({
     required this.id,
     required this.name,
+    this.nickname,
     required this.email,
     required this.username,
     required this.role,

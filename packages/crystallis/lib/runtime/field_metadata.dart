@@ -10,6 +10,9 @@ class FieldMetadata {
   /// Type of the field.
   final Type type;
 
+  /// Whether the field is nullable (i.e. can be `null`).
+  final bool nullable;
+
   /// List of applied validators.
   final List<Validator> validators;
 
@@ -20,6 +23,7 @@ class FieldMetadata {
   const FieldMetadata({
     required this.name,
     required this.type,
+    this.nullable = false,
     required this.validators,
     this.serializer = defaultSerializer,
   });

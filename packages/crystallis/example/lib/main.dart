@@ -35,7 +35,7 @@ void main() {
     user.set('name', ''); // NotEmpty + LengthRange will fail
   } catch (e) {
     if (e is List<ValidationException>) {
-      print('Setting name failed with ${e.length} validation error(s):');
+      print('💚 Setting name failed with ${e.length} validation error(s):');
       for (final err in e) {
         print('  - validator=${err.validator.runtimeType}, value=${err.value}');
       }
@@ -48,7 +48,7 @@ void main() {
   try {
     user.set('id', 'not a number');
   } catch (e) {
-    print('Setting id failed: $e');
+    print('💚 Setting id failed: $e');
   }
 
   // Full validation after attempted changes

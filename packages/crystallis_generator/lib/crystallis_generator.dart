@@ -96,6 +96,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
 
     // imports
     buffer.writeln("import 'package:crystallis/crystallis.dart';");
+    buffer.writeln("import 'package:crystallis/runtime/serializer.dart';");
     buffer.writeln("import '${buildStep.inputId.uri}';");
     buffer.writeln();
 
@@ -115,7 +116,11 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
 
     buffer.write('$publicName({');
     for (final f in fields) {
-      buffer.write('required super.${f.name},');
+      if (_isNullable(f.type)) {
+        buffer.write('super.${f.name},');
+      } else {
+        buffer.write('required super.${f.name},');
+      }
     }
     buffer.writeln('});');
     buffer.writeln();
@@ -159,7 +164,8 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
 
       buffer.writeln("    '${f.name}': FieldMetadata(");
       buffer.writeln("      name: '${f.name}',");
-      buffer.writeln("      type: ${f.type.getDisplayString()},");
+      buffer.writeln("      type: ${_nonNullableType(f.type)},");
+      buffer.writeln("      nullable: ${_isNullable(f.type)},");
       buffer.writeln('      validators: $validators,');
       buffer.writeln('    ),');
     }
@@ -380,5 +386,20 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
     } else {
       return '$base';
     }
+  }
+
+  /// Returns the type as a non-nullable type string.
+  String _nonNullableType(DartType type) {
+    final base = type.getDisplayString();
+    if (type.nullabilitySuffix == NullabilitySuffix.question) {
+      return base.substring(0, base.length - 1);
+    } else {
+      return base;
+    }
+  }
+
+  /// Whether the type is nullable.
+  bool _isNullable(DartType type) {
+    return type.nullabilitySuffix == NullabilitySuffix.question;
   }
 }
