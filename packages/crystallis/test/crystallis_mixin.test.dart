@@ -23,7 +23,7 @@ class _ValidateHarness with CrystallisMixin {
       name: 'custom',
       type: String,
       validators: const [],
-      serializer: Serializer<String, String>(
+      serializer: CustomSerializer<String, String>(
         serialize: (value) => 'serialized',
         deserialize: (value) => 'deserialized',
       ),

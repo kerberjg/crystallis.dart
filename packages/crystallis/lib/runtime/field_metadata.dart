@@ -25,6 +25,6 @@ class FieldMetadata {
     required this.type,
     this.nullable = false,
     required this.validators,
-    this.serializer = defaultSerializer,
+    this.serializer = fallbackDeserializer,
   });
 }

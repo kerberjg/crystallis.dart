@@ -167,6 +167,13 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
       buffer.writeln("      type: ${_nonNullableType(f.type)},");
       buffer.writeln("      nullable: ${_isNullable(f.type)},");
       buffer.writeln('      validators: $validators,');
+
+      if (f.type.isDartCoreMap) {
+        buffer.writeln(
+          '      serializer: MapSerializer<${_typeArguments(f.type).join(', ')}>(),',
+        );
+      }
+
       buffer.writeln('    ),');
     }
 

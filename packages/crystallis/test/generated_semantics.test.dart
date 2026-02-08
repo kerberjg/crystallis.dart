@@ -113,7 +113,7 @@ class CustomData with CrystallisMixin {
       name: 'value',
       type: DateTime,
       validators: const [],
-      serializer: Serializer<String, String>(
+      serializer: CustomSerializer<String, String>(
         serialize: (dt) => "serialized",
         deserialize: (s) => "deserialized",
       ),

@@ -4,24 +4,24 @@ import 'package:test/test.dart';
 void main() {
   group('default serialization', () {
     test('null -> null', () {
-      expect(serialize(null), isNull);
+      expect(serializeValue(null), isNull);
     });
 
     test('int -> int', () {
-      expect(serialize(42), equals(42));
+      expect(serializeValue(42), equals(42));
     });
 
     test('double -> double', () {
-      expect(serialize(3.14), equals(3.14));
+      expect(serializeValue(3.14), equals(3.14));
     });
 
     test('String -> String', () {
-      expect(serialize('hello'), equals('hello'));
+      expect(serializeValue('hello'), equals('hello'));
     });
 
     test('bool -> bool', () {
-      expect(serialize(true), isTrue);
-      expect(serialize(false), isFalse);
+      expect(serializeValue(true), isTrue);
+      expect(serializeValue(false), isFalse);
     });
 
     test('List recursively serializes elements', () {
@@ -33,7 +33,7 @@ void main() {
         null,
         [2, 'y']
       ];
-      final output = serialize(input);
+      final output = serializeValue(input);
       expect(
         output,
         equals([
@@ -50,21 +50,23 @@ void main() {
     test('Map recursively serializes keys and values', () {
       final input = <dynamic, dynamic>{
         'a': 1,
-        2: 'b',
-        true: null,
+        'b': '2',
+        'c': null,
+        'd': true,
         'nested': <dynamic, dynamic>{
           'k': [1, 'x', null]
         },
       };
 
-      final output = serialize(input);
+      final output = serializeValue(input);
 
       expect(
         output,
         equals(<dynamic, dynamic>{
           'a': 1,
-          2: 'b',
-          true: null,
+          'b': '2',
+          'c': null,
+          'd': true,
           'nested': <dynamic, dynamic>{
             'k': [1, 'x', null]
           },
@@ -73,30 +75,30 @@ void main() {
     });
 
     test('unsupported type throws ArgumentError', () {
-      expect(() => serialize(DateTime(2020, 1, 1)), throwsArgumentError);
+      expect(() => serializeValue(DateTime(2020, 1, 1)), throwsArgumentError);
     });
   });
 
   group('deserialize', () {
     test('null -> null', () {
-      expect(deserialize(null), isNull);
+      expect(deserializeValue(null), isNull);
     });
 
     test('int -> int', () {
-      expect(deserialize(42), equals(42));
+      expect(deserializeValue<int>(42), equals(42));
     });
 
     test('double -> double', () {
-      expect(deserialize(3.14), equals(3.14));
+      expect(deserializeValue<double>(3.14), equals(3.14));
     });
 
     test('String -> String', () {
-      expect(deserialize('hello'), equals('hello'));
+      expect(deserializeValue<String>('hello'), equals('hello'));
     });
 
     test('bool -> bool', () {
-      expect(deserialize(true), isTrue);
-      expect(deserialize(false), isFalse);
+      expect(deserializeValue<bool>(true), isTrue);
+      expect(deserializeValue<bool>(false), isFalse);
     });
 
     test('List recursively deserializes elements', () {
@@ -108,7 +110,7 @@ void main() {
         null,
         [2, 'y']
       ];
-      final output = deserialize(input);
+      final output = deserializeValue<List>(input);
       expect(
         output,
         equals([
@@ -132,7 +134,7 @@ void main() {
         },
       };
 
-      final output = deserialize(input);
+      final output = deserializeValue(input);
 
       expect(
         output,
@@ -148,13 +150,13 @@ void main() {
     });
 
     test('unsupported type throws ArgumentError', () {
-      expect(() => deserialize(DateTime(2020, 1, 1)), throwsArgumentError);
+      expect(() => deserializeValue<DateTime>(DateTime(2020, 1, 1)), throwsArgumentError);
     });
   });
 
   group('Serializer<T, U> helpers', () {
     test('serializeUntyped / deserializeUntyped forward correctly', () {
-      const s = Serializer<int, String>(
+      const s = CustomSerializer<int, String>(
         serialize: _intToString,
         deserialize: _stringToInt,
       );

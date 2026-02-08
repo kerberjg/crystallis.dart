@@ -58,11 +58,14 @@ void main() {
 
   // Print serialized form
   final serialized = user.serialize();
+  print('Serialized map: $serialized');
+  // print types of serialized values
+  serialized.forEach((k, v) => print('  $k: ${v.runtimeType}'));
 
   // prertty-print as JSON
   final encoder = JsonEncoder.withIndent('  ');
   final prettyJson = encoder.convert(serialized);
-  print('Serialized form:\n$prettyJson');
+  print('Serialized JSON:\n$prettyJson');
 
   // deserializer test
   final manualJson = '''
