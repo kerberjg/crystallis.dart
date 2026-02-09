@@ -9,8 +9,27 @@ abstract mixin class CrystallisData {
 
   /// Get the value of a field by name.
   /// To see what type it might be, check [metadata].
+  ///
+  /// Throws an [ArgumentError] if the field does not exist.
+  ///
   /// (see [FieldMetadata.type])
   Object? get(String field);
+
+  /// Try to get the value of a field by name,
+  /// returning `null` if:
+  /// - the field does not exist
+  /// - the field value is not of type [T]
+  /// - any [ArgumentError] is thrown during retrieval
+  ///
+  /// (see [get])
+  T? tryGet<T>(String field) {
+    try {
+      final value = get(field);
+      return value is T ? value : null;
+    } on ArgumentError {
+      return null;
+    }
+  }
 
   /// Set the value of a field by name.
   void set<T>(String field, T value);
