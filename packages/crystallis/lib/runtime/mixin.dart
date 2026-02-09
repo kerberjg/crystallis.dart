@@ -1,3 +1,5 @@
+import 'package:crystallis/annotations.dart';
+
 import 'field_metadata.dart';
 import 'validator.dart';
 
@@ -68,7 +70,28 @@ abstract mixin class CrystallisData {
   /// Copies compatible fields from any [other] instance of [CrystallisData].
   /// Incompatible fields (missing or type-mismatched) are skipped.
   /// Null values are skipped.
-  void copyFrom(CrystallisMixin other) {
+  void setFrom(CrystallisData other);
+
+  /// Serializes this object into a [Map<String, dynamic>]
+  Map<String, dynamic> serialize() {
+    final result = <String, dynamic>{};
+
+    for (final field in metadata.keys) {
+      final value = get(field);
+      final serializer = metadata[field]!.serializer;
+      result[field] = serializer.serializeUntyped(value);
+    }
+
+    return result;
+  }
+}
+
+/// Mutable variant of [CrystallisData].
+/// Used on generated data classes when [Crystallise.mutable] is true.
+abstract mixin class MutableCrystallisData implements CrystallisData {
+
+  @override
+  void setFrom(CrystallisData other) {
     // skip this both this and other are of the same type
     final bool isSameType = this.runtimeType != other.runtimeType;
 

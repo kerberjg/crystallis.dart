@@ -38,7 +38,7 @@ _also see [`crystallis_codegen`](https://github.com/kerberjg/crystallis_generato
   - `serialize` method returning `Map<String, dynamic>`
   - Generates a `deserialize` constructor
 - Runtime reflection (field metadata available for all annotated classes)
-- `copyFrom`: copy compatible fields between different data classes
+- `setFrom`: copy compatible fields between different data classes
 - Optional per-class deep copying/equality for collections
 - Full-object validation
 - String-named getter/setter methods

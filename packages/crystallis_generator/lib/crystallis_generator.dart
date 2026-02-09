@@ -291,6 +291,18 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       buffer.writeln(');');
       buffer.writeln('  }');
       buffer.writeln();
+
+      // copyFrom (like setFrom, but returns a new instance instead of modifying this)
+      buffer.write('  $publicName copyFrom(CrystallisData other) {');
+      buffer.write('    return $publicName(');
+      for (final f in fields) {
+        buffer.write(
+          '${f.name}: other.tryGet<${_castType(f.type)}>(${f.name}) ?? this.${f.name},',
+        );
+      }
+      buffer.writeln(');');
+      buffer.writeln('  }');
+      buffer.writeln();
     }
 
     // toString
