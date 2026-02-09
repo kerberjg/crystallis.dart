@@ -13,6 +13,9 @@ class FieldMetadata {
   /// Whether the field is nullable (i.e. can be `null`).
   final bool nullable;
 
+  /// Whether the field is mutable (non-final).
+  final bool mutable;
+
   /// List of applied validators.
   final List<Validator> validators;
 
@@ -24,6 +27,7 @@ class FieldMetadata {
     required this.name,
     required this.type,
     this.nullable = false,
+    this.mutable = false,
     required this.validators,
     this.serializer = fallbackSerializer,
   });

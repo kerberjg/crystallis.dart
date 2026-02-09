@@ -54,12 +54,6 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
 
     // Validate field (im)mutability
     for (final f in fields) {
-      if (mutable && f.isFinal) {
-        throw InvalidGenerationSourceError(
-          'Mutable CrystallisData fields must not be final: ${f.name}',
-          element: f,
-        );
-      }
       if (!mutable && !f.isFinal) {
         throw InvalidGenerationSourceError(
           'Immutable CrystallisData fields must be final: ${f.name}',
@@ -166,6 +160,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
       buffer.writeln("      name: '${f.name}',");
       buffer.writeln("      type: ${_nonNullableType(f.type)},");
       buffer.writeln("      nullable: ${_isNullable(f.type)},");
+      buffer.writeln("      mutable: ${!f.isFinal},");
       buffer.writeln('      validators: $validators,');
 
       if (f.type.isDartCoreMap) {
@@ -216,6 +211,10 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
           '    if (value == null || value.runtimeType != meta.type) {');
       buffer.writeln('      throw ArgumentError.value(value, \'value\');');
       buffer.writeln('    }');
+      buffer.writeln('    if (!meta.mutable) {');
+      buffer.writeln(
+          "      throw StateError('Cannot set field \"\$field\" on immutable field.');");
+      buffer.writeln('    }');
 
       buffer.writeln('    final errors = <ValidationException>[];');
       buffer.writeln('    for (final v in meta.validators) {');
@@ -226,6 +225,14 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
 
       buffer.writeln('    switch (field) {');
       for (final f in fields) {
+        // skip final fields since they can't be set
+        if (f.isFinal) {
+          buffer.writeln("      // case '${f.name}':");
+          buffer.writeln("      //   ${f.name} is final");
+          buffer.writeln('      //   return;');
+          continue;
+        }
+
         buffer.writeln("      case '${f.name}':");
         if (mutable) {
           buffer.writeln('        ${f.name} = value as ${_castType(f.type)};');

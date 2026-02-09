@@ -58,8 +58,15 @@ abstract mixin class CrystallisMixin {
         final field = metadata[name]!;
         final otherMeta = other.metadata[name];
 
-        // skip missing or type-mismatched fields
-        if (otherMeta == null || otherMeta.type != field.type) {
+        /// TODO(kerberjg): dart-format-off is not working here...
+        // skip when...
+        if ( //
+            otherMeta == null // missing
+                ||
+                otherMeta.type != field.type // type-mismatched fields
+                ||
+                !field.mutable // this field is immutable
+            ) {
           continue;
         }
       }
