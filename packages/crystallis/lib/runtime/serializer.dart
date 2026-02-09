@@ -116,7 +116,8 @@ Map<K, V?> deserializeMap<K, V>(Map<dynamic, dynamic> map) {
  *  Serializer classes
  */
 
-/// Abstract base class for custom serializers. See [Serializer] for details.
+/// Abstract base class for custom serializers.
+/// See [Serializable] and [FieldMetadata.serializer] for details.
 abstract class Serializer<I, O> {
   /// Creates a [Serializer]
   const Serializer();
@@ -138,16 +139,16 @@ abstract class Serializer<I, O> {
 }
 
 /// Specifies a custom serializer/deserializer annotation for a field
-/// Converts between type [I] (the field type) and type [U] (the serialized type)
-class CustomSerializer<I, O> extends Serializer<I, O> {
+/// Converts between type [I] (the field type) and type [O] (the serialized type)
+class Serializable<I, O> extends Serializer<I, O> {
   /// Function that converts from type [I] to type [O]
   final O Function(I value) _serialize;
 
   /// Function that converts from type [O] to type [I]
   final I Function(O value) _deserialize;
 
-  /// Creates a [Serializer] with the given [serialize] and [deserialize] functions
-  const CustomSerializer({
+  /// Creates a [Serializable] with the given [serialize] and [deserialize] functions
+  const Serializable({
     required O Function(I value) serialize,
     required I Function(O value) deserialize,
   })  : _serialize = serialize,
@@ -186,7 +187,7 @@ class MapSerializer<K, V> extends Serializer<Map<K, V?>, Map<String, dynamic>> {
 
 /// A [Serializer] that uses [serializeValue] and [_fallbackDeserializeValue]
 /// for serialization and deserialization.
-const fallbackSerializer = CustomSerializer(
+const fallbackSerializer = Serializable(
   serialize: serializeValue,
   deserialize: _fallbackDeserializeValue,
 );

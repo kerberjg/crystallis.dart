@@ -347,7 +347,7 @@ void main() {
 
   group('Serializer<T, U> helpers', () {
     test('serializeUntyped / deserializeUntyped forward correctly', () {
-      const s = CustomSerializer<int, String>(
+      const s = Serializable<int, String>(
         serialize: _intToString,
         deserialize: _stringToInt,
       );

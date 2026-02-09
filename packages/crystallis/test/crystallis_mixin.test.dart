@@ -29,7 +29,7 @@ class _ValidateHarness with CrystallisData {
       name: 'custom',
       type: String,
       validators: const [],
-      serializer: CustomSerializer<String, String>(
+      serializer: Serializable<String, String>(
         serialize: (value) => 'serialized',
         deserialize: (value) => 'deserialized',
       ),

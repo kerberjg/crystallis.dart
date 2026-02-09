@@ -4,6 +4,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:build/build.dart';
+import 'package:crystallis/runtime/serializer.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'package:crystallis/crystallis.dart';
@@ -166,10 +167,42 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       buffer.writeln("      mutable: ${!f.isFinal},");
       buffer.writeln('      validators: $validators,');
 
-      if (f.type.isDartCoreMap) {
+      // Add custom serializer if the field has an annotation that implements
+      // the [SerializingAnnotation] interface.
+      final serializerChecker =
+          TypeChecker.typeNamed(Serializer, inPackage: 'crystallis');
+
+      final serializers = f.metadata.annotations.where((a) =>
+          a.computeConstantValue()?.type != null &&
+          serializerChecker
+              .isAssignableFromType(a.computeConstantValue()!.type!));
+
+      if (serializers.isNotEmpty) {
+        /*
+         *  Custom serializer handling
+         */
+        if (serializers.length > 1) {
+          /// TODO(kerberjg): test this
+          throw InvalidGenerationSourceError(
+            'Field ${f.name} has multiple serializers. Only one serializer annotation is allowed per field.',
+            element: f,
+          );
+        }
+
+        final s = serializers.first;
+
         buffer.writeln(
-          '      serializer: MapSerializer<${_typeArguments(f.type).join(', ')}>(),',
+          '      serializer: ${s.toSource().substring(1)},',
         );
+      } else {
+        /*
+         *  Default serializer handling
+         */
+        if (f.type.isDartCoreMap) {
+          buffer.writeln(
+            '      serializer: MapSerializer<${_typeArguments(f.type).join(', ')}>(),',
+          );
+        }
       }
 
       buffer.writeln('    ),');
