@@ -16,7 +16,7 @@ Builder crystallisBuilder(BuilderOptions options) {
   );
 }
 
-class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
+class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
   static final _validatorChecker =
       TypeChecker.typeNamed(Validator, inPackage: 'crystallis');
 
@@ -98,8 +98,11 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
     if (!mutable) {
       buffer.writeln("@immutable");
     }
-    buffer
-        .writeln('class $publicName extends $className with CrystallisMixin {');
+    buffer.writeln(
+      'class $publicName extends $className with CrystallisData' +
+          ', ${mutable ? "MutableCrystallisData" : "ImmutableCrystallisData"}' +
+          ' {',
+    );
 
     // constructor
     if (!mutable && element.constructors.any((c) => c.isConst)) {

@@ -2,7 +2,7 @@ import 'package:crystallis/runtime/serializer.dart';
 import 'package:test/test.dart';
 import 'package:crystallis/crystallis.dart';
 
-class _ValidateHarness with CrystallisMixin {
+class _ValidateHarness with CrystallisData {
   _ValidateHarness(this._x);
 
   final String _x;

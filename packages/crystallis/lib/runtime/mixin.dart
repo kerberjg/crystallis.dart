@@ -2,8 +2,8 @@ import 'field_metadata.dart';
 import 'validator.dart';
 
 /// Mixin class that provides validation functionality for data classes.
-/// Applied to classes generated with [CrystallisData].
-abstract mixin class CrystallisMixin {
+/// Applied to classes generated with [Crystallise].
+abstract mixin class CrystallisData {
   /// Per-field metadata of this data class.
   Map<String, FieldMetadata> get metadata;
 
@@ -46,7 +46,7 @@ abstract mixin class CrystallisMixin {
     return result;
   }
 
-  /// Copies compatible fields from any [other] instance of [CrystallisMixin].
+  /// Copies compatible fields from any [other] instance of [CrystallisData].
   /// Incompatible fields (missing or type-mismatched) are skipped.
   /// Null values are skipped.
   void copyFrom(CrystallisMixin other) {
@@ -79,25 +79,29 @@ abstract mixin class CrystallisMixin {
       }
     }
   }
+}
 
-  /// Serializes this object into a [Map<String, dynamic>]
-  Map<String, dynamic> serialize() {
-    final result = <String, dynamic>{};
+/// Immutable variant of [CrystallisData].
+/// Used on generated data classes when [Crystallise.mutable] is false.
+abstract mixin class ImmutableCrystallisData implements CrystallisData {
+  @override
+  Crystallise get config => Crystallise(mutable: false);
 
-    for (final field in metadata.keys) {
-      final value = get(field);
-      final serializer = metadata[field]!.serializer;
-      result[field] = serializer.serializeUntyped(value);
-    }
-
-    return result;
+  /// Always throws an [StateError] since immutable data classes
+  /// cannot be modified.
+  @override
+  void set<T>(String field, T value) {
+    throw StateError(
+      'Cannot set field "$field" on immutable data class',
+    );
   }
 
-  // TODO(kerberjg): deserialize factory method?
-  // Should:
-  // - be a callable from a factory constructor in the generated class
-  // - take a Map<String, dynamic>
-  // - return an instance of the generated class
-  // - use the per-field serializers to deserialize each field
-  // - validate each field after deserialization
+  /// Always throws an [StateError] since immutable data classes
+  /// cannot be modified.
+  @override
+  void setFrom(CrystallisData other) {
+    throw StateError(
+      'Cannot set fields from another instance on immutable data class',
+    );
+  }
 }

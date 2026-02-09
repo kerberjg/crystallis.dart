@@ -12,8 +12,10 @@ export 'validators/regex.dart';
 export 'package:meta/meta.dart' show immutable;
 export 'package:collection/collection.dart' show DeepCollectionEquality;
 
-/// Creates a [CrystallisData] annotation.
-class CrystallisData {
+/// Annotation to mark a class for code generation by Crystallis.
+///
+/// TODO(kerberjg): more docs
+class Crystallise {
   /// Whether the generated data class is mutable.
   /// (default: true)
   ///
@@ -63,9 +65,8 @@ class CrystallisData {
   Crystallis get config => _config ?? Crystallis.i;
   final Crystallis? _config;
 
-  /// Annotation to configure data class behavior.
-  /// Allows specifying whether the generated data class is [mutable].
-  const CrystallisData({
+  /// Creates a [Crystallise] annotation.
+  const Crystallise({
     this.mutable = true,
     // these are being redirected due to shorter naming
     bool toString = true,

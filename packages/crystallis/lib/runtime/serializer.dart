@@ -13,14 +13,14 @@ const Set<Type> kSupportedPrimitiveTypes = {int, double, String, bool, Null, Lis
 /// - [Null]s
 /// - [List]s (recursively serializes elements)
 /// - [Map]s (recursively serializes keys and values)
-/// - [CrystallisMixin] objects (calls their [serialize] method)
+/// - [CrystallisData] objects (calls their [serialize] method)
 /// - Other types result in an [ArgumentError]
 dynamic serializeValue(dynamic value) => switch (value) {
       null => null,
       int() || double() || String() || bool() => value,
       List() => value.map(serializeValue).toList(),
       Map() => value.map((k, v) => MapEntry(k.toString(), serializeValue(v))),
-      CrystallisMixin() => value.serialize(),
+      CrystallisData() => value.serialize(),
       _ => throw ArgumentError.value(
           value,
           'value',
@@ -159,7 +159,7 @@ class CustomSerializer<I, O> extends Serializer<I, O> {
   I deserialize(O value) => _deserialize(value);
 }
 
-/// Default [Serializer] that handles basic types and nested [CrystallisMixin]..
+/// Default [Serializer] that handles basic types and nested [CrystallisData]..
 /// See [serialize] and [deserialize] functions for details.
 class DefaultSerializer<T> extends Serializer<T, Object?> {
   /// Creates a [DefaultSerializer].

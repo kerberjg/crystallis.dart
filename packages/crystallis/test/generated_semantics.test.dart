@@ -2,7 +2,7 @@ import 'package:crystallis/runtime/serializer.dart';
 import 'package:test/test.dart';
 import 'package:crystallis/crystallis.dart';
 
-class MutableUser with CrystallisMixin {
+class MutableUser with CrystallisData {
   MutableUser({required this.name});
 
   String name;
@@ -53,7 +53,7 @@ class MutableUser with CrystallisMixin {
   }
 }
 
-class ImmutableUser with CrystallisMixin {
+class ImmutableUser with CrystallisData {
   const ImmutableUser({required this.name});
 
   final String name;
@@ -103,7 +103,7 @@ class ImmutableUser with CrystallisMixin {
   }
 }
 
-class CustomData with CrystallisMixin {
+class CustomData with CrystallisData {
   CustomData(this.value);
 
   final String value;
