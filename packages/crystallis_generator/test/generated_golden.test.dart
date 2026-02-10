@@ -1,8 +1,7 @@
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
-import 'package:test/test.dart';
-
 import 'package:crystallis_generator/crystallis_generator.dart';
+import 'package:test/test.dart';
 
 const String outputPackage = 'a';
 
@@ -227,10 +226,8 @@ void main() {
 
       // Key expectations
       // TODO: use analyzer for those
-      expect(generated,
-          contains('class UserData extends User with CrystallisMixin'));
-      expect(generated,
-          contains('Map<String, FieldMetadata> get metadata => _metadata'));
+      expect(generated, contains('class UserData extends User with CrystallisMixin'));
+      expect(generated, contains('Map<String, FieldMetadata> get metadata => _metadata'));
       expect(generated, contains("case 'name':"));
       expect(generated, contains('final errors = <ValidationException>[];'));
       expect(generated, contains('if (errors.isNotEmpty) throw errors;'));
@@ -249,8 +246,7 @@ void main() {
       final generated = outputs[outPath];
       expect(generated, isNotNull, reason: 'Expected output at $outPath');
 
-      expect(generated,
-          contains('class UserData extends User with CrystallisMixin'));
+      expect(generated, contains('class UserData extends User with CrystallisMixin'));
     });
 
     test('mutable default: rejects final fields', () async {
@@ -302,8 +298,7 @@ void main() {
         inputDart: input,
       );
 
-      final generated =
-          outputs['$outputPackage|lib/user_immutable.data.g.dart']!;
+      final generated = outputs['$outputPackage|lib/user_immutable.data.g.dart']!;
       expect(
         generated,
         contains(
@@ -348,10 +343,7 @@ void main() {
 
     final generated = outputs['$outputPackage|lib/dot.data.g.dart']!;
     expect(generated, contains('if (other is! DotData) return false;'));
-    expect(
-        generated,
-        contains(
-            'const DeepCollectionEquality().equals(other.position, position)'));
+    expect(generated, contains('const DeepCollectionEquality().equals(other.position, position)'));
   });
 
   test("generates a valid (shallow) hashCode method", () async {
@@ -377,8 +369,7 @@ void main() {
 
     final generated = outputs['$outputPackage|lib/dot.data.g.dart']!;
     expect(generated, contains('int get hashCode {'));
-    expect(
-        generated, contains('const DeepCollectionEquality().hash(position)'));
+    expect(generated, contains('const DeepCollectionEquality().hash(position)'));
   });
 
   test("generates a valid copyWith method with shallow copy", () async {
@@ -390,8 +381,14 @@ void main() {
     );
 
     final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
-    expect(generated, contains('UserData copyWith({'));
-    expect(generated, contains('friends: friends ?? this.friends'));
+    expect(generated, contains('UserData Function({'));
+    expect(generated, contains('}) get copyWith =>'));
+    expect(generated, contains('Object friends = _Sentinel.i'));
+    expect(generated, contains('friends: friends == _Sentinel.i'));
+    expect(generated, contains('this.friends'));
+    expect(generated, isNot(contains('...this.friends')));
+    expect(generated, contains('friends as List<String>'));
+    expect(generated, isNot(contains('[...friends as List<String>]')));
   });
 
   test("generates a valid copyWith method with deep copy", () async {
@@ -403,8 +400,12 @@ void main() {
     );
 
     final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
-    expect(generated, contains('UserData copyWith({'));
-    expect(generated, contains('friends: [...(friends ?? this.friends)],'));
+    expect(generated, contains('UserData Function({'));
+    expect(generated, contains('}) get copyWith =>'));
+    expect(generated, contains('Object friends = _Sentinel.i'));
+    expect(generated, contains('friends: friends == _Sentinel.i'));
+    expect(generated, contains('[...this.friends]'));
+    expect(generated, contains('[...friends as List<String>]'));
   });
 
   test("generates a deserialize constructor", () async {
@@ -416,8 +417,7 @@ void main() {
     );
 
     final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
-    expect(generated,
-        contains('factory UserData.deserialize(Map<String, dynamic>'));
+    expect(generated, contains('factory UserData.deserialize(Map<String, dynamic>'));
   });
 }
 

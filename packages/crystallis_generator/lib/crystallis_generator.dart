@@ -1,13 +1,12 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
+import 'package:crystallis/crystallis.dart';
 import 'package:crystallis/runtime/serializer.dart';
 import 'package:source_gen/source_gen.dart';
-
-import 'package:crystallis/crystallis.dart';
 
 Builder crystallisBuilder(BuilderOptions options) {
   return LibraryBuilder(
@@ -17,9 +16,8 @@ Builder crystallisBuilder(BuilderOptions options) {
   );
 }
 
-class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
-  static final _validatorChecker =
-      TypeChecker.typeNamed(Validator, inPackage: 'crystallis');
+class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
+  static final _validatorChecker = TypeChecker.typeNamed(Validator, inPackage: 'crystallis');
 
   @override
   String generateForAnnotatedElement(
@@ -41,17 +39,12 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     final bool enableToString = annotation.peek('toString')?.boolValue ?? true;
     final bool enableEquals = annotation.peek('equals')?.boolValue ?? true;
     final bool enableHashCode = annotation.peek('hashCode')?.boolValue ?? true;
-    final bool useDeepEquality =
-        annotation.peek('useDeepEquality')?.boolValue ?? true;
+    final bool useDeepEquality = annotation.peek('useDeepEquality')?.boolValue ?? true;
     final bool enableCopyWith = annotation.peek('copyWith')?.boolValue ?? true;
     final bool useDeepCopy = annotation.peek('useDeepCopy')?.boolValue ?? false;
-    final bool enableDeserialize =
-        annotation.peek('deserialize')?.boolValue ?? true;
+    final bool enableDeserialize = annotation.peek('deserialize')?.boolValue ?? true;
 
-    final fields = element.fields
-        .where((f) => !f.isStatic)
-        .where((f) => f.getter != null)
-        .toList();
+    final fields = element.fields.where((f) => !f.isStatic).where((f) => f.getter != null).toList();
 
     // Validate field (im)mutability
     for (final f in fields) {
@@ -95,6 +88,11 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     buffer.writeln("import '${buildStep.inputId.uri}';");
     buffer.writeln();
 
+    if (enableCopyWith) {
+      buffer.writeln('enum _Sentinel { i }');
+      buffer.writeln();
+    }
+
     // class declaration
     if (!mutable) {
       buffer.writeln("@immutable");
@@ -125,8 +123,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
 
     // deserializer constructor
     if (enableDeserialize) {
-      buffer.writeln(
-          '  factory $publicName.deserialize(Map<String, dynamic> data) =>');
+      buffer.writeln('  factory $publicName.deserialize(Map<String, dynamic> data) =>');
       buffer.writeln('      $publicName(');
       for (final f in fields) {
         final type = f.type;
@@ -135,8 +132,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
           "        ${f.name}: _metadata['${f.name}']!.serializer.deserialize(data['${f.name}'])",
         );
 
-        final needsCast =
-            type is ParameterizedType && type.typeArguments.isNotEmpty;
+        final needsCast = type is ParameterizedType && type.typeArguments.isNotEmpty;
         final castTypes = _typeArguments(type);
 
         if (needsCast) {
@@ -149,8 +145,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       buffer.writeln();
     }
 
-    const String metadataDoc =
-        "/// Static immutable [FieldMetadata] for the fields of this data class.";
+    const String metadataDoc = "/// Static immutable [FieldMetadata] for the fields of this data class.";
 
     // metadata
     buffer.write('  ');
@@ -213,8 +208,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
 
     buffer.write('  ');
     buffer.writeln(metadataDoc);
-    buffer.writeln(
-        '  static Map<String, FieldMetadata> get metadataStatic => _metadata;');
+    buffer.writeln('  static Map<String, FieldMetadata> get metadataStatic => _metadata;');
     buffer.writeln();
 
     buffer.write('  ');
@@ -230,8 +224,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     for (final f in fields) {
       buffer.writeln("      case '${f.name}': return ${f.name};");
     }
-    buffer
-        .writeln('      default: throw ArgumentError.value(field, \'field\');');
+    buffer.writeln('      default: throw ArgumentError.value(field, \'field\');');
     buffer.writeln('    }');
     buffer.writeln('  }');
     buffer.writeln();
@@ -241,10 +234,8 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     buffer.writeln('  void set<T>(String field, T value) {');
     if (mutable) {
       buffer.writeln('    final meta = metadata[field];');
-      buffer.writeln(
-          '    if (meta == null) throw ArgumentError.value(field, \'field\');');
-      buffer.writeln(
-          '    if (value == null || value.runtimeType != meta.type) {');
+      buffer.writeln('    if (meta == null) throw ArgumentError.value(field, \'field\');');
+      buffer.writeln('    if (value == null || value.runtimeType != meta.type) {');
       buffer.writeln('      throw ArgumentError.value(value, \'value\');');
       buffer.writeln('    }');
       buffer.writeln('    if (!meta.mutable) {');
@@ -285,44 +276,48 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
           buffer.writeln(');');
         }
       }
-      buffer.writeln(
-          '      default: throw ArgumentError.value(field, \'field\');');
+      buffer.writeln('      default: throw ArgumentError.value(field, \'field\');');
       buffer.writeln('    }');
     } else {
       // immutable: throw error
-      buffer.writeln(
-          "    throw StateError('Cannot set field on immutable type $publicName.');");
+      buffer.writeln("    throw StateError('Cannot set field on immutable type $publicName.');");
     }
     buffer.writeln('  }');
     buffer.writeln();
 
     // copyWith
     if (enableCopyWith) {
-      buffer.write('  $publicName copyWith({');
+      buffer.write('  $publicName Function({');
       for (final f in fields) {
-        buffer.write('${_nullableType(f.type)} ${f.name},');
+        buffer.write('${f.type.getDisplayString()} ${f.name},');
       }
-      buffer.writeln('}) {');
-
-      buffer.write('    return $publicName(');
+      buffer.write('}) get copyWith => ({');
+      var objectQuestionType = element.library.typeProvider.objectQuestionType;
+      var objectType = element.library.typeProvider.objectType;
       for (final f in fields) {
-        if (useDeepCopy &&
-            (f.type.isDartCoreList ||
-                f.type.isDartCoreSet ||
-                f.type.isDartCoreMap)) {
+        buffer.write('${f.type.isNullable ? objectQuestionType : objectType} ${f.name} = _Sentinel.i,');
+      }
+      buffer.writeln('}) => $publicName(');
+      for (final f in fields) {
+        var prefix = ' ' * 6;
+        buffer.write('$prefix${f.name}: ${f.name} == _Sentinel.i');
+        if (useDeepCopy && (f.type.isDartCoreList || f.type.isDartCoreSet || f.type.isDartCoreMap)) {
           final bool curly = !f.type.isDartCoreList;
           String open = curly ? '{' : '[';
           String close = curly ? '}' : ']';
 
-          buffer.write(
-            '${f.name}: ${open}...(${f.name} ?? this.${f.name})${close},',
-          );
+          buffer.writeln();
+          buffer.write('$prefix  ? (');
+          if (f.type.isNullable) buffer.write('this.${f.name} == null ? null : ');
+          buffer.writeln('$open...${f.type.isNullable ? '?' : ''}this.${f.name} $close)');
+          buffer.write('$prefix  : (');
+          if (f.type.isNullable) buffer.write('${f.name} == null ? null : ');
+          buffer.writeln('$open...${f.name} as ${_nonNullableType(f.type)}$close),');
         } else {
-          buffer.write('${f.name}: ${f.name} ?? this.${f.name},');
+          buffer.writeln('? this.${f.name} : ${f.name} as ${f.type.getDisplayString()},');
         }
       }
       buffer.writeln(');');
-      buffer.writeln('  }');
       buffer.writeln();
 
       // copyFrom (like setFrom, but returns a new instance instead of modifying this)
@@ -367,12 +362,8 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
         if (i > 0) buffer.write(' && ');
 
         // use DeepCollectionEquality for lists, maps, sets
-        if (useDeepEquality &&
-            (f.type.isDartCoreList ||
-                f.type.isDartCoreSet ||
-                f.type.isDartCoreMap)) {
-          buffer.write(
-              'const DeepCollectionEquality().equals(other.${f.name}, ${f.name})');
+        if (useDeepEquality && (f.type.isDartCoreList || f.type.isDartCoreSet || f.type.isDartCoreMap)) {
+          buffer.write('const DeepCollectionEquality().equals(other.${f.name}, ${f.name})');
         } else {
           buffer.write('other.${f.name} == ${f.name}');
         }
@@ -390,10 +381,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       buffer.write('    return Object.hashAll([');
       for (final f in fields) {
         // use DeepCollectionEquality for lists, maps, sets
-        if (useDeepEquality &&
-            (f.type.isDartCoreList ||
-                f.type.isDartCoreSet ||
-                f.type.isDartCoreMap)) {
+        if (useDeepEquality && (f.type.isDartCoreList || f.type.isDartCoreSet || f.type.isDartCoreMap)) {
           buffer.write('const DeepCollectionEquality().hash(${f.name}), ');
         } else {
           buffer.write('${f.name}, ');
@@ -464,4 +452,8 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
   bool _isNullable(DartType type) {
     return type.nullabilitySuffix == NullabilitySuffix.question;
   }
+}
+
+extension on DartType {
+  bool get isNullable => nullabilitySuffix == NullabilitySuffix.question;
 }
