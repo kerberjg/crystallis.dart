@@ -2,7 +2,12 @@ import 'package:crystallis/runtime/serializer.dart';
 import 'package:test/test.dart';
 import 'package:crystallis/crystallis.dart';
 
-class MutableUser with CrystallisData {
+class MutableUser with CrystallisData, MutableCrystallisData {
+  @override
+  Crystallise get config => const Crystallise(
+        mutable: true,
+      );
+
   MutableUser({required this.name});
 
   String name;
@@ -54,7 +59,12 @@ class MutableUser with CrystallisData {
   }
 }
 
-class ImmutableUser with CrystallisData {
+class ImmutableUser with CrystallisData, ImmutableCrystallisData {
+  @override
+  Crystallise get config => const Crystallise(
+        mutable: false,
+      );
+
   const ImmutableUser({required this.name});
 
   final String name;
@@ -105,7 +115,12 @@ class ImmutableUser with CrystallisData {
   }
 }
 
-class CustomData with CrystallisData {
+class CustomData with CrystallisData, ImmutableCrystallisData {
+  @override
+  Crystallise get config => const Crystallise(
+        mutable: false,
+      );
+
   CustomData(this.value);
 
   final String value;

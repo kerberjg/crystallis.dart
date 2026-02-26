@@ -1,4 +1,5 @@
 import 'package:crystallis/annotations.dart';
+import 'package:meta/meta.dart';
 
 import 'field_metadata.dart';
 import 'validator.dart';
@@ -8,6 +9,10 @@ import 'validator.dart';
 abstract mixin class CrystallisData {
   /// Per-field metadata of this data class.
   Map<String, FieldMetadata> get metadata;
+
+  /// [Crystallise] configuration
+  @protected
+  Crystallise get config;
 
   /// Get the value of a field by name.
   /// To see what type it might be, check [metadata].
@@ -89,7 +94,6 @@ abstract mixin class CrystallisData {
 /// Mutable variant of [CrystallisData].
 /// Used on generated data classes when [Crystallise.mutable] is true.
 abstract mixin class MutableCrystallisData implements CrystallisData {
-
   @override
   void setFrom(CrystallisData other) {
     // skip this both this and other are of the same type
@@ -126,9 +130,6 @@ abstract mixin class MutableCrystallisData implements CrystallisData {
 /// Immutable variant of [CrystallisData].
 /// Used on generated data classes when [Crystallise.mutable] is false.
 abstract mixin class ImmutableCrystallisData implements CrystallisData {
-  @override
-  Crystallise get config => Crystallise(mutable: false);
-
   /// Always throws an [StateError] since immutable data classes
   /// cannot be modified.
   @override

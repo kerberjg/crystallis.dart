@@ -103,6 +103,29 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
           ' {',
     );
 
+    // config
+    buffer.writeln('  @override');
+    buffer.writeln('  Crystallise get config => const Crystallise(');
+    buffer.writeln(annotation
+        .revive()
+        .namedArguments
+        .map((k, v) => MapEntry(
+            k,
+            v.toSymbolValue() ??
+                v.toBoolValue() ??
+                v.toIntValue() ??
+                v.toDoubleValue() ??
+                v.toStringValue() ??
+                v.toListValue() ??
+                v.toMapValue() ??
+                v.toSetValue() ??
+                'null'))
+        .entries
+        .map((e) => '    ${e.key}: ${e.value},')
+        .join('\n'));
+    buffer.writeln('  );');
+    buffer.writeln();
+
     // constructor
     if (!mutable && element.constructors.any((c) => c.isConst)) {
       buffer.write('  const ');
