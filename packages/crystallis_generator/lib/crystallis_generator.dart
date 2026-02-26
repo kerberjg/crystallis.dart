@@ -164,13 +164,11 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
 
       // Add custom serializer if the field has an annotation that implements
       // the [SerializingAnnotation] interface.
-      final serializerChecker =
-          TypeChecker.typeNamed(Serializer, inPackage: 'crystallis');
+      final serializerChecker = TypeChecker.typeNamed(Serializer, inPackage: 'crystallis');
 
       final serializers = f.metadata.annotations.where((a) =>
           a.computeConstantValue()?.type != null &&
-          serializerChecker
-              .isAssignableFromType(a.computeConstantValue()!.type!));
+          serializerChecker.isAssignableFromType(a.computeConstantValue()!.type!));
 
       if (serializers.isNotEmpty) {
         /*
@@ -239,8 +237,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
       buffer.writeln('      throw ArgumentError.value(value, \'value\');');
       buffer.writeln('    }');
       buffer.writeln('    if (!meta.mutable) {');
-      buffer.writeln(
-          "      throw StateError('Cannot set field \"\$field\" on immutable field.');");
+      buffer.writeln("      throw StateError('Cannot set field \"\$field\" on immutable field.');");
       buffer.writeln('    }');
 
       buffer.writeln('    final errors = <ValidationException>[];');
