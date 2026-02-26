@@ -72,6 +72,24 @@ abstract mixin class CrystallisData {
     return result;
   }
 
+  /// Asserts that the field can be set with the given value,
+  /// and throws [List<ValidationException>] if any validators fail.
+  /// Throws [ArgumentError] if the field does not exist or if the value is of the wrong type.
+  void assertSet<T>(String field, T value) {
+    final meta = metadata[field];
+    if (meta == null) throw ArgumentError.value(field, 'field');
+    if (value == null || value.runtimeType != meta.type) {
+      throw TypeError();
+    }
+
+    final errors = <ValidationException>[];
+    for (final v in meta.validators) {
+      final err = v.validate(value);
+      if (err != null) errors.add(err);
+    }
+    if (errors.isNotEmpty) throw errors;
+  }
+
   /// Copies compatible fields from any [other] instance of [CrystallisData].
   /// Incompatible fields (missing or type-mismatched) are skipped.
   /// Null values are skipped.
@@ -97,11 +115,11 @@ abstract mixin class MutableCrystallisData implements CrystallisData {
   @override
   void setFrom(CrystallisData other) {
     // skip this both this and other are of the same type
-    final bool isSameType = this.runtimeType != other.runtimeType;
+    final bool isSameType = this.runtimeType == other.runtimeType;
 
     for (final name in metadata.keys) {
       if (!isSameType) {
-        final field = metadata[name]!;
+        final thisMeta = metadata[name]!;
         final otherMeta = other.metadata[name];
 
         /// TODO(kerberjg): dart-format-off is not working here...
@@ -109,9 +127,9 @@ abstract mixin class MutableCrystallisData implements CrystallisData {
         if ( //
             otherMeta == null // missing
                 ||
-                otherMeta.type != field.type // type-mismatched fields
+                otherMeta.type != thisMeta.type // type-mismatched fields
                 ||
-                !field.mutable // this field is immutable
+                !thisMeta.mutable // this field is immutable
             ) {
           continue;
         }

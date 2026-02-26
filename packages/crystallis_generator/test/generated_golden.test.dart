@@ -11,7 +11,7 @@ const Map<String, String> _testClasses = {
 library example;
 import 'package:crystallis/crystallis.dart';
 
-@CrystallisData(mutable: true)
+@Crystallise(mutable: true)
 class User {
   String name;
 
@@ -22,7 +22,7 @@ class User {
 library example;
 import 'package:crystallis/crystallis.dart';
 
-@CrystallisData(mutable: true)
+@Crystallise(mutable: true)
 class User {
   final String name;
   User({required this.name});
@@ -32,7 +32,7 @@ class User {
 library example;
 import 'package:crystallis/crystallis.dart';
 
-@CrystallisData(mutable: true)
+@Crystallise(mutable: true)
 class User {
   @NotEmpty()
   String name;
@@ -44,7 +44,7 @@ class User {
 library example;
 import 'package:crystallis/crystallis.dart';
 
-@CrystallisData(mutable: false)
+@Crystallise(mutable: false)
 class User {
   final String name;
   const User({required this.name});
@@ -54,7 +54,7 @@ class User {
 library example;
 import 'package:crystallis/crystallis.dart';
 
-@CrystallisData(mutable: false, copyWith: true, useDeepCopy: false)
+@Crystallise(mutable: false, copyWith: true, useDeepCopy: false)
 class User {
   final String name;
   final List<String> friends;
@@ -69,7 +69,7 @@ class User {
 library example;
 import 'package:crystallis/crystallis.dart';
 
-@CrystallisData(mutable: false, copyWith: true, useDeepCopy: true)
+@Crystallise(mutable: false, copyWith: true, useDeepCopy: true)
 class User {
   final String name;
   final List<String> friends;
@@ -84,7 +84,7 @@ class User {
 library example;
 import 'package:crystallis/crystallis.dart';
 
-@CrystallisData(mutable: false)
+@Crystallise(mutable: false)
 class User {
   String name;
   User({required this.name});
@@ -93,7 +93,7 @@ class User {
   'immutableWithValidation': r'''
 library example;
 import 'package:crystallis/crystallis.dart';
-@CrystallisData(mutable: false)
+@Crystallise(mutable: false)
 class User {
   @NotEmpty()
   final String name;
@@ -104,7 +104,7 @@ class User {
   'immutableWithToString': r'''
 library example;
 import 'package:crystallis/crystallis.dart';
-@CrystallisData(mutable: false, toString: true, equals: false, hashCode: false)
+@Crystallise(mutable: false, toString: true, equals: false, hashCode: false)
 class User {
   final String name;
   final int age;
@@ -118,7 +118,7 @@ class User {
   'immutableWithShallowEquals': r'''
 library example;
 import 'package:crystallis/crystallis.dart';
-@CrystallisData(mutable: false, toString: false, equals: true, hashCode: false, useDeepEquality: false)
+@Crystallise(mutable: false, toString: false, equals: true, hashCode: false, useDeepEquality: false)
 class Dot {
   final int color;
   final List<int> position;
@@ -131,7 +131,7 @@ class Dot {
   'immutableWithShallowHashCode': r'''
 library example;
 import 'package:crystallis/crystallis.dart';
-@CrystallisData(mutable: false, toString: false, equals: false, hashCode: true, useDeepEquality: false)
+@Crystallise(mutable: false, toString: false, equals: false, hashCode: true, useDeepEquality: false)
 class Dot {
   final int color;
   final List<int> position;
@@ -144,7 +144,7 @@ class Dot {
   'immutableWithDeepHashCode': r'''
 library example;
 import 'package:crystallis/crystallis.dart';
-@CrystallisData(mutable: false, toString: false, equals: false, hashCode: true, useDeepEquality: true)
+@Crystallise(mutable: false, toString: false, equals: false, hashCode: true, useDeepEquality: true)
 class Dot {
   final int color;
   final List<int> position;
@@ -157,7 +157,7 @@ class Dot {
   'immutableWithDeepEquals': r'''
 library example;
 import 'package:crystallis/crystallis.dart';
-@CrystallisData(mutable: false, toString: false, equals: true, hashCode: false, useDeepEquality: true)
+@Crystallise(mutable: false, toString: false, equals: true, hashCode: false, useDeepEquality: true)
 class Dot {
   final int color;
   final List<int> position;
@@ -170,7 +170,7 @@ class Dot {
   'immutableAlreadyHasToString': r'''
 library example;
 import 'package:crystallis/crystallis.dart';
-@CrystallisData(mutable: false, toString: true, equals: false, hashCode: false)
+@Crystallise(mutable: false, toString: true, equals: false, hashCode: false)
 class User {
   final String name;
   const User({required this.name});
@@ -184,7 +184,7 @@ class User {
   'immutableAlreadyHasEquals': r'''
 library example;
 import 'package:crystallis/crystallis.dart';
-@CrystallisData(mutable: false, toString: false, equals: true, hashCode: false)
+@Crystallise(mutable: false, toString: false, equals: true, hashCode: false)
 class User {
   final String name;
   const User({required this.name});
@@ -200,7 +200,7 @@ class User {
   'immutableAlreadyHasHashCode': r'''
 library example;
 import 'package:crystallis/crystallis.dart';
-@CrystallisData(mutable: false, toString: false, equals: false, hashCode: true)
+@Crystallise(mutable: false, toString: false, equals: false, hashCode: true)
 class User {
   final String name;
   const User({required this.name});
@@ -226,11 +226,10 @@ void main() {
 
       // Key expectations
       // TODO: use analyzer for those
-      expect(generated, contains('class UserData extends User with CrystallisMixin'));
+      expect(generated, contains('class UserData extends User with CrystallisData'));
       expect(generated, contains('Map<String, FieldMetadata> get metadata => _metadata'));
       expect(generated, contains("case 'name':"));
-      expect(generated, contains('final errors = <ValidationException>[];'));
-      expect(generated, contains('if (errors.isNotEmpty) throw errors;'));
+      expect(generated, contains('assertSet(field, value);'));
       expect(generated, contains("name = value as String;"));
     });
 
@@ -246,7 +245,7 @@ void main() {
       final generated = outputs[outPath];
       expect(generated, isNotNull, reason: 'Expected output at $outPath');
 
-      expect(generated, contains('class UserData extends User with CrystallisMixin'));
+      expect(generated, contains('class UserData extends User with CrystallisData'));
     });
 
     test('mutable default: rejects final fields', () async {
@@ -286,7 +285,7 @@ void main() {
       final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
       expect(
         generated,
-        contains('if (errors.isNotEmpty) throw errors;'),
+        contains('assertSet(field, value)'),
       );
     });
 

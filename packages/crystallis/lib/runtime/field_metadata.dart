@@ -31,4 +31,9 @@ class FieldMetadata {
     required this.validators,
     this.serializer = fallbackSerializer,
   });
+
+  @override
+  String toString() {
+    return 'FieldMetadata(name: $name, type: $type, nullable: $nullable, mutable: $mutable, validators: $validators, serializer: $serializer)';
+  }
 }

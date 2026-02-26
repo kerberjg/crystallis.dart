@@ -86,16 +86,19 @@ class _ValidateHarness2 with CrystallisData, MutableCrystallisData {
       name: 'x',
       type: String,
       validators: const [NotEmpty(), LengthRange(min: 2, max: 4)],
+      mutable: true,
     ),
     'y': FieldMetadata(
       name: 'y',
       type: int,
       validators: const [],
+      mutable: true,
     ),
     'z': FieldMetadata(
       name: 'z',
       type: int,
       validators: const [],
+      mutable: true,
     ),
   });
 
@@ -118,6 +121,8 @@ class _ValidateHarness2 with CrystallisData, MutableCrystallisData {
 
   @override
   void set<T>(String field, T value) {
+    assertSet(field, value);
+
     switch (field) {
       case 'x':
         _x = value as String;
@@ -173,10 +178,76 @@ class _ValidateHarness3 with CrystallisData, ImmutableCrystallisData {
         throw ArgumentError.value(field, 'field');
     }
   }
+}
+
+// same as [_ValidateHarness2], but with nullable fields to test that null values are skipped in setFrom
+class _ValidateHarness4 with CrystallisData, MutableCrystallisData {
+  _ValidateHarness4(this._x, this._y, this._z);
+
+  String? _x;
+  int? _y;
+  int? _z;
+
+  @override
+  Crystallise get config => const Crystallise(
+        mutable: true,
+      );
+
+  static final Map<String, FieldMetadata> _meta = Map.unmodifiable({
+    'x': FieldMetadata(
+      name: 'x',
+      type: String,
+      validators: const [NotEmpty(), LengthRange(min: 2, max: 4)],
+      mutable: true,
+    ),
+    'y': FieldMetadata(
+      name: 'y',
+      type: int,
+      validators: const [],
+      mutable: true,
+    ),
+    'z': FieldMetadata(
+      name: 'z',
+      type: int,
+      validators: const [],
+      mutable: true,
+    ),
+  });
+
+  @override
+  Map<String, FieldMetadata> get metadata => _meta;
+
+  @override
+  Object? get(String field) {
+    switch (field) {
+      case 'x':
+        return _x;
+      case 'y':
+        return _y;
+      case 'z':
+        return _z;
+      default:
+        throw ArgumentError.value(field, 'field');
+    }
+  }
 
   @override
   void set<T>(String field, T value) {
-    throw UnsupportedError('This class is immutable');
+    assertSet(field, value);
+
+    switch (field) {
+      case 'x':
+        _x = value as String?;
+        return;
+      case 'y':
+        _y = value as int?;
+        return;
+      case 'z':
+        _z = value as int?;
+        return;
+      default:
+        throw ArgumentError.value(field, 'field');
+    }
   }
 }
 
@@ -222,8 +293,8 @@ void main() {
   group('set', () {
     test('enforces type from metadata', () {
       final h = _ValidateHarness2('ok', 123, 456);
-      expect(() => h.set('x', 123), throwsA(isA<ArgumentError>()));
-      expect(() => h.set('y', 'not an int'), throwsA(isA<ArgumentError>()));
+      expect((() => h.set('x', 123)), throwsA(isA<TypeError>()));
+      expect(() => h.set('y', 'not an int'), throwsA(isA<TypeError>()));
     });
 
     test('collects all validation errors and throws List<ValidationException>', () {
@@ -246,11 +317,9 @@ void main() {
       expect(h.get('x'), 'ab');
     });
 
-    test('immutable set returns new instance when valid', () {
+    test('immutable set throws when called', () {
       const h = _ValidateHarness3('ok', 'also ok');
-      final h2 = h.set('x', 'ab') as _ValidateHarness3;
-      expect(h.get('x'), 'ok');
-      expect(h2.get('x'), 'ab');
+      expect(() => h.set('x', 'ab'), throwsA(isA<StateError>()));
     });
   });
 
@@ -273,7 +342,7 @@ void main() {
 
     test('skips null values', () {
       final h1 = _ValidateHarness2('h1', 123, 456);
-      final h2 = _ValidateHarness3('', 'also h2'); // 'x' is empty string, which fails NotEmpty validator
+      final h2 = _ValidateHarness4(null, 321, null);
 
       h1.setFrom(h2);
 

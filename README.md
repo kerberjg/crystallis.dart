@@ -57,7 +57,7 @@ _also see [`crystallis_codegen`](https://github.com/kerberjg/crystallis_generato
 
 1. Add `crystallis` to `dependencies` and `crystallis_generator` to `dev_dependencies` in your `pubspec.yaml`:
 
-2. Annotate your data classes with `@CrystallisData()` and define fields with validation annotations as needed.
+2. Annotate your data classes with `@Crystallise()` and define fields with validation annotations as needed.
   - TODO: Add example here
 
 3. Run the code generator:

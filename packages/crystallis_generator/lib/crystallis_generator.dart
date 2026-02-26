@@ -254,21 +254,8 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     buffer.writeln('  @override');
     buffer.writeln('  void set<T>(String field, T value) {');
     if (mutable) {
-      buffer.writeln('    final meta = metadata[field];');
-      buffer.writeln('    if (meta == null) throw ArgumentError.value(field, \'field\');');
-      buffer.writeln('    if (value == null || value.runtimeType != meta.type) {');
-      buffer.writeln('      throw ArgumentError.value(value, \'value\');');
-      buffer.writeln('    }');
-      buffer.writeln('    if (!meta.mutable) {');
-      buffer.writeln("      throw StateError('Cannot set field \"\$field\" on immutable field.');");
-      buffer.writeln('    }');
-
-      buffer.writeln('    final errors = <ValidationException>[];');
-      buffer.writeln('    for (final v in meta.validators) {');
-      buffer.writeln('      final err = v.validate(value);');
-      buffer.writeln('      if (err != null) errors.add(err);');
-      buffer.writeln('    }');
-      buffer.writeln('    if (errors.isNotEmpty) throw errors;');
+      buffer.writeln('    assertSet(field, value);');
+      buffer.writeln();
 
       buffer.writeln('    switch (field) {');
       for (final f in fields) {

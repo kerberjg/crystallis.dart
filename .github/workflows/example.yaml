@@ -9,6 +9,8 @@ on:
       - develop
       - 'release/**'
     paths:
+      - 'packages/**/*.dart'
+      - 'packages/**/*.yaml'
       - 'example/**/*.dart'
       - 'example/**/*.yaml'
       - .github/workflows/_base-dart.yaml
