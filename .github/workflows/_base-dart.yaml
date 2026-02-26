@@ -14,13 +14,14 @@ jobs:
     with:
       path: ${{ inputs.path }}
 
-  check-tests:
-    name: "check tests"
+  checks:
+    name: "checks"
     runs-on: ubuntu-latest
     needs: is-flutter
     if: needs.is-flutter.outputs.is_flutter == '0'
     outputs:
       do_tests: ${{ steps.check-tests.outputs.do_tests }}
+      do_codegen: ${{ steps.check-codegen.outputs.do_codegen }}
     steps:
       - uses: actions/checkout@v5
       # Skip if no test directory
@@ -34,6 +35,17 @@ jobs:
             do_tests=1
           fi
           echo "do_tests=$do_tests" >> $GITHUB_OUTPUT
+      # Skip if no build_runner dependency
+      - id: check-codegen
+        run: |
+          if [ -f "${{ inputs.path }}/pubspec.yaml" ] && grep -q "build_runner:" "${{ inputs.path }}/pubspec.yaml"; then
+            echo "build_runner dependency found, will run codegen.";
+            do_codegen=1
+          else
+            echo "No build_runner dependency found, skipping codegen.";
+            do_codegen=0
+          fi
+          echo "do_codegen=$do_codegen" >> $GITHUB_OUTPUT
 
   install:
     name: "install"
@@ -72,7 +84,7 @@ jobs:
   analyze:
     name: "analyze"
     runs-on: ubuntu-latest
-    needs: install
+    needs: [install, checks]
 
     steps:
       - uses: actions/checkout@v5
@@ -82,6 +94,11 @@ jobs:
 
       - name: "Get dependencies"
         run: dart pub get
+        working-directory: ${{ inputs.path }}
+
+      - name: "Run codegen"
+        if: needs.checks.outputs.do_codegen == 1
+        run: dart run build_runner build --delete-conflicting-outputs
         working-directory: ${{ inputs.path }}
 
       - name: Run analysis
@@ -92,8 +109,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: [install, check-tests]
-    if: needs.check-tests.outputs.do_tests == 1
+    needs: [install, checks]
+    if: needs.checks.outputs.do_tests == 1
 
     steps:
       - uses: actions/checkout@v5
@@ -103,6 +120,11 @@ jobs:
 
       - name: "Get dependencies"
         run: dart pub get
+        working-directory: ${{ inputs.path }}
+
+      - name: "Run codegen"
+        if: needs.checks.outputs.do_codegen == 1
+        run: dart run build_runner build --delete-conflicting-outputs
         working-directory: ${{ inputs.path }}
 
       - name: Run tests
