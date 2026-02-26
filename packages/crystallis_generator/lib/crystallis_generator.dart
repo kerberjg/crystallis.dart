@@ -19,6 +19,9 @@ Builder crystallisBuilder(BuilderOptions options) {
 class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
   static final _validatorChecker = TypeChecker.typeNamed(Validator, inPackage: 'crystallis');
 
+  // Keeps track of which libraries already have the imports written, to avoid duplicate imports when multiple classes are generated in the same library.
+  final Set<Uri> _librariesWithImports = {};
+
   @override
   String generateForAnnotatedElement(
     Element element,
@@ -83,10 +86,14 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     final buffer = StringBuffer();
 
     // imports
-    buffer.writeln("import 'package:crystallis/crystallis.dart';");
-    buffer.writeln("import 'package:crystallis/runtime/serializer.dart';");
-    buffer.writeln("import '${buildStep.inputId.uri}';");
-    buffer.writeln();
+    // (write only if they haven't been written to this file before)
+    if (!_librariesWithImports.contains(buildStep.inputId.uri)) {
+      _librariesWithImports.add(buildStep.inputId.uri);
+      buffer.writeln("import 'package:crystallis/crystallis.dart';");
+      buffer.writeln("import 'package:crystallis/runtime/serializer.dart';");
+      buffer.writeln("import '${buildStep.inputId.uri}';");
+      buffer.writeln();
+    }
 
     if (enableCopyWith) {
       buffer.writeln('enum _Sentinel { i }');

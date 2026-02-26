@@ -208,6 +208,22 @@ class User {
   @override
   int get hashCode => name.hashCode;
 }''',
+  //
+  'twoClassesPerFile': r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise(mutable: false)
+class User {
+  final String name;
+  const User({required this.name});
+}
+
+@Crystallise(mutable: false)
+class Product {
+  final String name;
+  const Product({required this.name});
+}''',
 };
 
 void main() {
@@ -417,6 +433,22 @@ void main() {
 
     final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
     expect(generated, contains('factory UserData.deserialize(Map<String, dynamic>'));
+  });
+
+  test("generates a file with multiple classes", () async {
+    final input = _testClasses['twoClassesPerFile']!;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/multiple.dart',
+      inputDart: input,
+    );
+
+    final output = outputs['$outputPackage|lib/multiple.data.g.dart']!;
+    // has both classes
+    expect(output, contains('class UserData extends User with CrystallisData'));
+    expect(output, contains('class ProductData extends Product with CrystallisData'));
+    // doesn't contain double imports
+    expect(output.split('\n'), containsOnce("import 'package:crystallis/crystallis.dart';"));
   });
 }
 
