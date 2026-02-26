@@ -9,6 +9,7 @@ analyzer:
     dead_code: warning
     public_member_api_docs: error
     unnecessary_this: ignore
+    prefer_adjacent_string_concatenation: ignore
 
 linter:
   rules:

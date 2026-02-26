@@ -16,7 +16,7 @@ Builder crystallisBuilder(BuilderOptions options) {
   );
 }
 
-class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
+class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
   static final _validatorChecker = TypeChecker.typeNamed(Validator, inPackage: 'crystallis');
 
   @override
@@ -27,7 +27,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
   ) {
     if (element is! ClassElement) {
       throw InvalidGenerationSourceError(
-        '@CrystallisData can only be applied to classes.',
+        '@Crystallise can only be applied to classes.',
         element: element,
       );
     }
@@ -324,7 +324,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
       buffer.write('    return $publicName(');
       for (final f in fields) {
         buffer.write(
-          '${f.name}: other.tryGet<${_castType(f.type)}>(${f.name}) ?? this.${f.name},',
+          '${f.name}: other.tryGet<${_castType(f.type)}>(\'${f.name}\') ?? this.${f.name},',
         );
       }
       buffer.writeln(');');
