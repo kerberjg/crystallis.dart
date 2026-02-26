@@ -2,7 +2,7 @@ import 'package:crystallis/runtime/serializer.dart';
 import 'package:test/test.dart';
 import 'package:crystallis/crystallis.dart';
 
-class _ValidateHarness with CrystallisData {
+class _ValidateHarness with CrystallisData, MutableCrystallisData {
   _ValidateHarness(this._x, this._y);
 
   String _x;
@@ -69,7 +69,7 @@ class _ValidateHarness with CrystallisData {
 }
 
 // Has similar fields to [_ValidateHarness], plus a
-class _ValidateHarness2 with CrystallisData {
+class _ValidateHarness2 with CrystallisData, MutableCrystallisData {
   _ValidateHarness2(this._x, this._y, this._z);
 
   String _x;
@@ -135,7 +135,7 @@ class _ValidateHarness2 with CrystallisData {
 }
 
 /// Immutable variant of [_ValidateHarness]
-class _ValidateHarness3 with CrystallisData {
+class _ValidateHarness3 with CrystallisData, ImmutableCrystallisData {
   const _ValidateHarness3(this._x, this._y);
 
   final String _x;
@@ -181,39 +181,111 @@ class _ValidateHarness3 with CrystallisData {
 }
 
 void main() {
-  test('validate() includes fields with zero validators', () {
-    final h = _ValidateHarness('ok');
+  group('validation', () {
+    test('validate() includes fields with zero validators', () {
+      final h = _ValidateHarness('ok', 'also ok');
 
-    final m = h.validate();
-    expect(m.keys.toSet(), {'x', 'y', 'custom'});
+      final m = h.validate();
+      expect(m.keys.toSet(), {'x', 'y', 'custom'});
 
-    expect(m['y'], isNotNull);
-    expect(m['y']!, isEmpty);
+      expect(m['y'], isNotNull);
+      expect(m['y']!, isEmpty);
+    });
+
+    test('validateField returns all failures for the field', () {
+      final h = _ValidateHarness('', '');
+
+      final errs = h.validateField('x');
+      expect(errs.length, 2);
+      expect(
+        errs.map((e) => e.validator.runtimeType).toSet(),
+        {NotEmpty, LengthRange},
+      );
+    });
+
+    test('toMap calls defaultSerializer by default', () {
+      final h = _ValidateHarness('value', 'also value');
+
+      final m = h.serialize();
+      expect(m['x'], equals('value'));
+      expect(m['y'], equals('also value'));
+    });
+
+    test('serialize uses custom serializer if provided', () {
+      final h = _ValidateHarness('value', 'also value');
+
+      final m = h.serialize();
+      expect(m['custom'], equals('serialized'));
+    });
   });
 
-  test('validateField returns all failures for the field', () {
-    final h = _ValidateHarness('');
+  group('set', () {
+    test('enforces type from metadata', () {
+      final h = _ValidateHarness2('ok', 123, 456);
+      expect(() => h.set('x', 123), throwsA(isA<ArgumentError>()));
+      expect(() => h.set('y', 'not an int'), throwsA(isA<ArgumentError>()));
+    });
 
-    final errs = h.validateField('x');
-    expect(errs.length, 2);
-    expect(
-      errs.map((e) => e.validator.runtimeType).toSet(),
-      {NotEmpty, LengthRange},
-    );
+    test('collects all validation errors and throws List<ValidationException>', () {
+      final h = _ValidateHarness2('ok', 123, 456);
+
+      try {
+        h.set('x', ''); // fails NotEmpty and LengthRange(min:2)
+        fail('Expected exception');
+      } catch (e) {
+        expect(e, isA<List<ValidationException>>());
+        final errs = e as List<ValidationException>;
+        expect(errs.length, 2);
+        expect(errs.map((x) => x.validator.runtimeType).toSet(), {NotEmpty, LengthRange});
+      }
+    });
+
+    test('mutable set mutates when valid', () {
+      final h = _ValidateHarness2('ok', 123, 456);
+      h.set('x', 'ab');
+      expect(h.get('x'), 'ab');
+    });
+
+    test('immutable set returns new instance when valid', () {
+      const h = _ValidateHarness3('ok', 'also ok');
+      final h2 = h.set('x', 'ab') as _ValidateHarness3;
+      expect(h.get('x'), 'ok');
+      expect(h2.get('x'), 'ab');
+    });
   });
 
-  test('toMap calls defaultSerializer by default', () {
-    final h = _ValidateHarness('value');
+  group('setFrom', () {
+    test('copies compatible fields and skips incompatible ones', () {
+      final h1 = _ValidateHarness2('h1', 123, 456);
+      final h2 = _ValidateHarness3('h2', 'also h2');
 
-    final m = h.serialize();
-    expect(m['x'], equals('value'));
-    expect(m['y'], equals(123));
-  });
+      h1.setFrom(h2);
 
-  test('serialize uses custom serializer if provided', () {
-    final h = _ValidateHarness('value');
+      // Compatible field 'x' is copied
+      expect(h1.get('x'), 'h2');
 
-    final m = h.serialize();
-    expect(m['custom'], equals('serialized'));
+      // Incompatible field 'y' is unchanged
+      expect(h1.get('y'), 123);
+
+      // Incompatible field 'z' is unchanged
+      expect(h1.get('z'), 456);
+    });
+
+    test('skips null values', () {
+      final h1 = _ValidateHarness2('h1', 123, 456);
+      final h2 = _ValidateHarness3('', 'also h2'); // 'x' is empty string, which fails NotEmpty validator
+
+      h1.setFrom(h2);
+
+      // Field 'x' is not updated because the value from h2 fails validation
+      expect(h1.get('x'), 'h1');
+    });
+
+    test('should throw if calling on immutable class', () {
+      final h1 = _ValidateHarness3('h1', 'also h1');
+      final h2 = _ValidateHarness2('h2', 123, 456);
+
+      expect(() => h1.setFrom(h2), throwsA(isA<StateError>()));
+    });
   });
 }

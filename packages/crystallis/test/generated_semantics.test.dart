@@ -149,11 +149,6 @@ class CustomData with CrystallisData, ImmutableCrystallisData {
         throw ArgumentError.value(field, 'field');
     }
   }
-
-  @override
-  void set<T>(String field, T value) {
-    throw UnimplementedError();
-  }
 }
 
 void main() {
@@ -184,13 +179,6 @@ void main() {
     final u = MutableUser(name: 'ok');
     u.set('name', 'ab');
     expect(u.name, 'ab');
-  });
-
-  test('immutable set returns new instance when valid', () {
-    const u = ImmutableUser(name: 'ok');
-    final u2 = u.set('name', 'ab');
-    expect(u.name, 'ok');
-    expect(u2.name, 'ab');
   });
 
   test('toMap uses custom serializer', () {
