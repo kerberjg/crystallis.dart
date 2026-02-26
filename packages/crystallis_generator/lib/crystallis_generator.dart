@@ -264,7 +264,9 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
 
           buffer.writeln();
           buffer.write('$prefix  ? (');
-          if (f.type.isNullable) buffer.write('this.${f.name} == null ? null : ');
+          if (f.type.isNullable) {
+            buffer.write('this.${f.name} == null ? null : ');
+          }
           buffer.writeln('$open...${f.type.isNullable ? '?' : ''}this.${f.name} $close)');
           buffer.write('$prefix  : (');
           if (f.type.isNullable) buffer.write('${f.name} == null ? null : ');
@@ -373,12 +375,13 @@ class CrystallisGenerator extends GeneratorForAnnotation<CrystallisData> {
   }
 
   /// Returns the type as a nullable type string.
+  // ignore: unused_element
   String _nullableType(DartType type) {
     final base = type.getDisplayString();
     if (type.nullabilitySuffix == NullabilitySuffix.none) {
       return '$base?';
     } else {
-      return '$base';
+      return base;
     }
   }
 

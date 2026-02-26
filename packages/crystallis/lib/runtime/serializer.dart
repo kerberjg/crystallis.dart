@@ -110,7 +110,7 @@ const supportedPrimitiveTypes = {int, double, String, bool, Null, List, Map};
 /// - [List]s (recursively deserializes elements)
 /// - [Map]s (recursively deserializes keys and values)
 /// - Other types result in an [ArgumentError]
-T? deserializeValue<T>(dynamic value) {
+T deserializeValue<T>(dynamic value) {
   if (!(supportedPrimitiveTypes.contains(value.runtimeType) //
       ||
       value is List ||
@@ -128,7 +128,7 @@ T? deserializeValue<T>(dynamic value) {
   }
 
   if (T == Null || value == null) {
-    return null;
+    return null as T;
   } else if (T == int) {
     return int.parse(value) as T;
   } else if (T == double) {
@@ -152,7 +152,7 @@ T? deserializeValue<T>(dynamic value) {
 
 /// Deserializes a [Map] by its respective key and value types
 Map<K, V?> deserializeMap<K, V>(Map<dynamic, dynamic> map) {
-  return map.map((k, v) => MapEntry(deserializeValue<K>(k)!, deserializeValue<V>(v)));
+  return map.map((k, v) => MapEntry(deserializeValue<K>(k), deserializeValue<V>(v)));
 }
 
 /// Serializes a [Map] to a JSON-compatible [Map<String, dynamic>]

@@ -28,6 +28,7 @@ class MutableUser with CrystallisMixin {
     }
   }
 
+  @override
   void set<T>(String field, T value) {
     final meta = metadata[field];
     if (meta == null) throw ArgumentError.value(field, 'field');
@@ -79,6 +80,7 @@ class ImmutableUser with CrystallisMixin {
     }
   }
 
+  @override
   ImmutableUser set<T>(String field, T value) {
     final meta = metadata[field];
     if (meta == null) throw ArgumentError.value(field, 'field');
