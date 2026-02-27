@@ -1,4 +1,5 @@
 import 'package:crystallis/crystallis.dart';
+import 'package:meta/meta_meta.dart';
 
 export 'validators/range.dart';
 export 'validators/not_empty.dart';
@@ -15,6 +16,9 @@ export 'package:collection/collection.dart' show DeepCollectionEquality;
 /// Annotation to mark a class for code generation by Crystallis.
 ///
 /// TODO(kerberjg): more docs
+@Target({
+  TargetKind.classType,
+})
 class Crystallise {
   /// Whether the generated data class is mutable.
   /// (default: true)

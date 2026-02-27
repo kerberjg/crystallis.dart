@@ -35,6 +35,20 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       );
     }
 
+    if (element.isSealed || element.isFinal) {
+      throw InvalidGenerationSourceError(
+        '@Crystallise cannot be applied to sealed/final classes.',
+        element: element,
+      );
+    }
+
+    if (element.isPrivate) {
+      throw InvalidGenerationSourceError(
+        '@Crystallise cannot be applied to private classes.',
+        element: element,
+      );
+    }
+
     const String crystallisSuffix = 'Data';
     final String className = element.name ?? "";
     final String publicName = className + crystallisSuffix;
