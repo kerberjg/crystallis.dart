@@ -159,23 +159,43 @@ void main() {
   group('deserialize', () {
     test('null -> null', () {
       expect(deserializeValue(null), isNull);
+      expect(deserializeValue<int?>(null), isNull);
+      expect(deserializeValue<double?>(null), isNull);
+      expect(deserializeValue<bool?>(null), isNull);
+      expect(deserializeValue<String?>(null), isNull);
     });
 
-    test('int -> int', () {
-      expect(deserializeValue<int>(42), equals(42));
+    test('String -> int', () {
+      expect(deserializeValue<int>('42'), equals(42));
     });
 
-    test('double -> double', () {
-      expect(deserializeValue<double>(3.14), equals(3.14));
+    test('String -> double', () {
+      expect(deserializeValue<double>('3.14'), equals(3.14));
     });
 
     test('String -> String', () {
       expect(deserializeValue<String>('hello'), equals('hello'));
     });
 
-    test('bool -> bool', () {
+    test('String -> bool', () {
+      expect(deserializeValue<bool>('true'), isTrue);
+      expect(deserializeValue<bool>('false'), isFalse);
+    });
+
+    test('type -> self', () {
+      expect(deserializeValue<int>(42), equals(42));
+      expect(deserializeValue<double>(3.14), equals(3.14));
+      expect(deserializeValue<String>('hello'), equals('hello'));
       expect(deserializeValue<bool>(true), isTrue);
       expect(deserializeValue<bool>(false), isFalse);
+    });
+
+    test('type -> nullable self', () {
+      expect(deserializeValue<int?>(''), isNull);
+      expect(deserializeValue<double?>(''), isNull);
+      expect(deserializeValue<String?>(''), equals('')); // ha!
+      expect(deserializeValue<bool?>(''), isNull);
+      expect(deserializeValue<bool?>(''), isNull);
     });
 
     test('List recursively deserializes elements', () {

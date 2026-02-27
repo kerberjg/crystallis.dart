@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
  */
 
 /// List of supported primitive types for serialization/deserialization
-const Set<Type> kSupportedPrimitiveTypes = {int, double, String, bool, Null, List, Map};
+const Set<Type> kSupportedPrimitiveTypes = {int, double, String, bool, Null};
 
 /// Basic serialization function. Handles:
 /// - Primitive types: [int], [double], [String], [bool]
@@ -61,12 +61,10 @@ T? fallbackDeserializeValue<T>(dynamic value) => _fallbackDeserializeValue<T>(va
 /// - [List]s (recursively deserializes elements)
 /// - [Map]s (recursively deserializes keys and values)
 /// - Other types result in an [ArgumentError]
-T? deserializeValue<T>(dynamic value) {
-  if (!(kSupportedPrimitiveTypes.contains(value.runtimeType) //
-      ||
-      value is List ||
-      value is Map ||
-      value is Set)) {
+T deserializeValue<T>(dynamic value) {
+  if (!(kSupportedPrimitiveTypes.contains(value.runtimeType) || //
+          (value is List || value is Map || value is Set) //
+      )) {
     throw ArgumentError.value(
       value.runtimeType,
       'type',
@@ -79,19 +77,36 @@ T? deserializeValue<T>(dynamic value) {
   }
 
   if (T == Null || value == null) {
-    return null;
-  } else if (T == int) {
-    return int.parse(value) as T;
-  } else if (T == double) {
-    return double.parse(value) as T;
-  } else if (T == String) {
-    return value.toString() as T;
-  } else if (T == bool) {
-    return bool.parse(value) as T;
-  } else if (T == List) {
-    return (value as List).map(_fallbackDeserializeValue).toList() as T;
-  } else if (T == Map) {
-    return (value as Map).map((k, v) => MapEntry(_fallbackDeserializeValue(k)!, _fallbackDeserializeValue(v))) as T;
+    return null as T;
+  } else {
+    // deserialize nullables
+    if (isNullable<T>()) {
+      if (isNullableSelf<int, T>()) {
+        return int.tryParse(value) as T;
+      } else if (isNullableSelf<double, T>()) {
+        return double.tryParse(value) as T;
+      } else if (isNullableSelf<String, T>()) {
+        return value.toString() as T;
+      } else if (isNullableSelf<bool, T>()) {
+        return bool.tryParse(value) as T;
+      }
+    }
+    // deserialize non-nullables
+    else {
+      if (T == int) {
+        return int.parse(value) as T;
+      } else if (T == double) {
+        return double.parse(value) as T;
+      } else if (T == String) {
+        return value.toString() as T;
+      } else if (T == bool) {
+        return bool.parse(value) as T;
+      } else if (T == List) {
+        return (value as List).map(_fallbackDeserializeValue).toList() as T;
+      } else if (T == Map) {
+        return (value as Map).map((k, v) => MapEntry(_fallbackDeserializeValue(k)!, _fallbackDeserializeValue(v))) as T;
+      }
+    }
   }
 
   throw ArgumentError.value(
@@ -100,6 +115,14 @@ T? deserializeValue<T>(dynamic value) {
     'Cannot deserialize value of type ${value.runtimeType} to type $T',
   );
 }
+
+/// Returns whether the given type [T] is a nullable of the given non-nullable type [C].
+@pragma("vm:always-consider-inlining")
+bool isNullableSelf<C, T>() => isNullable<T>() && <C?>[] is List<T>;
+
+/// Returns whether the given type [T] is a nullable of the given non-nullable type [C].
+@pragma("vm:always-consider-inlining")
+bool isNullable<T>() => null is T;
 
 /// Deserializes a [Map] by its respective key and value types
 Map<K, V?> deserializeMap<K, V>(Map<dynamic, dynamic> map) {
