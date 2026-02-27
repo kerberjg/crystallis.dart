@@ -1,3 +1,22 @@
+# 0.0.4
+
+- **🛑 Breaking**: Renamed `@CrystallisData` to `@Crystallise`, and `CrystallisMixin` to `CrystallisData`
+- Introduced `MutableCrystallisData` and `ImmutableCrystallisData` for better code path splitting
+- **🛑 Breaking**: Renamed `copyFrom` to `setFrom` to better reflect its purpose
+- **🛑 Breaking**: Implemented a (new) `copyFrom`: it creates a new instance (like `copyWith`) by copying compatible fields from another instance (like `setFrom`)
+- **✨ New!**  `copyWith` now supports explicit/implicit null distinction, allowing nullable fields to be set to null via `copyWith` without ambiguity (#6, #7, thanks @FMorschel 🩵!)
+- **✨ New!**  Implemented `tryGet`: a safe alternative to `get` that returns `null` instead of throwing if the field doesn't exist or is of an incompatible type
+- **🔧 Fixed** support for multiple data classes per file (#5)
+- Improved annotation constraints and error messages for a better developer experience
+- Fixed nullable fields not being supported (#2)
+- Refactored serialization
+    - Fixed JSON incompatibility with some non-String keys
+    - Improved testing
+    - Improved map deserialization (maintains original key/value types instead of (now broken) heuristics)
+    - **🛑 Breaking**: Renamed `@Serializer` to `@Serializable` and added a `Serializer` base abstract class class for better extensibility
+    - Properly implemented codegen for custom serializers via field annotations
+
+
 # 0.0.3
 
 - Implemented serialization!
