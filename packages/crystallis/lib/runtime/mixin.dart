@@ -4,6 +4,9 @@ import 'package:meta/meta.dart';
 import 'field_metadata.dart';
 import 'validator.dart';
 
+/// Sentinel value used to represent true nullability in [copyWith] parameters.
+enum _NullableSentinel { i }
+
 /// Mixin class that provides validation functionality for data classes.
 /// Applied to classes generated with [Crystallise].
 abstract mixin class CrystallisData {
@@ -13,6 +16,11 @@ abstract mixin class CrystallisData {
   /// [Crystallise] configuration
   @protected
   Crystallise get config;
+
+  /// Nullable value sentinel used in generated [copyWith] methods.
+  @protected
+  // ignore: library_private_types_in_public_api
+  static const _NullableSentinel nullValue = _NullableSentinel.i;
 
   /// Get the value of a field by name.
   /// To see what type it might be, check [metadata].

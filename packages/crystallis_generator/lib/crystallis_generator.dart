@@ -109,11 +109,6 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       buffer.writeln();
     }
 
-    if (enableCopyWith) {
-      buffer.writeln('enum _Sentinel { i }');
-      buffer.writeln();
-    }
-
     // class declaration
     if (!mutable) {
       buffer.writeln("@immutable");
@@ -323,12 +318,12 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       var objectQuestionType = element.library.typeProvider.objectQuestionType;
       var objectType = element.library.typeProvider.objectType;
       for (final f in fields) {
-        buffer.write('${f.type.isNullable ? objectQuestionType : objectType} ${f.name} = _Sentinel.i,');
+        buffer.write('${f.type.isNullable ? objectQuestionType : objectType} ${f.name} = CrystallisData.nullValue,');
       }
       buffer.writeln('}) => $publicName(');
       for (final f in fields) {
         var prefix = ' ' * 6;
-        buffer.write('$prefix${f.name}: ${f.name} == _Sentinel.i');
+        buffer.write('$prefix${f.name}: ${f.name} == CrystallisData.nullValue');
         if (useDeepCopy && (f.type.isDartCoreList || f.type.isDartCoreSet || f.type.isDartCoreMap)) {
           final bool curly = !f.type.isDartCoreList;
           String open = curly ? '{' : '[';

@@ -398,8 +398,8 @@ void main() {
     final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
     expect(generated, contains('UserData Function({'));
     expect(generated, contains('}) get copyWith =>'));
-    expect(generated, contains('Object friends = _Sentinel.i'));
-    expect(generated, contains('friends: friends == _Sentinel.i'));
+    expect(generated, contains('Object friends = CrystallisData.nullValue'));
+    expect(generated, contains('friends: friends == CrystallisData.nullValue'));
     expect(generated, contains('this.friends'));
     expect(generated, isNot(contains('...this.friends')));
     expect(generated, contains('friends as List<String>'));
@@ -417,8 +417,8 @@ void main() {
     final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
     expect(generated, contains('UserData Function({'));
     expect(generated, contains('}) get copyWith =>'));
-    expect(generated, contains('Object friends = _Sentinel.i'));
-    expect(generated, contains('friends: friends == _Sentinel.i'));
+    expect(generated, contains('Object friends = CrystallisData.nullValue'));
+    expect(generated, contains('friends: friends == CrystallisData.nullValue'));
     expect(generated, contains('[...this.friends]'));
     expect(generated, contains('[...friends as List<String>]'));
   });
