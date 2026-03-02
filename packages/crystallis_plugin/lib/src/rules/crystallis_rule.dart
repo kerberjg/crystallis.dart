@@ -4,6 +4,29 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:crystallis_plugin/src/rules/crystallis_code.dart';
 import 'package:meta/meta.dart';
 
+/// An enumeration of all the rules that the Crystallis plugin provides. Each rule has at least one corresponding
+/// [CrystallisLintCode] that will be reported when the rule is violated.
+enum CrystallisRuleType {
+  /// {@macro mutable_rule}
+  mutable(
+    name: 'Crystallis Mutability Rule',
+    description:
+        'This rule checks for mutable fields in classes annotated with @Crystallis to make sure they align with '
+        "whatever 'mutable' value they were defined.",
+  );
+
+  const CrystallisRuleType({required this.name, required this.description});
+
+  /// A human-readable name for the rule, used in the insights page and similar.
+  final String name;
+
+  /// A human-readable description of the rule that is being violated, used in the insights page and similar.
+  final String description;
+
+  @override
+  String toString() => name;
+}
+
 /// {@template crystallis_rule}
 /// A base class for all analysis rules provided by the Crystallis plugin. Each rule checks for a specific violation of
 /// the Crystallis annotations and provides a corresponding diagnostic code.
@@ -28,7 +51,7 @@ abstract class CrystallisRule extends AnalysisRule {
 /// {@endtemplate}
 abstract class MutltiCrystallisRule extends MultiAnalysisRule {
   /// {@macro multi_crystallis_rule}
-  MutltiCrystallisRule({required super.name, required super.description});
+  MutltiCrystallisRule(CrystallisRuleType ruleType) : super(name: ruleType.name, description: ruleType.description);
 
   @override
   List<CrystallisLintCode> get diagnosticCodes;

@@ -16,15 +16,7 @@ import 'package:crystallis_plugin/src/utils/annotation.dart';
 /// {@endtemplate}
 class MutableRule extends MutltiCrystallisRule {
   /// {@macro mutable_rule}
-  MutableRule() : super(name: baseName, description: baseDescription);
-
-  /// The base name for the rule, used in diagnostics.
-  static const baseName = 'crystallis_mutable';
-
-  /// A human-readable description of the rule that is being violated.
-  static const baseDescription =
-      'This rule checks for mutable fields in classes annotated with @Crystallis to make sure they align with '
-      "whatever 'mutable' value they were defined.";
+  MutableRule() : super(.mutable);
 
   @override
   final List<CrystallisLintCode> diagnosticCodes = [
