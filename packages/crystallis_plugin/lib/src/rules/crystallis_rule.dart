@@ -21,3 +21,19 @@ abstract class CrystallisRule extends AnalysisRule {
   @mustBeOverridden
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context);
 }
+
+/// {@template multi_crystallis_rule}
+/// A base class for analysis rules that need to produce multiple diagnostics. This is useful for rules that need to
+/// check different but related things.
+/// {@endtemplate}
+abstract class MutltiCrystallisRule extends MultiAnalysisRule {
+  /// {@macro multi_crystallis_rule}
+  MutltiCrystallisRule({required super.name, required super.description});
+
+  @override
+  List<CrystallisLintCode> get diagnosticCodes;
+
+  @override
+  @mustBeOverridden
+  void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context);
+}
