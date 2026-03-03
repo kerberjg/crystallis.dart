@@ -25,6 +25,7 @@ jobs:
         package:
           - crystallis
           - crystallis_generator
+          - crystallis_plugin
     with:
       path: 'packages/${{ matrix.package }}'
 
@@ -35,6 +36,7 @@ jobs:
         package:
           - crystallis
           - crystallis_generator
+          - crystallis_plugin
     # Needs dart job to complete successfully, only skipped if it is failed, but not skipped
     needs: [dart]
     if: ${{ always() && (needs.dart.result == 'success') && (needs.dart.result != 'failure') && ((github.event_name == 'release' && github.event.action == 'published') || github.ref == 'refs/heads/main') }}
