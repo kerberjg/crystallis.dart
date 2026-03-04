@@ -5,8 +5,8 @@ import 'package:crystallis/crystallis.dart';
 class MutableUser with CrystallisData, MutableCrystallisData {
   @override
   Crystallise get config => const Crystallise(
-        mutable: true,
-      );
+    mutable: true,
+  );
 
   MutableUser({required this.name});
 
@@ -62,8 +62,8 @@ class MutableUser with CrystallisData, MutableCrystallisData {
 class ImmutableUser with CrystallisData, ImmutableCrystallisData {
   @override
   Crystallise get config => const Crystallise(
-        mutable: false,
-      );
+    mutable: false,
+  );
 
   const ImmutableUser({required this.name});
 
@@ -118,8 +118,8 @@ class ImmutableUser with CrystallisData, ImmutableCrystallisData {
 class CustomData with CrystallisData, ImmutableCrystallisData {
   @override
   Crystallise get config => const Crystallise(
-        mutable: false,
-      );
+    mutable: false,
+  );
 
   CustomData(this.value);
 

@@ -122,23 +122,28 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     // config
     buffer.writeln('  @override');
     buffer.writeln('  Crystallise get config => const Crystallise(');
-    buffer.writeln(annotation
-        .revive()
-        .namedArguments
-        .map((k, v) => MapEntry(
-            k,
-            v.toSymbolValue() ??
-                v.toBoolValue() ??
-                v.toIntValue() ??
-                v.toDoubleValue() ??
-                v.toStringValue() ??
-                v.toListValue() ??
-                v.toMapValue() ??
-                v.toSetValue() ??
-                'null'))
-        .entries
-        .map((e) => '    ${e.key}: ${e.value},')
-        .join('\n'));
+    buffer.writeln(
+      annotation
+          .revive()
+          .namedArguments
+          .map(
+            (k, v) => MapEntry(
+              k,
+              v.toSymbolValue() ??
+                  v.toBoolValue() ??
+                  v.toIntValue() ??
+                  v.toDoubleValue() ??
+                  v.toStringValue() ??
+                  v.toListValue() ??
+                  v.toMapValue() ??
+                  v.toSetValue() ??
+                  'null',
+            ),
+          )
+          .entries
+          .map((e) => '    ${e.key}: ${e.value},')
+          .join('\n'),
+    );
     buffer.writeln('  );');
     buffer.writeln();
 
@@ -205,9 +210,11 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       // the [SerializingAnnotation] interface.
       final serializerChecker = TypeChecker.typeNamed(Serializer, inPackage: 'crystallis');
 
-      final serializers = f.metadata.annotations.where((a) =>
-          a.computeConstantValue()?.type != null &&
-          serializerChecker.isAssignableFromType(a.computeConstantValue()!.type!));
+      final serializers = f.metadata.annotations.where(
+        (a) =>
+            a.computeConstantValue()?.type != null &&
+            serializerChecker.isAssignableFromType(a.computeConstantValue()!.type!),
+      );
 
       if (serializers.isNotEmpty) {
         /*

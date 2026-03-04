@@ -32,7 +32,7 @@ void main() {
           'x',
           true,
           null,
-          [2, 'y']
+          [2, 'y'],
         ];
         final output = serializeValue(input);
         expect(
@@ -43,7 +43,7 @@ void main() {
             'x',
             true,
             null,
-            [2, 'y']
+            [2, 'y'],
           ]),
         );
       });
@@ -55,7 +55,7 @@ void main() {
           'c': null,
           'd': true,
           'nested': <dynamic, dynamic>{
-            'k': [1, 'x', null]
+            'k': [1, 'x', null],
           },
         };
 
@@ -69,7 +69,7 @@ void main() {
             'c': null,
             'd': true,
             'nested': <dynamic, dynamic>{
-              'k': [1, 'x', null]
+              'k': [1, 'x', null],
             },
           }),
         );
@@ -108,7 +108,7 @@ void main() {
         'x',
         true,
         null,
-        [2, 'y']
+        [2, 'y'],
       ];
       final output = serializeValue(input);
       expect(
@@ -119,7 +119,7 @@ void main() {
           'x',
           true,
           null,
-          [2, 'y']
+          [2, 'y'],
         ]),
       );
     });
@@ -131,7 +131,7 @@ void main() {
         'c': null,
         'd': true,
         'nested': <dynamic, dynamic>{
-          'k': [1, 'x', null]
+          'k': [1, 'x', null],
         },
       };
 
@@ -145,7 +145,7 @@ void main() {
           'c': null,
           'd': true,
           'nested': <dynamic, dynamic>{
-            'k': [1, 'x', null]
+            'k': [1, 'x', null],
           },
         }),
       );
@@ -205,7 +205,7 @@ void main() {
         'x',
         true,
         null,
-        [2, 'y']
+        [2, 'y'],
       ];
       final output = deserializeValue<List>(input);
       expect(
@@ -216,7 +216,7 @@ void main() {
           'x',
           true,
           null,
-          [2, 'y']
+          [2, 'y'],
         ]),
       );
     });
@@ -227,7 +227,7 @@ void main() {
         2: 'b',
         true: null,
         'nested': <dynamic, dynamic>{
-          'k': [1, 'x', null]
+          'k': [1, 'x', null],
         },
       };
 
@@ -240,7 +240,7 @@ void main() {
           2: 'b',
           true: null,
           'nested': <dynamic, dynamic>{
-            'k': [1, 'x', null]
+            'k': [1, 'x', null],
           },
         }),
       );

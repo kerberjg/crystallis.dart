@@ -16,17 +16,17 @@ const Set<Type> kSupportedPrimitiveTypes = {int, double, String, bool, Null};
 /// - [CrystallisData] objects (calls their [serialize] method)
 /// - Other types result in an [ArgumentError]
 dynamic serializeValue(dynamic value) => switch (value) {
-      null => null,
-      int() || double() || String() || bool() => value,
-      List() => value.map(serializeValue).toList(),
-      Map() => value.map((k, v) => MapEntry(k.toString(), serializeValue(v))),
-      CrystallisData() => value.serialize(),
-      _ => throw ArgumentError.value(
-          value,
-          'value',
-          'Cannot serialize value of type ${value.runtimeType}',
-        ),
-    };
+  null => null,
+  int() || double() || String() || bool() => value,
+  List() => value.map(serializeValue).toList(),
+  Map() => value.map((k, v) => MapEntry(k.toString(), serializeValue(v))),
+  CrystallisData() => value.serialize(),
+  _ => throw ArgumentError.value(
+    value,
+    'value',
+    'Cannot serialize value of type ${value.runtimeType}',
+  ),
+};
 
 /// Serializes a [Map] to a JSON-compatible [Map<String, dynamic>]
 /// by converting keys to strings and recursively serializing values
@@ -40,16 +40,16 @@ Map<String, V?> serializeMap<V>(Map<dynamic, V> map) => //
 /// - [Map]s (recursively deserializes keys and values)
 /// - Other types result in an [ArgumentError]
 T? _fallbackDeserializeValue<T>(dynamic value) => switch (value) {
-      null => null,
-      int() || double() || String() || bool() => value as T,
-      List() => value.map(_fallbackDeserializeValue).toList() as T,
-      Map() => value.map((k, v) => MapEntry(k.toString(), _fallbackDeserializeValue(v))) as T,
-      _ => throw ArgumentError.value(
-          value,
-          'value',
-          'Cannot deserialize value of type ${value.runtimeType} to type $T',
-        ),
-    };
+  null => null,
+  int() || double() || String() || bool() => value as T,
+  List() => value.map(_fallbackDeserializeValue).toList() as T,
+  Map() => value.map((k, v) => MapEntry(k.toString(), _fallbackDeserializeValue(v))) as T,
+  _ => throw ArgumentError.value(
+    value,
+    'value',
+    'Cannot deserialize value of type ${value.runtimeType} to type $T',
+  ),
+};
 
 /// test-only alias for [_fallbackDeserializeValue]
 @visibleForTesting
@@ -63,7 +63,7 @@ T? fallbackDeserializeValue<T>(dynamic value) => _fallbackDeserializeValue<T>(va
 /// - Other types result in an [ArgumentError]
 T deserializeValue<T>(dynamic value) {
   if (!(kSupportedPrimitiveTypes.contains(value.runtimeType) || //
-          (value is List || value is Map || value is Set) //
+      (value is List || value is Map || value is Set) //
       )) {
     throw ArgumentError.value(
       value.runtimeType,
@@ -127,12 +127,14 @@ bool isNullable<T>() => null is T;
 /// Deserializes a [Map] by its respective key and value types
 Map<K, V?> deserializeMap<K, V>(Map<dynamic, dynamic> map) {
   // ignore: null_check_on_nullable_type_parameter
-  return map.map((k, v) => MapEntry(
-        k is String
-            ? deserializeValue<K>(k)!
-            : throw ArgumentError.value(k, 'key', 'Map keys must be strings for deserialization to type $K'),
-        deserializeValue<V>(v),
-      ));
+  return map.map(
+    (k, v) => MapEntry(
+      k is String
+          ? deserializeValue<K>(k)!
+          : throw ArgumentError.value(k, 'key', 'Map keys must be strings for deserialization to type $K'),
+      deserializeValue<V>(v),
+    ),
+  );
 }
 
 /*
@@ -174,8 +176,8 @@ class Serializable<I, O> extends Serializer<I, O> {
   const Serializable({
     required O Function(I value) serialize,
     required I Function(O value) deserialize,
-  })  : _serialize = serialize,
-        _deserialize = deserialize;
+  }) : _serialize = serialize,
+       _deserialize = deserialize;
 
   @override
   O serialize(I value) => _serialize(value);
