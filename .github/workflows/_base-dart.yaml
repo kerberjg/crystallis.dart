@@ -6,7 +6,7 @@ on:
       path:
         required: false
         type: string
-        default: '.'
+        default: "."
 
 jobs:
   is-flutter:
@@ -50,7 +50,7 @@ jobs:
   install:
     name: "install"
     runs-on: ubuntu-latest
-    needs: [ is-flutter ]
+    needs: [is-flutter]
     if: needs.is-flutter.outputs.is_flutter == '0'
     steps:
       - uses: actions/checkout@v5
@@ -128,5 +128,5 @@ jobs:
         working-directory: ${{ inputs.path }}
 
       - name: Run tests
-        run: dart test --reporter=expanded test/*.dart
+        run: dart test --reporter=expanded ./test/
         working-directory: ${{ inputs.path }}
