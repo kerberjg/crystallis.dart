@@ -14,10 +14,10 @@ class Range extends Validator {
   /// [Validator] that checks if a [num] value falls within a specified range.
   /// Either [min], [max], or both must be provided.
   const Range({this.min, this.max, this.inclusive = true})
-      : assert(
-          min != null || max != null,
-          'At least one of min or max must be provided.',
-        );
+    : assert(
+        min != null || max != null,
+        'At least one of min or max must be provided.',
+      );
 
   @override
   ValidationException? validate(Object? value) {

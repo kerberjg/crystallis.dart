@@ -133,12 +133,16 @@ abstract mixin class MutableCrystallisData implements CrystallisData {
         /// TODO(kerberjg): dart-format-off is not working here...
         // skip when...
         if ( //
-            otherMeta == null // missing
+        otherMeta ==
+                null // missing
                 ||
-                otherMeta.type != thisMeta.type // type-mismatched fields
-                ||
-                !thisMeta.mutable // this field is immutable
-            ) {
+            otherMeta.type !=
+                thisMeta
+                    .type // type-mismatched fields
+                    ||
+            !thisMeta
+                .mutable // this field is immutable
+                ) {
           continue;
         }
       }

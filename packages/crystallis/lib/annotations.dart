@@ -83,10 +83,10 @@ class Crystallise {
 
     /// (see [config])
     Crystallis? config,
-  })  : enableToString = toString,
-        enableEquals = equals,
-        enableHashCode = hashCode,
-        enableCopyWith = copyWith,
-        enableDeserialize = deserialize,
-        _config = config;
+  }) : enableToString = toString,
+       enableEquals = equals,
+       enableHashCode = hashCode,
+       enableCopyWith = copyWith,
+       enableDeserialize = deserialize,
+       _config = config;
 }

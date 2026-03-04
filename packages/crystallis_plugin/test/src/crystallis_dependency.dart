@@ -7,7 +7,7 @@ import 'package:analyzer_testing/analysis_rule/analysis_rule.dart';
 mixin CrystallisDependency on AnalysisRuleTest {
   static final _regExp = RegExp('/');
 
-  Future<PackageBuilder> addCrystallisDependency() async{
+  Future<PackageBuilder> addCrystallisDependency() async {
     var directory = await _getCrystallisPackageDirectory();
     var resourceProvider = PhysicalResourceProvider.INSTANCE;
     var crystallisLibSource = resourceProvider.getFolder(

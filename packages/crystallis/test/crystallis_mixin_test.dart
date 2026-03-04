@@ -10,8 +10,8 @@ class _ValidateHarness with CrystallisData, MutableCrystallisData {
 
   @override
   Crystallise get config => const Crystallise(
-        mutable: false,
-      );
+    mutable: false,
+  );
 
   static final Map<String, FieldMetadata> _meta = Map.unmodifiable({
     'x': FieldMetadata(
@@ -78,8 +78,8 @@ class _ValidateHarness2 with CrystallisData, MutableCrystallisData {
 
   @override
   Crystallise get config => const Crystallise(
-        mutable: true,
-      );
+    mutable: true,
+  );
 
   static final Map<String, FieldMetadata> _meta = Map.unmodifiable({
     'x': FieldMetadata(
@@ -148,8 +148,8 @@ class _ValidateHarness3 with CrystallisData, ImmutableCrystallisData {
 
   @override
   Crystallise get config => const Crystallise(
-        mutable: false,
-      );
+    mutable: false,
+  );
 
   static final Map<String, FieldMetadata> _meta = Map.unmodifiable({
     'x': FieldMetadata(
@@ -190,8 +190,8 @@ class _ValidateHarness4 with CrystallisData, MutableCrystallisData {
 
   @override
   Crystallise get config => const Crystallise(
-        mutable: true,
-      );
+    mutable: true,
+  );
 
   static final Map<String, FieldMetadata> _meta = Map.unmodifiable({
     'x': FieldMetadata(
