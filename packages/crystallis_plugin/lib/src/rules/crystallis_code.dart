@@ -3,75 +3,75 @@ import 'dart:math';
 import 'package:analyzer/error/error.dart';
 import 'package:crystallis_plugin/src/rules/crystallis_rule.dart';
 
-/// An enumeration of all the rules that the Crystallis plugin provides. Each rule has a corresponding
-/// [CrystallisLintCode] that contains the details of the rule.
+/// An enumeration of all the specfic codes that the crystallis_plugin can report on rules. This is a wrapper on
+/// [CrystalliseLintCode] so we can have them constants.
 ///
 /// This is needed because the server internally checks for the same instance of `LintCode`s, so we must ensure these
 /// are constants and not created on the fly.
-enum CrystallisCode {
-  /// Checks whether classes annotated with @Crystallis(mutable: false) have any non-final fields.
+enum CrystalliseCode {
+  /// Checks whether classes annotated with @Crystallise(mutable: false) have any non-final fields.
   mutableField(
-    CrystallisLintCode(
-      ruleType: CrystallisRuleType.mutable,
+    CrystalliseLintCode(
+      ruleType: CrystallisRuleType.mutability,
       uniqueName: 'crystallis_mutable_field',
-      problemMessage: 'Classes annotated with @Crystallis(mutable: false) should not have non-final fields.',
+      problemMessage: 'Classes annotated with @Crystallise(mutable: false) should not have non-final fields.',
       correctionMessage:
           "Consider making the field final or changing the value for 'mutable' in @Crystallise annotation.",
     ),
   ),
 
-  /// Checks whether classes annotated with @Crystallis(mutable: true) have any final fields.
+  /// Checks whether classes annotated with @Crystallise(mutable: true) have any final fields.
   immutableField(
-    CrystallisLintCode(
-      ruleType: CrystallisRuleType.mutable,
+    CrystalliseLintCode(
+      ruleType: CrystallisRuleType.mutability,
       uniqueName: 'crystallis_immutable_field',
-      problemMessage: 'Classes annotated with @Crystallis(mutable: true) should not have final fields.',
+      problemMessage: 'Classes annotated with @Crystallise(mutable: true) should not have final fields.',
       correctionMessage:
           "Consider making the field non-final or changing the value for 'mutable' in @Crystallise annotation.",
     ),
   ),
 
-  /// Checks whether classes annotated with @Crystallis(mutable: false) have any non-final fields.
+  /// Checks whether classes annotated with @Crystallise(mutable: false) have any non-final fields.
   constConstructor(
-    CrystallisLintCode(
-      ruleType: CrystallisRuleType.mutable,
+    CrystalliseLintCode(
+      ruleType: CrystallisRuleType.mutability,
       uniqueName: 'crystallis_const_constructor',
       problemMessage:
-          "Classes annotated with @Crystallis(mutable: true) should not have a 'const' default constructor.",
+          "Classes annotated with @Crystallise(mutable: true) should not have a 'const' default constructor.",
       correctionMessage:
           "Consider removing 'const' from the constructor declaration or changing the value for 'mutable' in "
           '@Crystallise annotation.',
     ),
   ),
 
-  /// Checks whether classes annotated with @Crystallis(mutable: true) have any final fields.
+  /// Checks whether classes annotated with @Crystallise(mutable: true) have any final fields.
   nonConstConstructor(
-    CrystallisLintCode(
-      ruleType: CrystallisRuleType.mutable,
+    CrystalliseLintCode(
+      ruleType: CrystallisRuleType.mutability,
       uniqueName: 'crystallis_non_const_constructor',
       problemMessage:
-          "Classes annotated with @Crystallis(mutable: false) should not have a non-'const' default constructor.",
+          "Classes annotated with @Crystallise(mutable: false) should not have a non-'const' default constructor.",
       correctionMessage:
           "Consider making the constructor 'const' or changing the value for 'mutable' in @Crystallise annotation.",
     ),
   );
 
-  const CrystallisCode(this.code);
+  const CrystalliseCode(this.code);
 
-  /// The [CrystallisLintCode] associated with this rule. This contains the details of the rule, such as the name,
+  /// The [CrystalliseLintCode] associated with this rule. This contains the details of the rule, such as the name,
   /// description, problem message, and correction message.
-  final CrystallisLintCode code;
+  final CrystalliseLintCode code;
 }
 
 /// {@template crystallis_code}
 /// Code for diagnostics produced by the Crystallis plugin.
 /// {@endtemplate}
-class CrystallisLintCode implements LintCode {
+class CrystalliseLintCode implements LintCode {
   /// Regular expression for identifying positional arguments in error messages.
   static final RegExp _positionalArgumentRegExp = RegExp(r'\{(\d+)\}');
 
   /// {@macro crystallis_code}
-  const CrystallisLintCode({
+  const CrystalliseLintCode({
     required this.ruleType,
     required this.problemMessage,
     this.correctionMessage,
@@ -98,7 +98,7 @@ class CrystallisLintCode implements LintCode {
   final String? correctionMessage;
 
   @override
-  @Deprecated("Use 'diagnosticSeverity' instead")
+  @Deprecated("Use 'severity' instead")
   DiagnosticSeverity get errorSeverity => severity;
 
   @override

@@ -5,13 +5,13 @@ import 'package:crystallis_plugin/src/rules/crystallis_code.dart';
 import 'package:meta/meta.dart';
 
 /// An enumeration of all the rules that the Crystallis plugin provides. Each rule has at least one corresponding
-/// [CrystallisLintCode] that will be reported when the rule is violated.
+/// [CrystalliseLintCode] that will be reported when the rule is violated.
 enum CrystallisRuleType {
-  /// {@macro mutable_rule}
-  mutable(
-    name: 'Crystallis Mutability Rule',
+  /// {@macro mutability_rule}
+  mutability(
+    name: 'mutability',
     description:
-        'This rule checks for mutable fields in classes annotated with @Crystallis to make sure they align with '
+        'This rule checks for mutable fields in classes annotated with @Crystallise to make sure they align with '
         "whatever 'mutable' value they were defined.",
   );
 
@@ -33,12 +33,12 @@ enum CrystallisRuleType {
 /// {@endtemplate}
 abstract class CrystallisRule extends AnalysisRule {
   /// {@macro crystallis_rule}
-  CrystallisRule(CrystallisCode code)
+  CrystallisRule(CrystalliseCode code)
     : diagnosticCode = code.code,
       super(name: code.name, description: code.code.description);
 
   @override
-  final CrystallisLintCode diagnosticCode;
+  final CrystalliseLintCode diagnosticCode;
 
   @override
   @mustBeOverridden
@@ -54,7 +54,7 @@ abstract class MutltiCrystallisRule extends MultiAnalysisRule {
   MutltiCrystallisRule(CrystallisRuleType ruleType) : super(name: ruleType.name, description: ruleType.description);
 
   @override
-  List<CrystallisLintCode> get diagnosticCodes;
+  List<CrystalliseLintCode> get diagnosticCodes;
 
   @override
   @mustBeOverridden

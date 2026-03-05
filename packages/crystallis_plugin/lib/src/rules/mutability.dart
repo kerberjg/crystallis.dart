@@ -10,20 +10,20 @@ import 'package:crystallis_plugin/src/rules/crystallis_code.dart';
 import 'package:crystallis_plugin/src/rules/crystallis_rule.dart';
 import 'package:crystallis_plugin/src/utils/annotation.dart';
 
-/// {@template mutable_rule}
+/// {@template mutaility_rule}
 /// This rule checks for mutable fields in classes annotated with @Crystallis(mutable: false). It ensures that all
 /// fields in such classes are final.
 /// {@endtemplate}
-class MutableRule extends MutltiCrystallisRule {
-  /// {@macro mutable_rule}
-  MutableRule() : super(.mutable);
+class MutabilityRule extends MutltiCrystallisRule {
+  /// {@macro mutaility_rule}
+  MutabilityRule() : super(.mutability);
 
   @override
-  final List<CrystallisLintCode> diagnosticCodes = [
-    CrystallisCode.mutableField.code,
-    CrystallisCode.immutableField.code,
-    CrystallisCode.constConstructor.code,
-    CrystallisCode.nonConstConstructor.code,
+  final List<CrystalliseLintCode> diagnosticCodes = [
+    CrystalliseCode.mutableField.code,
+    CrystalliseCode.immutableField.code,
+    CrystalliseCode.constConstructor.code,
+    CrystalliseCode.nonConstConstructor.code,
   ];
 
   @override
@@ -35,7 +35,7 @@ class MutableRule extends MutltiCrystallisRule {
 
 class _MutableVisitor extends SimpleAstVisitor<void> {
   _MutableVisitor(this.rule, this.context);
-  final MutableRule rule;
+  final MutabilityRule rule;
   final RuleContext context;
 
   @override
@@ -51,33 +51,35 @@ class _MutableVisitor extends SimpleAstVisitor<void> {
     var object = node.elementAnnotation?.computeConstantValue();
     if (object == null) return;
 
+    if (!Crystallise.isCrystalliseAnnotation(object)) return;
+
     var crystallise = Crystallise.parser(object);
     var defaultConstructorConstKeyword = parent.defaultConstructorConst;
     var defaultConstructor = enclosing.constructors.singleWhereOrNull((c) => c.name == 'new');
     if (crystallise.mutable) {
       if (defaultConstructor != null && defaultConstructorConstKeyword != null) {
-        rule.reportAtToken(diagnosticCode: CrystallisCode.constConstructor.code, defaultConstructorConstKeyword);
+        rule.reportAtToken(diagnosticCode: CrystalliseCode.constConstructor.code, defaultConstructorConstKeyword);
       } else if (defaultConstructor == null) {
-        rule.reportAtToken(diagnosticCode: CrystallisCode.constConstructor.code, parent.namePart.typeName);
+        rule.reportAtToken(diagnosticCode: CrystalliseCode.constConstructor.code, parent.namePart.typeName);
       }
       if (parent.finalFields.isNotEmpty) {
         for (var token in parent.finalFields) {
-          rule.reportAtToken(diagnosticCode: CrystallisCode.immutableField.code, token);
+          rule.reportAtToken(diagnosticCode: CrystalliseCode.immutableField.code, token);
         }
       }
     } else {
       var token = parent.defaultConstructorFirstEntity;
       if (defaultConstructor != null && defaultConstructorConstKeyword == null && token != null) {
-        rule.reportAtToken(diagnosticCode: CrystallisCode.nonConstConstructor.code, token);
+        rule.reportAtToken(diagnosticCode: CrystalliseCode.nonConstConstructor.code, token);
       } else if (defaultConstructor == null) {
-        rule.reportAtToken(diagnosticCode: CrystallisCode.nonConstConstructor.code, parent.namePart.typeName);
+        rule.reportAtToken(diagnosticCode: CrystalliseCode.nonConstConstructor.code, parent.namePart.typeName);
       }
       for (var entity in parent.nonFinalFields) {
         switch (entity) {
           case Token token:
-            rule.reportAtToken(diagnosticCode: CrystallisCode.mutableField.code, token);
+            rule.reportAtToken(diagnosticCode: CrystalliseCode.mutableField.code, token);
           case AstNode node:
-            rule.reportAtNode(diagnosticCode: CrystallisCode.mutableField.code, node);
+            rule.reportAtNode(diagnosticCode: CrystalliseCode.mutableField.code, node);
         }
       }
     }
@@ -86,37 +88,32 @@ class _MutableVisitor extends SimpleAstVisitor<void> {
 
 extension on ClassDeclaration {
   Token? get defaultConstructorConst {
-    var primary = switch (namePart) {
-      PrimaryConstructorDeclaration(:var declaredFragment?) && var constructor
-          when declaredFragment.element.isDefaultConstructor =>
-        constructor,
-      _ => null,
-    };
+    var (constructor, primary) = defaultConstructorDeclaration;
     if (primary != null) return primary.constKeyword;
-    var constructor = switch (body) {
-      EmptyClassBody() => null,
-      BlockClassBody(:final members) => members.whereType<ConstructorDeclaration>().singleWhereOrNull(
-        (m) => m.declaredFragment?.element.isDefaultConstructor ?? false,
-      ),
-    };
     return constructor?.constKeyword;
   }
 
   Token? get defaultConstructorFirstEntity {
+    var (constructor, primary) = defaultConstructorDeclaration;
+    if (primary != null) return primary.typeName;
+    return constructor?.newKeyword ?? constructor?.typeName?.token ?? constructor?.name ?? namePart.typeName;
+  }
+
+  (ConstructorDeclaration?, PrimaryConstructorDeclaration?) get defaultConstructorDeclaration {
     var primary = switch (namePart) {
       PrimaryConstructorDeclaration(:var declaredFragment?) && var constructor
-          when declaredFragment.element.isDefaultConstructor =>
+          when declaredFragment.element.name == 'new' =>
         constructor,
       _ => null,
     };
-    if (primary != null) return primary.typeName;
+    if (primary != null) return (null, primary);
     var constructor = switch (body) {
       EmptyClassBody() => null,
       BlockClassBody(:final members) => members.whereType<ConstructorDeclaration>().singleWhereOrNull(
-        (m) => m.declaredFragment?.element.isDefaultConstructor ?? false,
+        (m) => m.declaredFragment?.element.name == 'new',
       ),
     };
-    return constructor?.newKeyword ?? constructor?.typeName?.token ?? constructor?.name;
+    return (constructor, null);
   }
 
   List<Token> get finalFields => _fields(isFinal: true).cast();
