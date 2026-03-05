@@ -11,7 +11,7 @@ import 'package:crystallis_plugin/src/rules/crystallis_rule.dart';
 import 'package:crystallis_plugin/src/utils/annotation.dart';
 
 /// {@template mutaility_rule}
-/// This rule checks for mutable fields in classes annotated with @Crystallis(mutable: false). It ensures that all
+/// This rule checks for mutable fields in classes annotated with @Crystallise(mutable: false). It ensures that all
 /// fields in such classes are final.
 /// {@endtemplate}
 class MutabilityRule extends MutltiCrystallisRule {
