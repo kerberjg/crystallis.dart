@@ -1,6 +1,6 @@
 import 'package:analyzer_testing/analysis_rule/analysis_rule.dart';
 import 'package:crystallis_plugin/src/rules/crystallis_code.dart';
-import 'package:crystallis_plugin/src/rules/mutable.dart';
+import 'package:crystallis_plugin/src/rules/mutability.dart';
 import 'package:essential_lints_annotations/essential_lints_annotations.dart';
 import 'package:test_reflective_loader/test_reflective_loader.dart';
 
@@ -17,7 +17,7 @@ void main() {
 class MutableTest extends AnalysisRuleTest with CrystallisDependency {
   @override
   Future<void> setUp() async {
-    rule = MutableRule();
+    rule = MutabilityRule();
     await addCrystallisDependency();
     super.setUp();
   }
@@ -34,7 +34,7 @@ class ImmutableClass {
 ''');
   }
 
-  Future<void> test_immutable_constConstructor() async {
+  Future<void> test_immutable_nonConstConstructor() async {
     await assertDiagnostics(
       '''
 import 'package:crystallis/crystallis.dart';
@@ -44,11 +44,11 @@ class ImmutableClass {
   ImmutableClass();
 }
 ''',
-      [error(CrystallisCode.nonConstConstructor.code, 100, 14)],
+      [error(CrystalliseCode.nonConstConstructor.code, 100, 14)],
     );
   }
 
-  Future<void> test_immutable_constConstructor2() async {
+  Future<void> test_immutable_nonConstConstructor2() async {
     await assertDiagnostics(
       '''
 import 'package:crystallis/crystallis.dart';
@@ -58,7 +58,7 @@ class ImmutableClass {
   new();
 }
 ''',
-      [error(CrystallisCode.nonConstConstructor.code, 100, 3)],
+      [error(CrystalliseCode.nonConstConstructor.code, 100, 3)],
     );
   }
 
@@ -73,7 +73,7 @@ class const ImmutableClass(
   var int nonFinalField,
 );
 ''',
-      [error(CrystallisCode.mutableField.code, 155, 3)],
+      [error(CrystalliseCode.mutableField.code, 155, 3)],
     );
   }
 
@@ -90,7 +90,7 @@ class const ImmutableClass(
   int nonFinalField2 = nonFinalField;
 }
 ''',
-      [error(CrystallisCode.mutableField.code, 155, 3), error(CrystallisCode.mutableField.code, 184, 3)],
+      [error(CrystalliseCode.mutableField.code, 155, 3), error(CrystalliseCode.mutableField.code, 184, 3)],
     );
   }
 
@@ -105,7 +105,7 @@ class const ImmutableClass() {
   int nonFinalField = 0;
 }
 ''',
-      [error(CrystallisCode.mutableField.code, 158, 3)],
+      [error(CrystalliseCode.mutableField.code, 158, 3)],
     );
   }
 
@@ -120,7 +120,7 @@ class const ImmutableClass() {
   var nonFinalField = 0;
 }
 ''',
-      [error(CrystallisCode.mutableField.code, 158, 3)],
+      [error(CrystalliseCode.mutableField.code, 158, 3)],
     );
   }
 
@@ -132,7 +132,22 @@ import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: false)
 class ImmutableClass();
 ''',
-      [error(CrystallisCode.nonConstConstructor.code, 81, 14)],
+      [error(CrystalliseCode.nonConstConstructor.code, 81, 14)],
+    );
+  }
+
+  Future<void> test_immutable_requiredNamedParameters_nonConst() async {
+    await assertDiagnostics(
+      '''
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise(mutable: false)
+class ImmutableClass {
+  ImmutableClass({required this.finalField});
+  final int finalField;
+}
+''',
+      [error(CrystalliseCode.nonConstConstructor.code, 100, 14)],
     );
   }
 
@@ -157,7 +172,7 @@ class MutableClass {
   const MutableClass();
 }
 ''',
-      [error(CrystallisCode.constConstructor.code, 97, 5)],
+      [error(CrystalliseCode.constConstructor.code, 97, 5)],
     );
   }
 
@@ -171,7 +186,7 @@ class MutableClass {
   const new();
 }
 ''',
-      [error(CrystallisCode.constConstructor.code, 97, 5)],
+      [error(CrystalliseCode.constConstructor.code, 97, 5)],
     );
   }
 
@@ -185,7 +200,7 @@ class MutableClass(
   final int finalField,
 );
 ''',
-      [error(CrystallisCode.immutableField.code, 96, 5)],
+      [error(CrystalliseCode.immutableField.code, 96, 5)],
     );
   }
 
@@ -195,13 +210,13 @@ class MutableClass(
 import 'package:crystallis/crystallis.dart';
 
 @Crystallise(mutable: true)
-class const MutableClass(
+class MutableClass(
   final int finalField,
 ) {
   final finalField2 = finalField;
 }
 ''',
-      [error(CrystallisCode.immutableField.code, 102, 5), error(CrystallisCode.immutableField.code, 130, 5)],
+      [error(CrystalliseCode.immutableField.code, 96, 5), error(CrystalliseCode.immutableField.code, 124, 5)],
     );
   }
 
@@ -213,7 +228,23 @@ import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: true)
 class const MutableClass();
 ''',
-      [error(CrystallisCode.constConstructor.code, 80, 5)],
+      [error(CrystalliseCode.constConstructor.code, 80, 5)],
+    );
+  }
+
+  Future<void> test_mutable_requiredNamedParameters_const() async {
+    await assertDiagnostics(
+      '''
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise(mutable: true)
+class ImmutableClass {
+  // ignore: const_constructor_with_non_final_field
+  const ImmutableClass({required this.field});
+  int field;
+}
+''',
+      [error(CrystalliseCode.constConstructor.code, 151, 5)],
     );
   }
 }

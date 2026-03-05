@@ -43,6 +43,14 @@ class Crystallise {
     );
   }
 
+  static final Uri _crystalliseUri = .parse('package:crystallis/annotations.dart');
+
+  /// Checks if a given [DartObject] is an instance of the @Crystallise annotation by comparing its type name and
+  /// library URI.
+  static bool isCrystalliseAnnotation(DartObject annotation) {
+    return annotation.type?.element?.name == 'Crystallise' && annotation.type?.element?.library?.uri == _crystalliseUri;
+  }
+
   /// Whether the generated data class is mutable.
   /// (default: true)
   ///
