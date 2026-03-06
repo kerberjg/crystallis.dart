@@ -4,15 +4,16 @@ import 'package:analyzer/error/error.dart';
 import 'package:crystallis_plugin/src/rules/crystallis_rule.dart';
 
 /// An enumeration of all the specfic codes that the crystallis_plugin can report on rules. This is a wrapper on
-/// [CrystalliseLintCode] so we can have them constants.
+/// [CrystallisLintCode] so we can have them constants.
 ///
 /// This is needed because the server internally checks for the same instance of `LintCode`s, so we must ensure these
 /// are constants and not created on the fly.
-enum CrystalliseCode {
+enum CrystallisCode {
   /// Checks whether classes annotated with @Crystallise(mutable: false) have any non-final fields.
   mutableField(
-    CrystalliseLintCode(
-      ruleType: CrystallisRuleType.mutability,
+    CrystallisLintCode(
+      ruleFlag: .mutability,
+      severity: .ERROR,
       uniqueName: 'crystallis_mutable_field',
       problemMessage: 'Classes annotated with @Crystallise(mutable: false) should not have non-final fields.',
       correctionMessage:
@@ -22,8 +23,9 @@ enum CrystalliseCode {
 
   /// Checks whether classes annotated with @Crystallise(mutable: true) have any final fields.
   immutableField(
-    CrystalliseLintCode(
-      ruleType: CrystallisRuleType.mutability,
+    CrystallisLintCode(
+      ruleFlag: .mutability,
+      severity: .ERROR,
       uniqueName: 'crystallis_immutable_field',
       problemMessage: 'Classes annotated with @Crystallise(mutable: true) should not have final fields.',
       correctionMessage:
@@ -33,8 +35,9 @@ enum CrystalliseCode {
 
   /// Checks whether classes annotated with @Crystallise(mutable: false) have any non-final fields.
   constConstructor(
-    CrystalliseLintCode(
-      ruleType: CrystallisRuleType.mutability,
+    CrystallisLintCode(
+      ruleFlag: .mutability,
+      severity: .ERROR,
       uniqueName: 'crystallis_const_constructor',
       problemMessage:
           "Classes annotated with @Crystallise(mutable: true) should not have a 'const' default constructor.",
@@ -46,8 +49,9 @@ enum CrystalliseCode {
 
   /// Checks whether classes annotated with @Crystallise(mutable: true) have any final fields.
   nonConstConstructor(
-    CrystalliseLintCode(
-      ruleType: CrystallisRuleType.mutability,
+    CrystallisLintCode(
+      ruleFlag: .mutability,
+      severity: .ERROR,
       uniqueName: 'crystallis_non_const_constructor',
       problemMessage:
           "Classes annotated with @Crystallise(mutable: false) should not have a non-'const' default constructor.",
@@ -56,23 +60,23 @@ enum CrystalliseCode {
     ),
   );
 
-  const CrystalliseCode(this.code);
+  const CrystallisCode(this.code);
 
-  /// The [CrystalliseLintCode] associated with this rule. This contains the details of the rule, such as the name,
+  /// The [CrystallisLintCode] associated with this rule. This contains the details of the rule, such as the name,
   /// description, problem message, and correction message.
-  final CrystalliseLintCode code;
+  final CrystallisLintCode code;
 }
 
 /// {@template crystallis_code}
 /// Code for diagnostics produced by the Crystallis plugin.
 /// {@endtemplate}
-class CrystalliseLintCode implements LintCode {
+class CrystallisLintCode implements LintCode {
   /// Regular expression for identifying positional arguments in error messages.
   static final RegExp _positionalArgumentRegExp = RegExp(r'\{(\d+)\}');
 
   /// {@macro crystallis_code}
-  const CrystalliseLintCode({
-    required this.ruleType,
+  const CrystallisLintCode({
+    required this.ruleFlag,
     required this.problemMessage,
     this.correctionMessage,
     this.severity = .INFO,
@@ -82,17 +86,17 @@ class CrystalliseLintCode implements LintCode {
        isUnresolvedIdentifier = false,
        hasPublishedDocs = false,
        isIgnorable = true,
-       uniqueName = uniqueName ?? 'CrystallisLintCode.$ruleType';
+       uniqueName = uniqueName ?? 'CrystallisLintCode.$ruleFlag';
 
   /// The rule type this code is associated with.
-  final CrystallisRuleType ruleType;
+  final CrystallisRuleFlag ruleFlag;
 
   @override
   @Deprecated('Please use lowerCaseName')
   String get name => type.name;
 
   /// A human-readable description of the rule that is being violated, used in the insights page and similar.
-  String get description => ruleType.description;
+  String get description => ruleFlag.description;
 
   @override
   final String? correctionMessage;
@@ -142,4 +146,7 @@ class CrystalliseLintCode implements LintCode {
 
   @override
   final String? url;
+
+  @override
+  String toString() => 'CrystallisLintCode.$lowerCaseUniqueName';
 }
