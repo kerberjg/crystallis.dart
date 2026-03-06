@@ -8,10 +8,8 @@ Add to your `analysis_options.yaml`:
 
 ```yaml
 plugins:
-  crystallis_plugin
+  crystallis_plugin:
     version: ^0.0.4
-    diagnostics:
-      - mutability
 ```
 
 Now when you open your prefered IDE or run `dart analyze`, you will see warnings if you are using the annotations incorrectly.
