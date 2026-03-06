@@ -19,12 +19,7 @@ class MutabilityRule extends MutltiCrystallisRule {
   MutabilityRule() : super(.mutability);
 
   @override
-  final List<CrystalliseLintCode> diagnosticCodes = [
-    CrystalliseCode.mutableField.code,
-    CrystalliseCode.immutableField.code,
-    CrystalliseCode.constConstructor.code,
-    CrystalliseCode.nonConstConstructor.code,
-  ];
+  final List<CrystallisCode> codes = [.mutableField, .immutableField, .constConstructor, .nonConstConstructor];
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
@@ -58,28 +53,28 @@ class _MutableVisitor extends SimpleAstVisitor<void> {
     var defaultConstructor = enclosing.constructors.singleWhereOrNull((c) => c.name == 'new');
     if (crystallise.mutable) {
       if (defaultConstructor != null && defaultConstructorConstKeyword != null) {
-        rule.reportAtToken(diagnosticCode: CrystalliseCode.constConstructor.code, defaultConstructorConstKeyword);
+        rule.reportAtToken(diagnosticCode: CrystallisCode.constConstructor.code, defaultConstructorConstKeyword);
       } else if (defaultConstructor == null) {
-        rule.reportAtToken(diagnosticCode: CrystalliseCode.constConstructor.code, parent.namePart.typeName);
+        rule.reportAtToken(diagnosticCode: CrystallisCode.constConstructor.code, parent.namePart.typeName);
       }
       if (parent.finalFields.isNotEmpty) {
         for (var token in parent.finalFields) {
-          rule.reportAtToken(diagnosticCode: CrystalliseCode.immutableField.code, token);
+          rule.reportAtToken(diagnosticCode: CrystallisCode.immutableField.code, token);
         }
       }
     } else {
       var token = parent.defaultConstructorFirstEntity;
       if (defaultConstructor != null && defaultConstructorConstKeyword == null && token != null) {
-        rule.reportAtToken(diagnosticCode: CrystalliseCode.nonConstConstructor.code, token);
+        rule.reportAtToken(diagnosticCode: CrystallisCode.nonConstConstructor.code, token);
       } else if (defaultConstructor == null) {
-        rule.reportAtToken(diagnosticCode: CrystalliseCode.nonConstConstructor.code, parent.namePart.typeName);
+        rule.reportAtToken(diagnosticCode: CrystallisCode.nonConstConstructor.code, parent.namePart.typeName);
       }
       for (var entity in parent.nonFinalFields) {
         switch (entity) {
           case Token token:
-            rule.reportAtToken(diagnosticCode: CrystalliseCode.mutableField.code, token);
+            rule.reportAtToken(diagnosticCode: CrystallisCode.mutableField.code, token);
           case AstNode node:
-            rule.reportAtNode(diagnosticCode: CrystalliseCode.mutableField.code, node);
+            rule.reportAtNode(diagnosticCode: CrystallisCode.mutableField.code, node);
         }
       }
     }

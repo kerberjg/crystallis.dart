@@ -6,8 +6,8 @@ import 'package:crystallis_plugin/src/rules/mutability.dart';
 mixin RulesMixin {
   /// A list of all the rules that the plugin provides. This is used to register the rules with the server.
   List<AbstractAnalysisRule> get rules => [
-    for (var ruleType in CrystallisRuleType.values)
-      switch (ruleType) {
+    for (var ruleFlag in CrystallisRuleFlag.values)
+      switch (ruleFlag) {
         .mutability => MutabilityRule(),
       },
   ];

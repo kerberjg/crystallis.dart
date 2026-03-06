@@ -10,6 +10,6 @@ class CrystallisPlugin extends Plugin with RulesMixin {
 
   @override
   void register(PluginRegistry registry) {
-    registerRules(registry.registerLintRule);
+    registerRules(registry.registerWarningRule);
   }
 }

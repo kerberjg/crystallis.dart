@@ -5,23 +5,28 @@ import 'package:crystallis_plugin/src/rules/crystallis_code.dart';
 import 'package:meta/meta.dart';
 
 /// An enumeration of all the rules that the Crystallis plugin provides. Each rule has at least one corresponding
-/// [CrystalliseLintCode] that will be reported when the rule is violated.
-enum CrystallisRuleType {
+/// [CrystallisLintCode] that will be reported when the rule is violated.
+enum CrystallisRuleFlag {
   /// {@macro mutability_rule}
   mutability(
     name: 'mutability',
     description:
         'This rule checks for mutable fields in classes annotated with @Crystallise to make sure they align with '
         "whatever 'mutable' value they were defined.",
+    lint: false,
   );
 
-  const CrystallisRuleType({required this.name, required this.description});
+  const CrystallisRuleFlag({required this.name, required this.description, this.lint = true});
 
   /// A human-readable name for the rule, used in the insights page and similar.
   final String name;
 
   /// A human-readable description of the rule that is being violated, used in the insights page and similar.
   final String description;
+
+  /// Whether this rule should be enabled by the user or if it would be enabled regardless of user configuration. This
+  /// is useful for rules that are critical to the workings of the package.
+  final bool lint;
 
   @override
   String toString() => name;
@@ -33,12 +38,12 @@ enum CrystallisRuleType {
 /// {@endtemplate}
 abstract class CrystallisRule extends AnalysisRule {
   /// {@macro crystallis_rule}
-  CrystallisRule(CrystalliseCode code)
+  CrystallisRule(CrystallisCode code)
     : diagnosticCode = code.code,
       super(name: code.name, description: code.code.description);
 
   @override
-  final CrystalliseLintCode diagnosticCode;
+  final CrystallisLintCode diagnosticCode;
 
   @override
   @mustBeOverridden
@@ -51,10 +56,14 @@ abstract class CrystallisRule extends AnalysisRule {
 /// {@endtemplate}
 abstract class MutltiCrystallisRule extends MultiAnalysisRule {
   /// {@macro multi_crystallis_rule}
-  MutltiCrystallisRule(CrystallisRuleType ruleType) : super(name: ruleType.name, description: ruleType.description);
+  MutltiCrystallisRule(CrystallisRuleFlag ruleType) : super(name: ruleType.name, description: ruleType.description);
 
   @override
-  List<CrystalliseLintCode> get diagnosticCodes;
+  List<CrystallisLintCode> get diagnosticCodes => codes.map((c) => c.code).toList();
+
+  /// A list of all the [CrystallisLintCode]s that this rule can report. This is used to register the codes with the
+  /// server.
+  List<CrystallisCode> get codes;
 
   @override
   @mustBeOverridden

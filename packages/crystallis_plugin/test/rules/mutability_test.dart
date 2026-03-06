@@ -44,7 +44,7 @@ class ImmutableClass {
   ImmutableClass();
 }
 ''',
-      [error(CrystalliseCode.nonConstConstructor.code, 100, 14)],
+      [error(CrystallisCode.nonConstConstructor.code, 100, 14)],
     );
   }
 
@@ -58,7 +58,7 @@ class ImmutableClass {
   new();
 }
 ''',
-      [error(CrystalliseCode.nonConstConstructor.code, 100, 3)],
+      [error(CrystallisCode.nonConstConstructor.code, 100, 3)],
     );
   }
 
@@ -73,7 +73,7 @@ class const ImmutableClass(
   var int nonFinalField,
 );
 ''',
-      [error(CrystalliseCode.mutableField.code, 155, 3)],
+      [error(CrystallisCode.mutableField.code, 155, 3)],
     );
   }
 
@@ -90,7 +90,7 @@ class const ImmutableClass(
   int nonFinalField2 = nonFinalField;
 }
 ''',
-      [error(CrystalliseCode.mutableField.code, 155, 3), error(CrystalliseCode.mutableField.code, 184, 3)],
+      [error(CrystallisCode.mutableField.code, 155, 3), error(CrystallisCode.mutableField.code, 184, 3)],
     );
   }
 
@@ -105,7 +105,7 @@ class const ImmutableClass() {
   int nonFinalField = 0;
 }
 ''',
-      [error(CrystalliseCode.mutableField.code, 158, 3)],
+      [error(CrystallisCode.mutableField.code, 158, 3)],
     );
   }
 
@@ -120,7 +120,7 @@ class const ImmutableClass() {
   var nonFinalField = 0;
 }
 ''',
-      [error(CrystalliseCode.mutableField.code, 158, 3)],
+      [error(CrystallisCode.mutableField.code, 158, 3)],
     );
   }
 
@@ -132,7 +132,7 @@ import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: false)
 class ImmutableClass();
 ''',
-      [error(CrystalliseCode.nonConstConstructor.code, 81, 14)],
+      [error(CrystallisCode.nonConstConstructor.code, 81, 14)],
     );
   }
 
@@ -147,7 +147,7 @@ class ImmutableClass {
   final int finalField;
 }
 ''',
-      [error(CrystalliseCode.nonConstConstructor.code, 100, 14)],
+      [error(CrystallisCode.nonConstConstructor.code, 100, 14)],
     );
   }
 
@@ -172,7 +172,7 @@ class MutableClass {
   const MutableClass();
 }
 ''',
-      [error(CrystalliseCode.constConstructor.code, 97, 5)],
+      [error(CrystallisCode.constConstructor.code, 97, 5)],
     );
   }
 
@@ -186,7 +186,7 @@ class MutableClass {
   const new();
 }
 ''',
-      [error(CrystalliseCode.constConstructor.code, 97, 5)],
+      [error(CrystallisCode.constConstructor.code, 97, 5)],
     );
   }
 
@@ -200,7 +200,7 @@ class MutableClass(
   final int finalField,
 );
 ''',
-      [error(CrystalliseCode.immutableField.code, 96, 5)],
+      [error(CrystallisCode.immutableField.code, 96, 5)],
     );
   }
 
@@ -216,7 +216,7 @@ class MutableClass(
   final finalField2 = finalField;
 }
 ''',
-      [error(CrystalliseCode.immutableField.code, 96, 5), error(CrystalliseCode.immutableField.code, 124, 5)],
+      [error(CrystallisCode.immutableField.code, 96, 5), error(CrystallisCode.immutableField.code, 124, 5)],
     );
   }
 
@@ -228,7 +228,7 @@ import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: true)
 class const MutableClass();
 ''',
-      [error(CrystalliseCode.constConstructor.code, 80, 5)],
+      [error(CrystallisCode.constConstructor.code, 80, 5)],
     );
   }
 
@@ -244,7 +244,7 @@ class ImmutableClass {
   int field;
 }
 ''',
-      [error(CrystalliseCode.constConstructor.code, 151, 5)],
+      [error(CrystallisCode.constConstructor.code, 151, 5)],
     );
   }
 }
