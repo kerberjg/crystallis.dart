@@ -14,7 +14,9 @@
 analyzer:
   errors:
     unnecessary_this: ignore
-include: package:lints/recommended.yaml
+include:
+  - package:lints/recommended.yaml
+  - package:crystallis_plugin/rules.yaml
 
 # Uncomment the following section to specify additional rules.
 
