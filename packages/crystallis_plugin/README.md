@@ -7,9 +7,15 @@ This plugin provides additional verifications for the Crystallis code generator.
 Add to your `analysis_options.yaml`:
 
 ```yaml
-plugins:
-  crystallis_plugin:
-    version: ^0.0.4
+include: package:crystallis_plugin/rules.yaml
+```
+
+or, if you have multiple includes:
+
+```yaml
+include:
+  - package:lints/recommended.yaml
+  - package:crystallis_plugin/rules.yaml
 ```
 
 Now when you open your prefered IDE or run `dart analyze`, you will see warnings if you are using the annotations incorrectly.
