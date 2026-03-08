@@ -6,20 +6,19 @@ on:
     branches:
       - main
       - develop
-      - 'release/**'
+      - "release/**"
     paths:
-      - '**.dart'
-      - './*.yaml'
+      - "**.dart"
+      - "./*.yaml"
       - .github/workflows/_base-dart.yaml
       - .github/workflows/package.yaml
   release:
     types: [published]
 
-
 # call the base workflow with the package path
 jobs:
   dart:
-    uses: ./.github/workflows/_base-dart.yaml
+    uses: kerberjg/dart_flutter_ci_experiments/.github/workflows/pipeline.yaml@8ad47932f2fb94ccc84ae69f1057bf446454fb0e
     strategy:
       matrix:
         package:
@@ -27,30 +26,6 @@ jobs:
           - crystallis_generator
           - crystallis_plugin
     with:
-      path: 'packages/${{ matrix.package }}'
-
-  publish-dry-run:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package:
-          - crystallis
-          - crystallis_generator
-          - crystallis_plugin
-    # Needs dart job to complete successfully, only skipped if it is failed, but not skipped
-    needs: [dart]
-    if: ${{ always() && (needs.dart.result == 'success') && (needs.dart.result != 'failure') }}
-    defaults:
-      run:
-        working-directory: packages/${{ matrix.package }}
-    steps:
-      - uses: actions/checkout@v5
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
-
-      - name: Get dependencies
-        run: dart pub get
-
-      - name: Publish to pub.dev (dry run)
-        run: dart pub publish --dry-run
+      path: "packages/${{ matrix.package }}"
+      force-sdk: dart
+      min-publish-score: 150
