@@ -7,14 +7,12 @@ on:
     branches:
       - main
       - develop
-      - 'release/**'
+      - "release/**"
     paths:
-      - 'packages/**/*.dart'
-      - 'packages/**/*.yaml'
-      - 'example/**/*.dart'
-      - 'example/**/*.yaml'
-      - .github/workflows/_base-dart.yaml
-      - .github/workflows/_base-flutter.yaml
+      - "packages/**/*.dart"
+      - "packages/**/*.yaml"
+      - "example/**/*.dart"
+      - "example/**/*.yaml"
       - .github/workflows/example.yaml
   release:
     types: [published]
@@ -22,6 +20,7 @@ on:
 jobs:
   dart:
     name: "example"
-    uses: ./.github/workflows/_base-dart.yaml
+    uses: kerberjg/dart_flutter_ci_experiments/.github/workflows/pipeline.yaml@8ad47932f2fb94ccc84ae69f1057bf446454fb0e
     with:
       path: "packages/crystallis/example"
+      force-sdk: dart
