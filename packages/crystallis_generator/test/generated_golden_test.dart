@@ -26,7 +26,7 @@ enum TestEntry {
 
   String get testFile => switch (this) {
     //
-    TestEntry.mutable =>
+    mutable =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -38,7 +38,7 @@ class User {
   User({required this.name});
 }''',
     //
-    TestEntry.mutableWithImmutableField =>
+    mutableWithImmutableField =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -49,7 +49,7 @@ class User {
   User({required this.name});
 }''',
     //
-    TestEntry.mutableWithValidation =>
+    mutableWithValidation =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -62,7 +62,7 @@ class User {
   User({required this.name});
 }''',
     //
-    TestEntry.immutable =>
+    immutable =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -73,7 +73,7 @@ class User {
   const User({required this.name});
 }''',
     //
-    TestEntry.immutableWithShallowCopy =>
+    immutableWithShallowCopy =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -89,7 +89,7 @@ class User {
   });
 }''',
     //
-    TestEntry.immutableWithDeepCopy =>
+    immutableWithDeepCopy =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -105,7 +105,7 @@ class User {
   });
 }''',
     //
-    TestEntry.immutableWithMutableField =>
+    immutableWithMutableField =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -116,7 +116,7 @@ class User {
   User({required this.name});
 }''',
     //
-    TestEntry.immutableWithValidation =>
+    immutableWithValidation =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -128,7 +128,7 @@ class User {
   const User({required this.name});
 }''',
     //
-    TestEntry.immutableWithToString =>
+    immutableWithToString =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -143,7 +143,7 @@ class User {
   });
 }''',
     //
-    TestEntry.immutableWithShallowEquals =>
+    immutableWithShallowEquals =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -157,7 +157,7 @@ class Dot {
   });
 }''',
     //
-    TestEntry.immutableWithShallowHashCode =>
+    immutableWithShallowHashCode =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -171,7 +171,7 @@ class Dot {
   });
 }''',
     //
-    TestEntry.immutableWithDeepHashCode =>
+    immutableWithDeepHashCode =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -185,7 +185,7 @@ class Dot {
   });
 }''',
     //
-    TestEntry.immutableWithDeepEquals =>
+    immutableWithDeepEquals =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -199,7 +199,7 @@ class Dot {
   });
 }''',
     //
-    TestEntry.immutableAlreadyHasToString =>
+    immutableAlreadyHasToString =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -214,7 +214,7 @@ class User {
   }
 }''',
     //
-    TestEntry.immutableAlreadyHasEquals =>
+    immutableAlreadyHasEquals =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -231,7 +231,7 @@ class User {
   }
 }''',
     //
-    TestEntry.immutableAlreadyHasHashCode =>
+    immutableAlreadyHasHashCode =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -244,7 +244,7 @@ class User {
   int get hashCode => name.hashCode;
 }''',
     //
-    TestEntry.twoClassesPerFile =>
+    twoClassesPerFile =>
       r'''
 library example;
 import 'package:crystallis/crystallis.dart';
