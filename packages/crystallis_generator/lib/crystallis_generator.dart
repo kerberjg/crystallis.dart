@@ -324,6 +324,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       buffer.writeln('}) get copyWith => _innerCopyWith;');
       buffer.writeln();
 
+      buffer.writeln('  @pragma("vm:always-consider-inlining")');
       buffer.write('  $publicName _innerCopyWith({');
       var objectQuestionType = element.library.typeProvider.objectQuestionType;
       var objectType = element.library.typeProvider.objectType;
