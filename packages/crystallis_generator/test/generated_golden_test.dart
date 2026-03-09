@@ -24,7 +24,7 @@ enum TestEntry {
   immutableAlreadyHasHashCode,
   twoClassesPerFile;
 
-  String get testClasses => switch (this) {
+  String get testFile => switch (this) {
     //
     TestEntry.mutable =>
       r'''
@@ -266,7 +266,7 @@ class Product {
 void main() {
   group('crystallis builder (golden-ish)', () {
     test('generates public class from source class', () async {
-      final input = TestEntry.mutableWithValidation.testClasses;
+      final input = TestEntry.mutableWithValidation.testFile;
 
       final outputs = await _runBuilder(
         inputDartPath: '$outputPackage|lib/user.dart',
@@ -287,7 +287,7 @@ void main() {
     });
 
     test('adds suffix to source class name', () async {
-      final input = TestEntry.mutable.testClasses;
+      final input = TestEntry.mutable.testFile;
 
       final outputs = await _runBuilder(
         inputDartPath: '$outputPackage|lib/user.dart',
@@ -302,7 +302,7 @@ void main() {
     });
 
     test('mutable default: rejects final fields', () async {
-      final input = TestEntry.mutableWithImmutableField.testClasses;
+      final input = TestEntry.mutableWithImmutableField.testFile;
 
       try {
         await _runBuilder(
@@ -315,7 +315,7 @@ void main() {
     });
 
     test('immutable: rejects non-final fields', () async {
-      final input = TestEntry.immutableWithMutableField.testClasses;
+      final input = TestEntry.immutableWithMutableField.testFile;
 
       try {
         await _runBuilder(
@@ -328,7 +328,7 @@ void main() {
     });
 
     test('set<T> calls the validators and throws on error', () async {
-      final input = TestEntry.mutableWithValidation.testClasses;
+      final input = TestEntry.mutableWithValidation.testFile;
 
       final outputs = await _runBuilder(
         inputDartPath: '$outputPackage|lib/user.dart',
@@ -343,7 +343,7 @@ void main() {
     });
 
     test('set<T> errors out on immutable', () async {
-      final input = TestEntry.immutableWithValidation.testClasses;
+      final input = TestEntry.immutableWithValidation.testFile;
 
       final outputs = await _runBuilder(
         inputDartPath: '$outputPackage|lib/user_immutable.dart',
@@ -361,7 +361,7 @@ void main() {
   });
 
   test("generates a valid toString method", () async {
-    final input = TestEntry.immutableWithToString.testClasses;
+    final input = TestEntry.immutableWithToString.testFile;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/user.dart',
@@ -373,7 +373,7 @@ void main() {
   });
 
   test("generates a valid (shallow) equals method", () async {
-    final input = TestEntry.immutableWithShallowEquals.testClasses;
+    final input = TestEntry.immutableWithShallowEquals.testFile;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/dot.dart',
@@ -386,7 +386,7 @@ void main() {
   });
 
   test("generates a valid (deep) equals method", () async {
-    final input = TestEntry.immutableWithDeepEquals.testClasses;
+    final input = TestEntry.immutableWithDeepEquals.testFile;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/dot.dart',
@@ -399,7 +399,7 @@ void main() {
   });
 
   test("generates a valid (shallow) hashCode method", () async {
-    final input = TestEntry.immutableWithShallowHashCode.testClasses;
+    final input = TestEntry.immutableWithShallowHashCode.testFile;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/dot.dart',
@@ -412,7 +412,7 @@ void main() {
   });
 
   test("generates a valid (deep) hashCode method", () async {
-    final input = TestEntry.immutableWithDeepHashCode.testClasses;
+    final input = TestEntry.immutableWithDeepHashCode.testFile;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/dot.dart',
@@ -425,7 +425,7 @@ void main() {
   });
 
   test("generates a valid copyWith method with shallow copy", () async {
-    final input = TestEntry.immutableWithShallowCopy.testClasses;
+    final input = TestEntry.immutableWithShallowCopy.testFile;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/user.dart',
@@ -444,7 +444,7 @@ void main() {
   });
 
   test("generates a valid copyWith method with deep copy", () async {
-    final input = TestEntry.immutableWithDeepCopy.testClasses;
+    final input = TestEntry.immutableWithDeepCopy.testFile;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/user.dart',
@@ -461,7 +461,7 @@ void main() {
   });
 
   test("generates a deserialize constructor", () async {
-    final input = TestEntry.immutable.testClasses;
+    final input = TestEntry.immutable.testFile;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/user.dart',
@@ -473,7 +473,7 @@ void main() {
   });
 
   test("generates a file with multiple classes", () async {
-    final input = TestEntry.twoClassesPerFile.testClasses;
+    final input = TestEntry.twoClassesPerFile.testFile;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/multiple.dart',
