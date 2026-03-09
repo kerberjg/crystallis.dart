@@ -90,6 +90,7 @@ class ShallowTestData extends ShallowTest
   })
   get copyWith => _innerCopyWith;
 
+  @pragma("vm:always-consider-inlining")
   ShallowTestData _innerCopyWith({
     Object value = CrystallisData.nullValue,
     Object? nullableValue = CrystallisData.nullValue,
@@ -213,6 +214,7 @@ class DeepTestData extends DeepTest
   })
   get copyWith => _innerCopyWith;
 
+  @pragma("vm:always-consider-inlining")
   DeepTestData _innerCopyWith({
     Object value = CrystallisData.nullValue,
     Object? nullableValue = CrystallisData.nullValue,
