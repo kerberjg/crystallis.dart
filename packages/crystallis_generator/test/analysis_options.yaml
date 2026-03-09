@@ -1,0 +1,8 @@
+include: ../analysis_options.yaml
+
+linter:
+  rules:
+    - discarded_futures
+    - unawaited_futures
+    - avoid_void_async
+    - unnecessary_async
