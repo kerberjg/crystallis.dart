@@ -82,7 +82,7 @@ import 'package:crystallis/crystallis.dart';
 class User {
   final String name;
   final List<String> friends;
-  
+
   const User({
     required this.name,
     required this.friends,
@@ -98,7 +98,7 @@ import 'package:crystallis/crystallis.dart';
 class User {
   final String name;
   final List<String> friends;
-  
+
   const User({
     required this.name,
     required this.friends,
