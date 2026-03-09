@@ -5,9 +5,29 @@ import 'package:test/test.dart';
 
 const String outputPackage = 'a';
 
-const Map<String, String> _testClasses = {
+enum TestEntry {
+  mutable,
+  mutableWithImmutableField,
+  mutableWithValidation,
+  immutable,
+  immutableWithShallowCopy,
+  immutableWithDeepCopy,
+  immutableWithMutableField,
+  immutableWithValidation,
+  immutableWithToString,
+  immutableWithShallowEquals,
+  immutableWithShallowHashCode,
+  immutableWithDeepHashCode,
+  immutableWithDeepEquals,
+  immutableAlreadyHasToString,
+  immutableAlreadyHasEquals,
+  immutableAlreadyHasHashCode,
+  twoClassesPerFile,
+}
+
+const Map<TestEntry, String> _testClasses = {
   //
-  'mutable': r'''
+  TestEntry.mutable: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 
@@ -18,7 +38,7 @@ class User {
   User({required this.name});
 }''',
   //
-  'mutableWithImmutableField': r'''
+  TestEntry.mutableWithImmutableField: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 
@@ -28,7 +48,7 @@ class User {
   User({required this.name});
 }''',
   //
-  'mutableWithValidation': r'''
+  TestEntry.mutableWithValidation: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 
@@ -40,7 +60,7 @@ class User {
   User({required this.name});
 }''',
   //
-  'immutable': r'''
+  TestEntry.immutable: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 
@@ -50,7 +70,7 @@ class User {
   const User({required this.name});
 }''',
   //
-  'immutableWithShallowCopy': r'''
+  TestEntry.immutableWithShallowCopy: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 
@@ -65,7 +85,7 @@ class User {
   });
 }''',
   //
-  'immutableWithDeepCopy': r'''
+  TestEntry.immutableWithDeepCopy: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 
@@ -80,7 +100,7 @@ class User {
   });
 }''',
   //
-  'immutableWithMutableField': r'''
+  TestEntry.immutableWithMutableField: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 
@@ -90,7 +110,7 @@ class User {
   User({required this.name});
 }''',
   //
-  'immutableWithValidation': r'''
+  TestEntry.immutableWithValidation: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: false)
@@ -101,7 +121,7 @@ class User {
   const User({required this.name});
 }''',
   //
-  'immutableWithToString': r'''
+  TestEntry.immutableWithToString: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: false, toString: true, equals: false, hashCode: false)
@@ -115,7 +135,7 @@ class User {
   });
 }''',
   //
-  'immutableWithShallowEquals': r'''
+  TestEntry.immutableWithShallowEquals: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: false, toString: false, equals: true, hashCode: false, useDeepEquality: false)
@@ -128,7 +148,7 @@ class Dot {
   });
 }''',
   //
-  'immutableWithShallowHashCode': r'''
+  TestEntry.immutableWithShallowHashCode: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: false, toString: false, equals: false, hashCode: true, useDeepEquality: false)
@@ -141,7 +161,7 @@ class Dot {
   });
 }''',
   //
-  'immutableWithDeepHashCode': r'''
+  TestEntry.immutableWithDeepHashCode: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: false, toString: false, equals: false, hashCode: true, useDeepEquality: true)
@@ -154,7 +174,7 @@ class Dot {
   });
 }''',
   //
-  'immutableWithDeepEquals': r'''
+  TestEntry.immutableWithDeepEquals: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: false, toString: false, equals: true, hashCode: false, useDeepEquality: true)
@@ -167,7 +187,7 @@ class Dot {
   });
 }''',
   //
-  'immutableAlreadyHasToString': r'''
+  TestEntry.immutableAlreadyHasToString: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: false, toString: true, equals: false, hashCode: false)
@@ -181,7 +201,7 @@ class User {
   }
 }''',
   //
-  'immutableAlreadyHasEquals': r'''
+  TestEntry.immutableAlreadyHasEquals: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: false, toString: false, equals: true, hashCode: false)
@@ -197,7 +217,7 @@ class User {
   }
 }''',
   //
-  'immutableAlreadyHasHashCode': r'''
+  TestEntry.immutableAlreadyHasHashCode: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 @Crystallise(mutable: false, toString: false, equals: false, hashCode: true)
@@ -209,7 +229,7 @@ class User {
   int get hashCode => name.hashCode;
 }''',
   //
-  'twoClassesPerFile': r'''
+  TestEntry.twoClassesPerFile: r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 
@@ -229,7 +249,7 @@ class Product {
 void main() {
   group('crystallis builder (golden-ish)', () {
     test('generates public class from source class', () async {
-      final input = _testClasses['mutableWithValidation']!;
+      final input = _testClasses[TestEntry.mutableWithValidation]!;
 
       final outputs = await _runBuilder(
         inputDartPath: '$outputPackage|lib/user.dart',
@@ -250,7 +270,7 @@ void main() {
     });
 
     test('adds suffix to source class name', () async {
-      final input = _testClasses['mutable']!;
+      final input = _testClasses[TestEntry.mutable]!;
 
       final outputs = await _runBuilder(
         inputDartPath: '$outputPackage|lib/user.dart',
@@ -265,7 +285,7 @@ void main() {
     });
 
     test('mutable default: rejects final fields', () async {
-      final input = _testClasses['mutableWithImmutableField']!;
+      final input = _testClasses[TestEntry.mutableWithImmutableField]!;
 
       try {
         await _runBuilder(
@@ -278,7 +298,7 @@ void main() {
     });
 
     test('immutable: rejects non-final fields', () async {
-      final input = _testClasses['immutableWithMutableField']!;
+      final input = _testClasses[TestEntry.immutableWithMutableField]!;
 
       try {
         await _runBuilder(
@@ -291,7 +311,7 @@ void main() {
     });
 
     test('set<T> calls the validators and throws on error', () async {
-      final input = _testClasses['mutableWithValidation']!;
+      final input = _testClasses[TestEntry.mutableWithValidation]!;
 
       final outputs = await _runBuilder(
         inputDartPath: '$outputPackage|lib/user.dart',
@@ -306,7 +326,7 @@ void main() {
     });
 
     test('set<T> errors out on immutable', () async {
-      final input = _testClasses['immutableWithValidation']!;
+      final input = _testClasses[TestEntry.immutableWithValidation]!;
 
       final outputs = await _runBuilder(
         inputDartPath: '$outputPackage|lib/user_immutable.dart',
@@ -324,7 +344,7 @@ void main() {
   });
 
   test("generates a valid toString method", () async {
-    final input = _testClasses['immutableWithToString']!;
+    final input = _testClasses[TestEntry.immutableWithToString]!;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/user.dart',
@@ -336,7 +356,7 @@ void main() {
   });
 
   test("generates a valid (shallow) equals method", () async {
-    final input = _testClasses['immutableWithShallowEquals']!;
+    final input = _testClasses[TestEntry.immutableWithShallowEquals]!;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/dot.dart',
@@ -349,7 +369,7 @@ void main() {
   });
 
   test("generates a valid (deep) equals method", () async {
-    final input = _testClasses['immutableWithDeepEquals']!;
+    final input = _testClasses[TestEntry.immutableWithDeepEquals]!;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/dot.dart',
@@ -362,7 +382,7 @@ void main() {
   });
 
   test("generates a valid (shallow) hashCode method", () async {
-    final input = _testClasses['immutableWithShallowHashCode']!;
+    final input = _testClasses[TestEntry.immutableWithShallowHashCode]!;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/dot.dart',
@@ -375,7 +395,7 @@ void main() {
   });
 
   test("generates a valid (deep) hashCode method", () async {
-    final input = _testClasses['immutableWithDeepHashCode']!;
+    final input = _testClasses[TestEntry.immutableWithDeepHashCode]!;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/dot.dart',
@@ -388,7 +408,7 @@ void main() {
   });
 
   test("generates a valid copyWith method with shallow copy", () async {
-    final input = _testClasses['immutableWithShallowCopy']!;
+    final input = _testClasses[TestEntry.immutableWithShallowCopy]!;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/user.dart',
@@ -407,7 +427,7 @@ void main() {
   });
 
   test("generates a valid copyWith method with deep copy", () async {
-    final input = _testClasses['immutableWithDeepCopy']!;
+    final input = _testClasses[TestEntry.immutableWithDeepCopy]!;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/user.dart',
@@ -424,7 +444,7 @@ void main() {
   });
 
   test("generates a deserialize constructor", () async {
-    final input = _testClasses['immutable']!;
+    final input = _testClasses[TestEntry.immutable]!;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/user.dart',
@@ -436,7 +456,7 @@ void main() {
   });
 
   test("generates a file with multiple classes", () async {
-    final input = _testClasses['twoClassesPerFile']!;
+    final input = _testClasses[TestEntry.twoClassesPerFile]!;
 
     final outputs = await _runBuilder(
       inputDartPath: '$outputPackage|lib/multiple.dart',
