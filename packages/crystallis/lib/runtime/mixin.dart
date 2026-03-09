@@ -38,11 +38,23 @@ abstract mixin class CrystallisData {
   ///
   /// (see [get])
   T? tryGet<T>(String field) {
+    var value = tryCopy(field);
+    return value == nullValue ? null : value as T;
+  }
+
+  /// Try to get the value of a field by name,
+  /// returning [nullValue] if:
+  /// - the field does not exist
+  /// - the field value is not of type [T]
+  /// - any [ArgumentError] is thrown during retrieval
+  ///
+  /// (see [get])
+  Object? tryCopy<T>(String field) {
     try {
       final value = get(field);
-      return value is T ? value : null;
+      return value is T ? value : nullValue;
     } on ArgumentError {
-      return null;
+      return nullValue;
     }
   }
 

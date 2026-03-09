@@ -321,7 +321,10 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       for (final f in fields) {
         buffer.write('${f.type.getDisplayString()} ${f.name},');
       }
-      buffer.write('}) get copyWith => ({');
+      buffer.writeln('}) get copyWith => _innerCopyWith;');
+      buffer.writeln();
+
+      buffer.write('  $publicName _innerCopyWith({');
       var objectQuestionType = element.library.typeProvider.objectQuestionType;
       var objectType = element.library.typeProvider.objectType;
       for (final f in fields) {
@@ -354,10 +357,10 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
 
       // copyFrom (like setFrom, but returns a new instance instead of modifying this)
       buffer.write('  $publicName copyFrom(CrystallisData other) {');
-      buffer.write('    return $publicName(');
+      buffer.write('    return _innerCopyWith(');
       for (final f in fields) {
         buffer.write(
-          '${f.name}: other.tryGet<${_castType(f.type)}>(\'${f.name}\') ?? this.${f.name},',
+          '${f.name}: other.tryCopy<${_castType(f.type)}>(\'${f.name}\')${f.type.isNullable ? '' : '!'},',
         );
       }
       buffer.writeln(');');
