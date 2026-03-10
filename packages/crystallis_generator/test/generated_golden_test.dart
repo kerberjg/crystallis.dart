@@ -22,7 +22,8 @@ enum TestEntry {
   immutableAlreadyHasToString,
   immutableAlreadyHasEquals,
   immutableAlreadyHasHashCode,
-  twoClassesPerFile;
+  twoClassesPerFile,
+  nonLibFolder;
 
   String get testFile => switch (this) {
     //
@@ -260,6 +261,16 @@ class Product {
   final String name;
   const Product({required this.name});
 }''',
+  nonLibFolder => r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise(mutable: true)
+class User {
+  String name;
+
+  User({required this.name});
+}'''
   };
 }
 
@@ -486,6 +497,19 @@ void main() {
     expect(output, contains('class ProductData extends Product with CrystallisData'));
     // doesn't contain double imports
     expect(output.split('\n'), containsOnce("import 'package:crystallis/crystallis.dart';"));
+  });
+
+  test("correct import in files outside lib/", () async {
+    final input = TestEntry.nonLibFolder.testFile;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|test/user.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|test/user.data.g.dart']!;
+    expect(generated, contains("import 'package:crystallis/crystallis.dart';"));
+    expect(generated, contains("import 'user.dart';"));
   });
 }
 

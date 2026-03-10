@@ -105,7 +105,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       _librariesWithImports.add(buildStep.inputId.uri);
       buffer.writeln("import 'package:crystallis/crystallis.dart';");
       buffer.writeln("import 'package:crystallis/runtime/serializer.dart';");
-      buffer.writeln("import '${buildStep.inputId.uri}';");
+      buffer.writeln("import '${buildStep.inputId.uri.asPackageOrBaseName}';");
       buffer.writeln();
     }
 
@@ -489,6 +489,10 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
   bool _isNullable(DartType type) {
     return type.nullabilitySuffix == NullabilitySuffix.question;
   }
+}
+
+extension on Uri {
+  String get asPackageOrBaseName => scheme == 'package' ? this.toString() : pathSegments.last;
 }
 
 extension on DartType {
