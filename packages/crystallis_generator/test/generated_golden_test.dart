@@ -261,7 +261,8 @@ class Product {
   final String name;
   const Product({required this.name});
 }''',
-  nonLibFolder => r'''
+    nonLibFolder =>
+      r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 
@@ -270,7 +271,7 @@ class User {
   String name;
 
   User({required this.name});
-}'''
+}''',
   };
 }
 
