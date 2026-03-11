@@ -1,13 +1,7 @@
-// This test needs a real build step to test the copyWith generation, so we generate the file with:
-//
-// dart run packages/crystallis_generator/tool/generate_all.dart
-//
-// After that, we can run these tests.
-
 import 'package:crystallis/annotations.dart';
 import 'package:test/test.dart';
 
-import 'generated/copy_with.dart';
+import 'copy_with_test.data.g.dart';
 
 Future<void> main() async {
   group('copyWith', () {
@@ -73,7 +67,6 @@ Future<void> main() async {
     });
   });
 }
-
 
 /// See the doc at the top of the file for instructions on how to generate the data class and run these tests.
 @Crystallise(mutable: false)
