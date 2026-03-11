@@ -1,0 +1,20 @@
+name: integration
+description: These are integration tests for crystallis_generator.
+version: 1.0.0
+
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+resolution: workspace
+
+dependencies:
+  path: ^1.9.0
+
+dev_dependencies:
+  build_runner: ^2.12.2
+  crystallis: any
+  crystallis_generator:
+    path: ../../
+  test: ^1.30.0
