@@ -10,7 +10,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  analyzer: ^10.0.1
+  analyzer: ^11.0.0
   build: ^4.0.4
   meta: ^1.9.0
   source_gen: ^4.2.0
