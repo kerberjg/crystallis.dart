@@ -18,9 +18,12 @@ on:
     types: [published]
 
 jobs:
-  dart:
-    name: "example"
+  crystallis:
+    strategy:
+      matrix:
+        package:
+          - user
     uses: kerberjg/dart_flutter_ci_experiments/.github/workflows/pipeline.yaml@4224e695167e35d90952e21953b2f933b0f045b0
     with:
-      path: "packages/crystallis/example"
+      path: "packages/crystallis/example/${{ matrix.package }}"
       force-sdk: dart
