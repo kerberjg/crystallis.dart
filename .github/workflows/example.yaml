@@ -24,6 +24,8 @@ jobs:
         include:
           - package: crystallis
             example: user
+          - package: crystallis_generator
+            example: copy_methods
     name: "${{ matrix.package }} (${{ matrix.example }})"
     uses: kerberjg/dart_flutter_ci_experiments/.github/workflows/pipeline.yaml@4224e695167e35d90952e21953b2f933b0f045b0
     with:

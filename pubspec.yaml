@@ -8,5 +8,5 @@ workspace:
   - packages/crystallis
   - packages/crystallis/example/user
   - packages/crystallis_generator
-  - packages/crystallis_generator/test/integration
+  - packages/crystallis_generator/example/copy_methods
   - packages/crystallis_plugin
