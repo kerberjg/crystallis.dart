@@ -30,3 +30,7 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# OS generated files
+.DS_Store
+Thumbs.db
