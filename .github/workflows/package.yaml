@@ -25,6 +25,7 @@ jobs:
           - crystallis
           - crystallis_generator
           - crystallis_plugin
+    name: ${{ matrix.package }}
     with:
       path: "packages/${{ matrix.package }}"
       force-sdk: dart
