@@ -18,13 +18,23 @@ Builder crystallisBuilder(BuilderOptions options) {
       // check if running in a test
       final isTest = code.contains("package:cg_test/");
 
+      // check if running in an example
+      // (package name ends with '_example')
+      final isExample = code
+          .split('\n') //
+          .where((line) => line.startsWith("import 'package:"))
+          .map((line) => line.split('package:')[1].split('/')[0])
+          .any((packageName) => packageName.endsWith('_example'));
+
       const String defaultFileHeader = '// GENERATED CODE - DO NOT MODIFY BY HAND';
       const String defaultDartFormatWidth = '// dart format width=80';
       const String testDartFormatWidth = '// dart format width=1000';
+      const String disableAnalyzer = '// ignore_for_file: type=lint\n';
 
       code =
           '$defaultFileHeader\n'
           '${isTest ? testDartFormatWidth : defaultDartFormatWidth}\n'
+          '${isTest || isExample ? '' : disableAnalyzer}\n'
           '${code.startsWith('$defaultFileHeader\n') ? code.substring(defaultFileHeader.length) : code}';
 
       return DartFormatter(languageVersion: langVersion).format(code);
