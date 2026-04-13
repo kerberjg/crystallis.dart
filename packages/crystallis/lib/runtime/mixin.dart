@@ -142,21 +142,15 @@ abstract mixin class MutableCrystallisData implements CrystallisData {
         final thisMeta = metadata[name]!;
         final otherMeta = other.metadata[name];
 
-        /// TODO(kerberjg): dart-format-off is not working here...
-        // skip when...
-        if ( //
-        otherMeta ==
-                null // missing
-                ||
-            otherMeta.type !=
-                thisMeta
-                    .type // type-mismatched fields
-                    ||
-            !thisMeta
-                .mutable // this field is immutable
-                ) {
+        // dart format off
+        if (
+          otherMeta == null // missing
+          || otherMeta.type != thisMeta .type // type-mismatched fields
+          || !thisMeta.mutable // this field is immutable
+        ) {
           continue;
         }
+        // dart format on
       }
 
       final value = other.get(name);
