@@ -105,14 +105,14 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     final String className = element.name ?? "";
     final String publicName = className + crystallisSuffix;
     final bool mutable = annotation.peek('mutable')?.boolValue ?? true;
-    final bool enableToString = annotation.peek('toString')?.boolValue ?? true;
-    final bool enableEquals = annotation.peek('equals')?.boolValue ?? true;
-    final bool enableHashCode = annotation.peek('hashCode')?.boolValue ?? true;
+    final bool enableToString = annotation.peek('enableToString')?.boolValue ?? true;
+    final bool enableEquals = annotation.peek('enableEquals')?.boolValue ?? true;
+    final bool enableHashCode = annotation.peek('enableHashCode')?.boolValue ?? true;
     final bool useDeepEquality = annotation.peek('useDeepEquality')?.boolValue ?? true;
-    final bool enableCopyWith = annotation.peek('copyWith')?.boolValue ?? true;
+    final bool enableCopyWith = annotation.peek('enableCopyWith')?.boolValue ?? true;
     final bool useDeepCopy = annotation.peek('useDeepCopy')?.boolValue ?? false;
     const String importSerializer = '\'package:crystallis/runtime/serializer.dart\'';
-    final bool enableDeserialize = annotation.peek('deserialize')?.boolValue ?? true;
+    final bool enableDeserialize = annotation.peek('enableDeserialize')?.boolValue ?? true;
 
     final fields = element.fields.where((f) => !f.isStatic).where((f) => f.getter != null).toList();
 
