@@ -241,8 +241,7 @@ class Product {
   const Product({required this.name});
 }''',
   ),
-  nonLibFolder(
-    r'''
+  nonLibFolder(r'''
 library example;
 import 'package:crystallis/crystallis.dart';
 
@@ -251,8 +250,30 @@ class User {
   String name;
 
   User({required this.name});
-}''',
-  );
+}'''),
+  noSerializerImport(r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise(mutable: true, deserialize: false)
+class User {
+  String name;
+
+  User({required this.name});
+}
+'''),
+  onlyOneSerializerImport(r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise(mutable: true, deserialize: true)
+class User {
+  String name;
+  Map<String, String> preferences;
+
+  User({required this.name, required this.preferences});
+}
+''');
 
   const TestEntry(this.testFile);
 
@@ -494,10 +515,37 @@ void main() {
 
     final generated = outputs['$outputPackage|test/user.data.g.dart']!;
 
-    print(generated);
-
     expect(generated, contains("import 'package:crystallis/crystallis.dart';"));
     expect(generated, contains("import 'user.dart';"));
+  });
+
+  test("does not import serializer if not needed", () async {
+    final input = TestEntry.noSerializerImport.testFile;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/user.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
+
+    expect(generated, isNot(contains("import 'package:crystallis/runtime/serializer.dart';")));
+  });
+
+  test("imports serializer if needed, only once", () async {
+    final input = TestEntry.onlyOneSerializerImport.testFile;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/user.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
+
+    expect(
+      generated.split('\n').where((line) => line.contains("import 'package:crystallis/runtime/serializer.dart';")),
+      hasLength(1),
+    );
   });
 }
 
