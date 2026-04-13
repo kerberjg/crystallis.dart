@@ -9,6 +9,8 @@ import 'package:crystallis/runtime/serializer.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 
+const String importFlag = '// crystallis_generator(add_import):';
+
 Builder crystallisBuilder(BuilderOptions options) {
   return LibraryBuilder(
     CrystallisGenerator(),
@@ -36,6 +38,30 @@ Builder crystallisBuilder(BuilderOptions options) {
           '${isTest ? testDartFormatWidth : defaultDartFormatWidth}\n'
           '${isTest || isExample ? '' : disableAnalyzer}\n'
           '${code.startsWith('$defaultFileHeader\n') ? code.substring(defaultFileHeader.length) : code}';
+
+      // add imports after crystalllis import
+      final Set<String> imports = code
+          .split('\n')
+          .where((line) => line.trim().startsWith(importFlag))
+          .map((line) => 'import ${line.substring(importFlag.length + line.indexOf(importFlag)).trim()};')
+          .toSet();
+
+      // clean code of import flags
+      code = code
+          .split('\n') //
+          .where((line) => !line.trim().startsWith(importFlag))
+          .join('\n');
+
+      final lines = code.split('\n');
+      final int crystallisImportIndex = lines.indexWhere(
+        (line) => line.startsWith("import 'package:crystallis/crystallis.dart';"),
+      );
+
+      if (crystallisImportIndex != -1) {
+        final before = lines.sublist(0, crystallisImportIndex + 1);
+        final after = lines.sublist(crystallisImportIndex + 1);
+        code = [...before, ...imports, ...after].join('\n');
+      }
 
       return DartFormatter(languageVersion: langVersion).format(code);
     },
@@ -85,6 +111,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     final bool useDeepEquality = annotation.peek('useDeepEquality')?.boolValue ?? true;
     final bool enableCopyWith = annotation.peek('copyWith')?.boolValue ?? true;
     final bool useDeepCopy = annotation.peek('useDeepCopy')?.boolValue ?? false;
+    const String importSerializer = '\'package:crystallis/runtime/serializer.dart\'';
     final bool enableDeserialize = annotation.peek('deserialize')?.boolValue ?? true;
 
     final fields = element.fields.where((f) => !f.isStatic).where((f) => f.getter != null).toList();
@@ -130,7 +157,6 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     if (!_librariesWithImports.contains(buildStep.inputId.uri)) {
       _librariesWithImports.add(buildStep.inputId.uri);
       buffer.writeln("import 'package:crystallis/crystallis.dart';");
-      buffer.writeln("import 'package:crystallis/runtime/serializer.dart';");
       buffer.writeln("import '${buildStep.inputId.uri.asPackageOrBaseName}';");
       buffer.writeln();
     }
@@ -194,6 +220,8 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
 
     // deserializer constructor
     if (enableDeserialize) {
+      buffer.writeln('  $importFlag $importSerializer');
+
       buffer.writeln('  factory $publicName.deserialize(Map<String, dynamic> data) =>');
       buffer.writeln('      $publicName(');
       for (final f in fields) {
@@ -244,6 +272,8 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       );
 
       if (serializers.isNotEmpty) {
+        buffer.writeln('  $importFlag $importSerializer');
+
         /*
          *  Custom serializer handling
          */
@@ -265,6 +295,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
          *  Default serializer handling
          */
         if (f.type.isDartCoreMap) {
+          buffer.writeln('  $importFlag $importSerializer');
           buffer.writeln(
             '      serializer: MapSerializer<${_typeArguments(f.type).join(', ')}>(),',
           );
