@@ -1,5 +1,3 @@
-// ignore_for_file: public_member_api_docs
-
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -9,8 +7,10 @@ import 'package:crystallis/runtime/serializer.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 
+/// Comment flag used to indicate where imports should be added in the generated code.
 const String importFlag = '// crystallis_generator(add_import):';
 
+/// Entry point for the Crystallis code generator.
 Builder crystallisBuilder(BuilderOptions options) {
   return LibraryBuilder(
     CrystallisGenerator(),
@@ -68,6 +68,7 @@ Builder crystallisBuilder(BuilderOptions options) {
   );
 }
 
+/// Code generator for classes annotated with [Crystallise].
 class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
   static final _validatorChecker = TypeChecker.typeNamed(Validator, inPackage: 'crystallis');
 
