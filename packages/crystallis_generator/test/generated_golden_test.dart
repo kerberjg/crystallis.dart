@@ -85,6 +85,17 @@ class User {
   });
 }''',
   ),
+  immutableWithoutCopy(
+    r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise(mutable: false, copyWith: false)
+class User {
+  final String name;
+  const User({required this.name});
+}''',
+  ),
   immutableWithMutableField(
     r'''
 library example;
@@ -241,6 +252,28 @@ class Product {
   const Product({required this.name});
 }''',
   ),
+  withDeserialize(
+    r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise(mutable: false, deserialize: true)
+class User {
+  final String name;
+  const User({required this.name});
+}''',
+  ),
+  withoutDeserialize(
+    r'''
+library example;
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise(mutable: false, deserialize: false)
+class User {
+  final String name;
+  const User({required this.name});
+}''',
+  ),
   nonLibFolder(r'''
 library example;
 import 'package:crystallis/crystallis.dart';
@@ -272,6 +305,14 @@ class User {
   Map<String, String> preferences;
 
   User({required this.name, required this.preferences});
+}
+
+@Crystallise(mutable: true, deserialize: true)
+class Menu {
+  String title;
+  Map<String, String> entries;
+
+  Menu({required this.title, required this.entries});
 }
 ''');
 
@@ -400,6 +441,7 @@ void main() {
     final generated = outputs['$outputPackage|lib/dot.data.g.dart']!;
     expect(generated, contains('if (other is! DotData) return false;'));
     expect(generated, contains('other.position == position'));
+    expect(generated, isNot(contains('DeepCollectionEquality().equals(other.position, position)')));
   });
 
   test("generates a valid (deep) equals method", () async {
@@ -426,6 +468,7 @@ void main() {
     final generated = outputs['$outputPackage|lib/dot.data.g.dart']!;
     expect(generated, contains('int get hashCode {'));
     expect(generated, contains('Object.hashAll([color, position]);'));
+    expect(generated, isNot(contains('DeepCollectionEquality().equals(other.position, position)')));
   });
 
   test("generates a valid (deep) hashCode method", () async {
@@ -477,6 +520,19 @@ void main() {
     expect(generated, contains('[...friends as List<String>]'));
   });
 
+  test('doesn\'t generate copy methods when copyWith is false', () async {
+    final input = TestEntry.immutableWithoutCopy.testFile;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/user.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
+    expect(generated, isNot(contains('}) get copyWith =>')));
+    expect(generated, isNot(contains('copyFrom(CrystallisData other) =>')));
+  });
+
   test("generates a deserialize constructor", () async {
     final input = TestEntry.immutable.testFile;
 
@@ -517,6 +573,30 @@ void main() {
 
     expect(generated, contains("import 'package:crystallis/crystallis.dart';"));
     expect(generated, contains("import 'user.dart';"));
+  });
+
+  test('generates a deserialize factory when deserialize is true', () async {
+    final input = TestEntry.withDeserialize.testFile;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/user.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
+    expect(generated, contains('factory UserData.deserialize('));
+  });
+
+  test('doesn\'t generate a deserialize factory when deserialize is false', () async {
+    final input = TestEntry.withoutDeserialize.testFile;
+
+    final outputs = await _runBuilder(
+      inputDartPath: '$outputPackage|lib/user.dart',
+      inputDart: input,
+    );
+
+    final generated = outputs['$outputPackage|lib/user.data.g.dart']!;
+    expect(generated, isNot(contains('factory UserData.deserialize(')));
   });
 
   test("does not import serializer if not needed", () async {
