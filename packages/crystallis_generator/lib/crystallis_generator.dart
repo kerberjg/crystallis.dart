@@ -116,6 +116,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     buffer.writeln(
       'class $publicName extends $className with CrystallisData' +
           ', ${mutable ? "MutableCrystallisData" : "ImmutableCrystallisData"}' +
+          ', ${enableCopyWith ? "CopyableCrystallisData<$publicName>" : ""} ' +
           ' {',
     );
 
@@ -317,6 +318,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
 
     // copyWith
     if (enableCopyWith) {
+      buffer.writeln('  @override');
       buffer.write('  $publicName Function({');
       for (final f in fields) {
         buffer.write('${f.type.getDisplayString()} ${f.name},');
@@ -357,6 +359,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       buffer.writeln();
 
       // copyFrom (like setFrom, but returns a new instance instead of modifying this)
+      buffer.writeln('  @override');
       buffer.write('  $publicName copyFrom(CrystallisData other) {');
       buffer.write('    return _innerCopyWith(');
       for (final f in fields) {
