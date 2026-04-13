@@ -3,7 +3,7 @@ import 'package:build_test/build_test.dart';
 import 'package:crystallis_generator/crystallis_generator.dart';
 import 'package:test/test.dart';
 
-const String outputPackage = 'a';
+const String outputPackage = 'cg_test';
 
 enum TestEntry {
   mutable(

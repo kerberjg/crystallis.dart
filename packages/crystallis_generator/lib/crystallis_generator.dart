@@ -6,13 +6,29 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:crystallis/crystallis.dart';
 import 'package:crystallis/runtime/serializer.dart';
+import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 
 Builder crystallisBuilder(BuilderOptions options) {
   return LibraryBuilder(
-    CrystallisGenerator(), //
-    generatedExtension: '.data.g.dart', //
-    options: options, //
+    CrystallisGenerator(),
+    generatedExtension: '.data.g.dart',
+    options: options,
+    formatOutput: (code, langVersion) {
+      // check if running in a test
+      final isTest = code.contains("package:cg_test/");
+
+      const String defaultFileHeader = '// GENERATED CODE - DO NOT MODIFY BY HAND';
+      const String defaultDartFormatWidth = '// dart format width=80';
+      const String testDartFormatWidth = '// dart format width=1000';
+
+      code =
+          '$defaultFileHeader\n'
+          '${isTest ? testDartFormatWidth : defaultDartFormatWidth}\n'
+          '${code.startsWith('$defaultFileHeader\n') ? code.substring(defaultFileHeader.length) : code}';
+
+      return DartFormatter(languageVersion: langVersion).format(code);
+    },
   );
 }
 
@@ -347,7 +363,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
           if (f.type.isNullable) {
             buffer.write('this.${f.name} == null ? null : ');
           }
-          buffer.writeln('$open...${f.type.isNullable ? '?' : ''}this.${f.name} $close)');
+          buffer.writeln('$open...${f.type.isNullable ? '?' : ''}this.${f.name}$close)');
           buffer.write('$prefix  : (');
           if (f.type.isNullable) buffer.write('${f.name} == null ? null : ');
           buffer.writeln('$open...${f.name} as ${_nonNullableType(f.type)}$close),');
