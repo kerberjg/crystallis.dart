@@ -221,8 +221,6 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
 
     // deserializer constructor
     if (enableDeserialize) {
-      buffer.writeln('  $importFlag $importSerializer');
-
       buffer.writeln('  factory $publicName.deserialize(Map<String, dynamic> data) =>');
       buffer.writeln('      $publicName(');
       for (final f in fields) {
