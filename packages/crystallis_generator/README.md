@@ -12,7 +12,7 @@ dependencies:
 
 dev_dependencies:
     crystallis_generator: ^0.0.4
-    build_runner: ^2.4.0
+    build_runner: ^2.13.1
 ```
 
 ## Usage
