@@ -55,7 +55,21 @@ _also see [`crystallis_codegen`](https://github.com/kerberjg/crystallis_generato
 
 ### Getting Started
 
-1. Add `crystallis` to `dependencies` and `crystallis_generator` to `dev_dependencies` in your `pubspec.yaml`:
+1. Add the following to your `pubspec.yaml`:
+```dart
+dependencies:
+  crystallis: ^<latest_version>
+
+dev_dependencies:
+  crystallis_generator: ^<latest_version>
+  build_runner: ^2.13.1
+```
+
+...or run the following to ensure the latest version:
+
+```bash
+dart pub add crystallis dev:crystallis_generator dev:build_runner
+```
 
 2. Annotate your data classes with `@Crystallise()` and define fields with validation annotations as needed.
   - TODO: Add example here
