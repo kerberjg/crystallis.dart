@@ -11,12 +11,12 @@ resolution: workspace
 
 dependencies:
   crystallis:
-    path: ../
+    path: ../../
 
 dev_dependencies:
   crystallis_generator:
-    path: ../../crystallis_generator
+    path: ../../../crystallis_generator
   crystallis_plugin:
-    path: ../../crystallis_plugin
+    path: ../../../crystallis_plugin
   lints: ^6.0.0
   build_runner: ^2.10.5
