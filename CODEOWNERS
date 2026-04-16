@@ -6,3 +6,8 @@
 
 # Default owners for everything in the repo
 *                                       @kerberjg
+
+# Owners for specific packages
+packages/crystallis/                     @kerberjg
+packages/crystallis_generator/           @kerberjg
+packages/crystallis_plugin/              @FMorschel
