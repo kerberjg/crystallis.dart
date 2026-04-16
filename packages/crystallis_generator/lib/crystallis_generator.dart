@@ -162,6 +162,8 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       buffer.writeln();
     }
 
+    final classDocs = '/// [CrystallisData] class for [$className].';
+    buffer.writeln(classDocs);
     // class declaration
     if (!mutable) {
       buffer.writeln("@immutable");
@@ -202,6 +204,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     buffer.writeln();
 
     // constructor
+    buffer.writeln('  $classDocs');
     if (!mutable && element.constructors.any((c) => c.isConst)) {
       buffer.write('  const ');
     } else {
@@ -221,6 +224,9 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
 
     // deserializer constructor
     if (enableDeserialize) {
+      buffer.writeln(
+        '  /// Deserializer constructor for creating an instance of [$publicName] from a `Map<String, dynamic>`.',
+      );
       buffer.writeln('  factory $publicName.deserialize(Map<String, dynamic> data) =>');
       buffer.writeln('      $publicName(');
       for (final f in fields) {
