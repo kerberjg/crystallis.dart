@@ -31,6 +31,15 @@ enum CrystallisRuleFlag {
         'This rule checks for toString() methods manually defined in classes annotated with @Crystallise '
         'when toString generation is enabled, as the generator will skip generation in that case.',
     lint: false,
+  ),
+
+  /// {@macro hashcode_rule}
+  hashcode(
+    name: 'hashcode',
+    description:
+        'This rule checks for hashCode getters manually defined in classes annotated with @Crystallise '
+        'when hashCode generation is enabled, as the generator will skip generation in that case.',
+    lint: false,
   );
 
   const CrystallisRuleFlag({required this.name, required this.description, this.lint = true});
