@@ -14,6 +14,15 @@ enum CrystallisRuleFlag {
         'This rule checks for mutable fields in classes annotated with @Crystallise to make sure they align with '
         "whatever 'mutable' value they were defined.",
     lint: false,
+  ),
+
+  /// {@macro equals_rule}
+  equals(
+    name: 'equals',
+    description:
+        'This rule checks for == operators manually defined in classes annotated with @Crystallise '
+        'when equals generation is enabled, as the generator will skip generation in that case.',
+    lint: false,
   );
 
   const CrystallisRuleFlag({required this.name, required this.description, this.lint = true});
