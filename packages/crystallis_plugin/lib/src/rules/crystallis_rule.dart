@@ -22,6 +22,14 @@ enum CrystallisRuleFlag {
     description:
         'This rule checks for == operators manually defined in classes annotated with @Crystallise '
         'when equals generation is enabled, as the generator will skip generation in that case.',
+  ),
+
+  /// {@macro tostring_rule}
+  tostring(
+    name: 'tostring',
+    description:
+        'This rule checks for toString() methods manually defined in classes annotated with @Crystallise '
+        'when toString generation is enabled, as the generator will skip generation in that case.',
     lint: false,
   );
 

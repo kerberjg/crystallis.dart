@@ -2,6 +2,7 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:crystallis_plugin/src/rules/crystallis_rule.dart';
 import 'package:crystallis_plugin/src/rules/equals.dart';
 import 'package:crystallis_plugin/src/rules/mutability.dart';
+import 'package:crystallis_plugin/src/rules/tostring.dart';
 
 /// A mixin to handle the integration of the declared rules into the plugin.
 mixin RulesMixin {
@@ -11,6 +12,7 @@ mixin RulesMixin {
       switch (ruleFlag) {
         .mutability => MutabilityRule(),
         .equals => EqualsRule(),
+        .tostring => ToStringRule(),
       },
   ];
 
