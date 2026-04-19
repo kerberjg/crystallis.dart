@@ -97,6 +97,21 @@ enum CrystallisCode {
       correctionMessage:
           "Consider removing the hashCode getter or setting 'hashCode: false' in the @Crystallise annotation.",
     ),
+  ),
+
+  /// Checks whether a class annotated with @Crystallise is sealed, final, or has a private name, all of which
+  /// prevent the generator from producing a subclass since we are not generating a part file.
+  unsupportedClassModifier(
+    CrystallisLintCode(
+      ruleFlag: .classModifier,
+      severity: .WARNING,
+      uniqueName: 'crystallis_unsupported_class_modifier',
+      problemMessage:
+          'Classes annotated with @Crystallise cannot be sealed, final, or private. '
+          'No subclass will be generated for this class.',
+      correctionMessage:
+          'Consider removing the class modifier or the private name prefix, or remove the @Crystallise annotation.',
+    ),
   );
 
   const CrystallisCode(this.code);

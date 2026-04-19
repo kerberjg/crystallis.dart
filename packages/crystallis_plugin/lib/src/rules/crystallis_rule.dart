@@ -40,6 +40,15 @@ enum CrystallisRuleFlag {
         'This rule checks for hashCode getters manually defined in classes annotated with @Crystallise '
         'when hashCode generation is enabled, as the generator will skip generation in that case.',
     lint: false,
+  ),
+
+  /// {@macro class_modifier_rule}
+  classModifier(
+    name: 'class_modifier',
+    description:
+        'This rule checks for classes annotated with @Crystallise that are sealed, final, or have a private name, '
+        'as no subclasses can be generated for them.',
+    lint: false,
   );
 
   const CrystallisRuleFlag({required this.name, required this.description, this.lint = true});
