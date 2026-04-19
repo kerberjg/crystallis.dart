@@ -58,6 +58,19 @@ enum CrystallisCode {
       correctionMessage:
           "Consider making the constructor 'const' or changing the value for 'mutable' in @Crystallise annotation.",
     ),
+  ),
+
+  /// Checks whether a class annotated with @Crystallise(equals: true) already defines a == operator,
+  /// which would prevent the generator from generating one.
+  equalsDefined(
+    CrystallisLintCode(
+      ruleFlag: .equals,
+      severity: .WARNING,
+      uniqueName: 'crystallis_equals_defined',
+      problemMessage:
+          'The == operator is already defined. The generator will not generate an == operator for this class.',
+      correctionMessage: "Consider removing the == operator or setting 'equals: false' in the @Crystallise annotation.",
+    ),
   );
 
   const CrystallisCode(this.code);
