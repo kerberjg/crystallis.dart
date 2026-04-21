@@ -4,6 +4,7 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:crystallis/crystallis.dart';
 import 'package:crystallis/runtime/serializer.dart';
+import 'package:crystallis_generator/src/crystallis_enforcer.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -88,18 +89,8 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       );
     }
 
-    if (element.isSealed || element.isFinal) {
-      throw InvalidGenerationSourceError(
-        '@Crystallise cannot be applied to sealed/final classes.',
-        element: element,
-      );
-    }
-
-    if (element.isPrivate) {
-      throw InvalidGenerationSourceError(
-        '@Crystallise cannot be applied to private classes.',
-        element: element,
-      );
+    if (CrystallisEnforcer.instance.classModifiersAreValid(element) case var error?) {
+      throw InvalidGenerationSourceError(error, element: element);
     }
 
     const String crystallisSuffix = 'Data';
@@ -128,27 +119,18 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     }
 
     // Validate `toString` generation
-    if (enableToString && element.getMethod('toString') != null) {
-      throw InvalidGenerationSourceError(
-        'Cannot generate toString() method: already defined in $className.',
-        element: element,
-      );
+    if (CrystallisEnforcer.instance.toStringIsValid(element) case var error? when enableToString) {
+      throw InvalidGenerationSourceError(error, element: element);
     }
 
     // Validate `equals` generation
-    if (enableEquals && element.getMethod('==') != null) {
-      throw InvalidGenerationSourceError(
-        'Cannot generate equals (==) method: already defined in $className.',
-        element: element,
-      );
+    if (CrystallisEnforcer.instance.equalIsValid(element) case var error? when enableEquals) {
+      throw InvalidGenerationSourceError(error, element: element);
     }
 
     // Validate `hashCode` generation
-    if (enableHashCode && element.getMethod('hashCode') != null) {
-      throw InvalidGenerationSourceError(
-        'Cannot generate hashCode method: already defined in $className.',
-        element: element,
-      );
+    if (CrystallisEnforcer.instance.hashCodeIsValid(element) case var error? when enableHashCode) {
+      throw InvalidGenerationSourceError(error, element: element);
     }
 
     final buffer = StringBuffer();
