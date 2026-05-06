@@ -1,24 +1,26 @@
 import 'package:analyzer/dart/element/element.dart';
 
-/// A class that enforces the rules of the Crystallis Generator.
-class CrystallisEnforcer {
-  /// Const constructor for the CrystallisEnforcer class.
-  const CrystallisEnforcer._();
+import 'crystallis_rule_message.dart';
 
-  /// The singleton instance of the CrystallisEnforcer class.
-  static const instance = CrystallisEnforcer._();
+/// An enforcerer for the rules of the Crystallis Generator.
+enum CrystallisEnforcer {
+  /// The singleton instance of the CrystallisEnforcer.
+  instance;
+
+  /// Const constructor for the CrystallisEnforcer class.
+  const CrystallisEnforcer();
 
   /// If class modifiers are valid for a class annotated with `@Crystallise`, returns `null`. Otherwise, returns an
   /// error message describing the issue.
   String? classModifiersAreValid(ClassElement element) {
     if (element.isSealed) {
-      return 'Classes annotated with @Crystallise cannot be sealed.';
+      return CrystallisRuleMessage.classIsSealed.message;
     }
     if (element.isFinal) {
-      return 'Classes annotated with @Crystallise cannot be final.';
+      return CrystallisRuleMessage.classIsFinal.message;
     }
     if (element.isPrivate) {
-      return 'Classes annotated with @Crystallise cannot have a private name.';
+      return CrystallisRuleMessage.classIsPrivate.message;
     }
     return null;
   }
@@ -27,7 +29,7 @@ class CrystallisEnforcer {
   /// describing the issue.
   String? toStringIsValid(ClassElement element) {
     if (element.getMethod('toString') case MethodElement(isStatic: false)) {
-      return 'Cannot generate toString() method: already defined in ${element.displayName}.';
+      return CrystallisRuleMessage.toStringAlreadyDefined.format(className: element.displayName);
     }
     return null;
   }
@@ -36,7 +38,7 @@ class CrystallisEnforcer {
   /// describing the issue.
   String? equalIsValid(ClassElement element) {
     if (element.getMethod('==') case MethodElement(isStatic: false)) {
-      return 'Cannot generate == operator: already defined in ${element.displayName}.';
+      return CrystallisRuleMessage.equalAlreadyDefined.format(className: element.displayName);
     }
     return null;
   }
@@ -45,7 +47,7 @@ class CrystallisEnforcer {
   /// describing the issue.
   String? hashCodeIsValid(ClassElement element) {
     if (element.getGetter('hashCode') case GetterElement(isStatic: false)) {
-      return 'Cannot generate hashCode getter: already defined in ${element.displayName}.';
+      return CrystallisRuleMessage.hashCodeAlreadyDefined.format(className: element.displayName);
     }
     return null;
   }
