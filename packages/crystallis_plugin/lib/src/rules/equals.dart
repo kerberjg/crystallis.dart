@@ -49,6 +49,6 @@ class _EqualsVisitor extends SimpleAstVisitor<void> {
     };
     if (equalsOperator == null) return;
 
-    rule.reportAtToken(equalsOperator.name);
+    rule.reportAtToken(equalsOperator.name, arguments: [parent.namePart.typeName.lexeme]);
   }
 }

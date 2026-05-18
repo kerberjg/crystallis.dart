@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:analyzer/error/error.dart';
+import 'package:crystallis_generator/src/crystallis_rule_message.dart'; // ignore: implementation_imports owned package
 import 'package:crystallis_plugin/src/rules/crystallis_rule.dart';
 
 /// An enumeration of all the specfic codes that the crystallis_plugin can report on rules. This is a wrapper on
@@ -63,12 +64,11 @@ enum CrystallisCode {
   /// Checks whether a class annotated with @Crystallise(equals: true) already defines a == operator,
   /// which would prevent the generator from generating one.
   equalsDefined(
-    CrystallisLintCode(
+    CrystallisLintCode.generatorMessages(
       ruleFlag: .equals,
       severity: .WARNING,
       uniqueName: 'crystallis_equals_defined',
-      problemMessage:
-          'The == operator is already defined. The generator will not generate an == operator for this class.',
+      problemMessage: .equalAlreadyDefined,
       correctionMessage: "Consider removing the == operator or setting 'equals: false' in the @Crystallise annotation.",
     ),
   );
@@ -90,7 +90,7 @@ class CrystallisLintCode implements LintCode {
   /// {@macro crystallis_code}
   const CrystallisLintCode({
     required this.ruleFlag,
-    required this.problemMessage,
+    required String problemMessage,
     this.correctionMessage,
     this.severity = .INFO,
     this.type = .LINT,
@@ -99,6 +99,24 @@ class CrystallisLintCode implements LintCode {
        isUnresolvedIdentifier = false,
        hasPublishedDocs = false,
        isIgnorable = true,
+       _problemMessage = problemMessage, // TODO(FMorschel): Make use of private named parameters when possible.
+       _problemMessageEnum = null,
+       uniqueName = uniqueName ?? 'CrystallisLintCode.$ruleFlag';
+
+  /// {@macro crystallis_code}
+  const CrystallisLintCode.generatorMessages({
+    required this.ruleFlag,
+    required CrystallisRuleMessage problemMessage,
+    this.correctionMessage,
+    this.severity = .INFO,
+    this.type = .LINT,
+    String? uniqueName,
+  }) : url = null,
+       isUnresolvedIdentifier = false,
+       hasPublishedDocs = false,
+       isIgnorable = true,
+       _problemMessage = null,
+       _problemMessageEnum = problemMessage,
        uniqueName = uniqueName ?? 'CrystallisLintCode.$ruleFlag';
 
   /// The rule type this code is associated with.
@@ -145,7 +163,10 @@ class CrystallisLintCode implements LintCode {
   }
 
   @override
-  final String problemMessage;
+  String get problemMessage => _problemMessage ?? _problemMessageEnum!.message;
+
+  final String? _problemMessage;
+  final CrystallisRuleMessage? _problemMessageEnum;
 
   @override
   final DiagnosticSeverity severity;
