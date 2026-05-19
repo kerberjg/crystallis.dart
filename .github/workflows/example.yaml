@@ -27,7 +27,8 @@ jobs:
           - package: crystallis_generator
             example: copy_methods
     name: "${{ matrix.package }} (${{ matrix.example }})"
-    uses: kerberjg/dart_flutter_ci_experiments/.github/workflows/pipeline.yaml@5499d308241da53d0b175b1a78e16056a97aa918
+    uses: kerberjg/dart_flutter_ci_experiments/.github/workflows/pipeline.yaml@1005fbe057d300105490ff04956178d4c28c06be
     with:
       path: "packages/${{ matrix.package }}/example/${{ matrix.example }}"
       force-sdk: dart
+      skip-publish: true
