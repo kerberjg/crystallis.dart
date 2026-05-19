@@ -18,7 +18,7 @@ on:
 # call the base workflow with the package path
 jobs:
   dart:
-    uses: kerberjg/dart_flutter_ci_experiments/.github/workflows/pipeline.yaml@4224e695167e35d90952e21953b2f933b0f045b0
+    uses: kerberjg/dart_flutter_ci_experiments/.github/workflows/pipeline.yaml@5499d308241da53d0b175b1a78e16056a97aa918
     strategy:
       matrix:
         package:
