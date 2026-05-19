@@ -1,4 +1,10 @@
-# 0.0.4
+# Changelog
+
+## 0.0.5-dev
+
+- TODO
+
+## 0.0.4
 
 - **🛑 Breaking**: Renamed `@CrystallisData` to `@Crystallise`, and `CrystallisMixin` to `CrystallisData`
 - Introduced `MutableCrystallisData` and `ImmutableCrystallisData` for better code path splitting
@@ -16,8 +22,7 @@
     - **🛑 Breaking**: Renamed `@Serializer` to `@Serializable` and added a `Serializer` base abstract class class for better extensibility
     - Properly implemented codegen for custom serializers via field annotations
 
-
-# 0.0.3
+## 0.0.3
 
 - Implemented serialization!
     - Per-field `@Serializer` annotation to customize de/serialization
@@ -26,7 +31,7 @@
     - Generates a `deserialize` constructor to create instances from `Map<String, dynamic>` (optional, on by default)
 - Added `copyFrom` method to copy compatible fields between different data classes
 
-# 0.0.2
+## 0.0.2
 
 - Implemented generation for `toString`, `==`, and `hashCode` methods (optional, on by default)
 - Added `useDeepEquality` option to control deep equality checks for collections (off by default)
@@ -34,6 +39,6 @@
 - Added `useDeepCopy` option to control deep copying of collections in `copyWith` (off by default)
 - Added export for `@immutable` from `package:meta`
 
-# 0.0.1
+## 0.0.1
 
 Initial release.

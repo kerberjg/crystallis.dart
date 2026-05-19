@@ -1,6 +1,6 @@
 name: crystallis_example
 description: Example for crystallis
-version: 0.0.4
+version: 0.0.5-dev
 
 publish_to: "none"
 

@@ -1,6 +1,6 @@
 name: copy_methods_example
 description: These are copy methods' integration examples for crystallis_generator.
-version: 1.0.0
+version: 0.0.5-dev
 
 publish_to: none
 
