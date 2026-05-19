@@ -22,6 +22,5 @@ dev_dependencies:
   lints: ^6.0.0
   test: ^1.25.6
   test_reflective_loader: ^0.4.0
-  crystallis:
-    path: ../crystallis
+  crystallis: ^0.0.5-dev
   essential_lints_annotations: ^0.1.4

@@ -10,12 +10,10 @@ environment:
 resolution: workspace
 
 dependencies:
-  crystallis:
-    path: ../../
+  crystallis: any
   path: ^1.9.0
 
 dev_dependencies:
   build_runner: ^2.12.2
-  crystallis_generator:
-    path: ../../
+  crystallis_generator: any
   test: ^1.30.0
