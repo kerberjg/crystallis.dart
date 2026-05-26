@@ -22,6 +22,8 @@ class EqualsTest extends AnalysisRuleTest with CrystallisDependency {
     super.setUp();
   }
 
+  /// Reports when a class annotated with @Crystallise() defines a == operator, which causes the generator to skip
+  /// generating one.
   Future<void> test_defined() async {
     await assertDiagnostics(
       '''
@@ -40,6 +42,8 @@ class MyClass {
     );
   }
 
+  /// Does not report when a class annotated with @Crystallise(equals: false) defines a == operator, as the generator
+  /// will not attempt to generate one in that case.
   Future<void> test_defined_disabled() async {
     await assertNoDiagnostics('''
 import 'package:crystallis/crystallis.dart';
@@ -55,6 +59,8 @@ class MyClass {
 ''');
   }
 
+  /// Reports when a class annotated with @Crystallise(equals: true) defines a == operator, which causes the generator
+  /// to skip generating one.
   Future<void> test_defined_explicit() async {
     await assertDiagnostics(
       '''
@@ -73,6 +79,7 @@ class MyClass {
     );
   }
 
+  /// Does not report if a class is not annotated with @Crystallise(), as the generator will not work with it.
   Future<void> test_notAnnotated() async {
     await assertNoDiagnostics('''
 class MyClass {
@@ -85,6 +92,8 @@ class MyClass {
 ''');
   }
 
+  /// Does not report if a class annotated with @Crystallise() does not define a == operator, as the generator will
+  /// generate one for it.
   Future<void> test_undefined() async {
     await assertNoDiagnostics('''
 import 'package:crystallis/crystallis.dart';
