@@ -14,7 +14,7 @@ dependencies:
   analyzer: ^12.0.0
   analyzer_plugin: ^0.14.7
   collection: ^1.19.1
-  crystallis_generator: #TODO(FMorschel): Change the version to a published one once it is available on pub.dev
+  crystallis_generator: ^0.0.5-dev
   meta: ^1.18.1
   path: ^1.9.0
 
