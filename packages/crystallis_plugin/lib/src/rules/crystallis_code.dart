@@ -12,7 +12,7 @@ import 'package:crystallis_plugin/src/rules/crystallis_rule.dart';
 enum CrystallisCode {
   /// Checks whether classes annotated with @Crystallise(mutable: false) have any non-final fields.
   mutableField(
-    .new(
+    CrystallisLintCode(
       ruleFlag: .mutability,
       severity: .ERROR,
       uniqueName: 'crystallis_mutable_field',
@@ -24,7 +24,7 @@ enum CrystallisCode {
 
   /// Checks whether classes annotated with @Crystallise(mutable: true) have any final fields.
   immutableField(
-    .new(
+    CrystallisLintCode(
       ruleFlag: .mutability,
       severity: .ERROR,
       uniqueName: 'crystallis_immutable_field',
@@ -36,7 +36,7 @@ enum CrystallisCode {
 
   /// Checks whether classes annotated with @Crystallise(mutable: false) have any non-final fields.
   constConstructor(
-    .new(
+    CrystallisLintCode(
       ruleFlag: .mutability,
       severity: .ERROR,
       uniqueName: 'crystallis_const_constructor',
@@ -50,7 +50,7 @@ enum CrystallisCode {
 
   /// Checks whether classes annotated with @Crystallise(mutable: true) have any final fields.
   nonConstConstructor(
-    .new(
+    CrystallisLintCode(
       ruleFlag: .mutability,
       severity: .ERROR,
       uniqueName: 'crystallis_non_const_constructor',
@@ -64,7 +64,7 @@ enum CrystallisCode {
   /// Checks whether a class annotated with @Crystallise(equals: true) already defines a == operator,
   /// which would prevent the generator from generating one.
   equalsDefined(
-    .generatorMessages(
+    CrystallisLintCode.generatorMessages(
       ruleFlag: .equals,
       severity: .WARNING,
       uniqueName: 'crystallis_equals_defined',
@@ -76,7 +76,7 @@ enum CrystallisCode {
   /// Checks whether a class annotated with @Crystallise(toString: true) already defines a toString() method,
   /// which would prevent the generator from generating one.
   toStringDefined(
-    .generatorMessages(
+    CrystallisLintCode.generatorMessages(
       ruleFlag: .tostring,
       severity: .WARNING,
       uniqueName: 'crystallis_tostring_defined',
