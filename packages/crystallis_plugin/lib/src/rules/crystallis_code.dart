@@ -71,6 +71,19 @@ enum CrystallisCode {
       problemMessage: .equalAlreadyDefined,
       correctionMessage: "Consider removing the == operator or setting 'equals: false' in the @Crystallise annotation.",
     ),
+  ),
+
+  /// Checks whether a class annotated with @Crystallise(toString: true) already defines a toString() method,
+  /// which would prevent the generator from generating one.
+  toStringDefined(
+    CrystallisLintCode.generatorMessages(
+      ruleFlag: .tostring,
+      severity: .WARNING,
+      uniqueName: 'crystallis_tostring_defined',
+      problemMessage: .toStringAlreadyDefined,
+      correctionMessage:
+          "Consider removing the toString() method or setting 'toString: false' in the @Crystallise annotation.",
+    ),
   );
 
   const CrystallisCode(this.code);

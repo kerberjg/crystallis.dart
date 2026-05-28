@@ -1,0 +1,108 @@
+import 'package:analyzer_testing/analysis_rule/analysis_rule.dart';
+import 'package:crystallis_plugin/src/rules/crystallis_code.dart';
+import 'package:crystallis_plugin/src/rules/tostring.dart';
+import 'package:essential_lints_annotations/essential_lints_annotations.dart';
+import 'package:test_reflective_loader/test_reflective_loader.dart';
+
+import '../src/crystallis_dependency.dart';
+
+void main() {
+  defineReflectiveSuite(() {
+    defineReflectiveTests(ToStringTest);
+  });
+}
+
+@reflectiveTest
+@SortingMembers({.method(#setUp), .methods}, alphabetizeSortedMembers: true, linesAroundSortedMembers: 1)
+class ToStringTest extends AnalysisRuleTest with CrystallisDependency {
+  @override
+  Future<void> setUp() async {
+    rule = ToStringRule();
+    await addCrystallisDependency();
+    super.setUp();
+  }
+
+  /// Reports when a class annotated with @Crystallise() already defines a toString() method, which causes the generator
+  /// to skip generating one.
+  Future<void> test_defined() async {
+    await assertDiagnostics(
+      '''
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise()
+class MyClass {
+  const MyClass();
+  final int field = 0;
+
+  @override
+  String toString() => 'MyClass(field: \$field)';
+}
+''',
+      [error(CrystallisCode.toStringDefined.code, 141, 8)],
+    );
+  }
+
+  /// Does not report when a class annotated with @Crystallise(toString: false) already defines a toString() method, as
+  /// the generator will not attempt to generate one in that case.
+  Future<void> test_defined_disabled() async {
+    await assertNoDiagnostics('''
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise(toString: false)
+class MyClass {
+  const MyClass();
+  final int field = 0;
+
+  @override
+  String toString() => 'MyClass(field: \$field)';
+}
+''');
+  }
+
+  /// Reports when a class annotated with @Crystallise(toString: true) already defines a toString() method, which causes
+  /// the generator to skip generating one.
+  Future<void> test_defined_explicit() async {
+    await assertDiagnostics(
+      '''
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise(toString: true)
+class MyClass {
+  const MyClass();
+  final int field = 0;
+
+  @override
+  String toString() => 'MyClass(field: \$field)';
+}
+''',
+      [error(CrystallisCode.toStringDefined.code, 155, 8)],
+    );
+  }
+
+  /// Does not report if a class is not annotated with @Crystallise(), as the generator will not work with it.
+  Future<void> test_notAnnotated() async {
+    await assertNoDiagnostics('''
+class MyClass {
+  const MyClass();
+  final int field = 0;
+
+  @override
+  String toString() => 'MyClass(field: \$field)';
+}
+''');
+  }
+
+  /// Does not report when a class annotated with @Crystallise() does not define a toString() method, as the generator
+  /// will generate one in that case.
+  Future<void> test_undefined() async {
+    await assertNoDiagnostics('''
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise()
+class MyClass {
+  const MyClass();
+  final int field = 0;
+}
+''');
+  }
+}
