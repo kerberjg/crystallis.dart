@@ -84,6 +84,19 @@ enum CrystallisCode {
       correctionMessage:
           "Consider removing the toString() method or setting 'toString: false' in the @Crystallise annotation.",
     ),
+  ),
+
+  /// Checks whether a class annotated with @Crystallise(hashCode: true) already defines a hashCode getter,
+  /// which would prevent the generator from generating one.
+  hashCodeDefined(
+    CrystallisLintCode.generatorMessages(
+      ruleFlag: .hashcode,
+      severity: .WARNING,
+      uniqueName: 'crystallis_hashcode_defined',
+      problemMessage: .hashCodeAlreadyDefined,
+      correctionMessage:
+          "Consider removing the hashCode getter or setting 'hashCode: false' in the @Crystallise annotation.",
+    ),
   );
 
   const CrystallisCode(this.code);
