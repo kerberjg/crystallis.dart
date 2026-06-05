@@ -49,6 +49,6 @@ class _HashCodeVisitor extends SimpleAstVisitor<void> {
     };
     if (hashCodeGetter == null) return;
 
-    rule.reportAtToken(hashCodeGetter.name);
+    rule.reportAtToken(hashCodeGetter.name, arguments: [parent.namePart.typeName.lexeme]);
   }
 }
