@@ -9,7 +9,7 @@ import 'package:crystallis_plugin/src/rules/crystallis_rule.dart';
 ///
 /// This is needed because the server internally checks for the same instance of `LintCode`s, so we must ensure these
 /// are constants and not created on the fly.
-enum CrystallisCode {
+enum CrystallisCode with CrystallisCodeMixin {
   /// Checks whether classes annotated with @Crystallise(mutable: false) have any non-final fields.
   mutableField(
     CrystallisLintCode(
@@ -116,8 +116,7 @@ enum CrystallisCode {
 
   const CrystallisCode(this.code);
 
-  /// The [CrystallisLintCode] associated with this rule. This contains the details of the rule, such as the name,
-  /// description, problem message, and correction message.
+  @override
   final CrystallisLintCode code;
 }
 

@@ -1,10 +1,8 @@
-import 'package:analyzer_testing/analysis_rule/analysis_rule.dart';
 import 'package:crystallis_plugin/src/rules/class_modifier.dart';
-import 'package:crystallis_plugin/src/rules/crystallis_code.dart';
 import 'package:essential_lints_annotations/essential_lints_annotations.dart';
 import 'package:test_reflective_loader/test_reflective_loader.dart';
 
-import '../src/crystallis_dependency.dart';
+import '../src/mutlti_crystallis_rule_test.dart';
 
 void main() {
   defineReflectiveSuite(() {
@@ -14,13 +12,9 @@ void main() {
 
 @reflectiveTest
 @SortingMembers({.method(#setUp), .methods}, alphabetizeSortedMembers: true, linesAroundSortedMembers: 1)
-class ClassModifierTest extends AnalysisRuleTest with CrystallisDependency {
+class ClassModifierTest extends MutltiCrystallisRuleTest<ClassModifierCode> {
   @override
-  Future<void> setUp() async {
-    rule = ClassModifierRule();
-    await addCrystallisDependency();
-    super.setUp();
-  }
+  get rule => ClassModifierRule();
 
   Future<void> test_final() async {
     await assertDiagnostics(
@@ -33,7 +27,7 @@ final class MyClass {
   final int field = 0;
 }
 ''',
-      [error(CrystallisCode.unsupportedClassModifier.code, 46, 14)],
+      [code(.final_, 46, 14)],
     );
   }
 
@@ -69,7 +63,7 @@ class _MyClass {
   final int field = 0;
 }
 ''',
-      [error(CrystallisCode.unsupportedClassModifier.code, 46, 14)],
+      [code(.private, 46, 14)],
     );
   }
 
@@ -84,7 +78,7 @@ sealed class MyClass {
   final int field = 0;
 }
 ''',
-      [error(CrystallisCode.unsupportedClassModifier.code, 46, 14)],
+      [code(.sealed_, 46, 14)],
     );
   }
 }
