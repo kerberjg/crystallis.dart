@@ -2,7 +2,7 @@ import 'package:crystallis_plugin/src/rules/class_modifier.dart';
 import 'package:essential_lints_annotations/essential_lints_annotations.dart';
 import 'package:test_reflective_loader/test_reflective_loader.dart';
 
-import '../src/mutlti_crystallis_rule_test.dart';
+import '../src/mutlti_crystallis_rule.dart';
 
 void main() {
   defineReflectiveSuite(() {
