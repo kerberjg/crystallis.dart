@@ -1,4 +1,5 @@
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:crystallis_plugin/src/rules/class_modifier.dart';
 import 'package:crystallis_plugin/src/rules/crystallis_rule.dart';
 import 'package:crystallis_plugin/src/rules/hashcode.dart';
 import 'package:crystallis_plugin/src/rules/equals.dart';
@@ -15,6 +16,7 @@ mixin RulesMixin {
         .equals => EqualsRule(),
         .tostring => ToStringRule(),
         .hashcode => HashCodeRule(),
+        .classModifier => ClassModifierRule(),
       },
   ];
 

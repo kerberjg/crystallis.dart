@@ -25,6 +25,7 @@ linter:
     - unnecessary_raw_strings
     - prefer_single_quotes
     - avoid_escaping_inner_quotes
+    - deprecated_member_use_from_same_package
 
 formatter:
   page_width: 120
