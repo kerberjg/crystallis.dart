@@ -1,13 +1,26 @@
 import 'dart:core';
 
-import '../../api/validator.dart';
+import 'package:crystallis/api/validator.dart';
 
-// ignore: public_member_api_docs
+/// [Validator] that checks if a String value matches the given regex pattern.
+///
+/// Works on [String] fields.
+///
+/// Example:
+/// ```dart
+/// @RegEx(r'^[A-Z]{2}\d{4}$')
+/// String code = 'US1234';
+/// ```
+///
+/// See also:
+/// - [Email], which uses [RegEx] internally
 class RegEx extends Validator {
   /// The regex pattern to validate against.
   final String pattern;
 
-  /// [Validator] that checks if a String value matches the given regex pattern.
+  /// Creates a [RegEx] validator.
+  ///
+  /// [pattern] is the regex pattern to match against.
   const RegEx(this.pattern);
 
   @override

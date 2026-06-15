@@ -1,4 +1,4 @@
-/// Crystallis validation annotations.
+/// Crystallis built-in validation annotations.
 ///
 /// Import this to use field-level validators like [Min], [Max],
 /// [Email], [NotEmpty], etc.
@@ -13,6 +13,10 @@
 ///   String email = '';
 /// }
 /// ```
+///
+/// See also:
+/// - [ValidationException], thrown when validation fails
+/// - `package:crystallis/api/validator.dart`, for writing your own validator annotations
 library;
 
 export 'api/validator.dart' show ValidationException;

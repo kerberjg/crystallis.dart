@@ -1,9 +1,31 @@
+library;
+
 import 'package:crystallis/crystallis.dart';
 
 import 'base.dart';
 
 /// Mutable variant of [CrystallisData].
+///
+/// Applied to generated data classes when [Crystallise.mutable] is true.
+/// Allows field modification after instantiation.
+
+/// Mutable variant of [CrystallisData].
+///
 /// Used on generated data classes when [Crystallise.mutable] is true.
+/// Allows field modification after instantiation.
+///
+/// Example:
+/// ```dart
+/// @Crystallise(mutable: true)
+/// class User {
+///   String name = '';
+/// }
+///
+/// void main() {
+///   final user = User();
+///   user.name = 'John'; // Allowed
+/// }
+/// ```
 abstract mixin class MutableCrystallisData implements CrystallisData {
   @override
   void setFrom(CrystallisData other) {

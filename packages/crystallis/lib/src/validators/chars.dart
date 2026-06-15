@@ -1,13 +1,22 @@
-import '../../api/validator.dart';
+import 'package:crystallis/api/validator.dart';
 import 'regex.dart';
 
-// ignore: public_member_api_docs
+/// [Validator] that checks if a value contains only allowed characters.
+///
+/// Works on [String] fields.
+///
+/// Example:
+/// ```dart
+/// @AllowedChars('abcdefghijklmnopqrstuvwxyz')
+/// String username = 'john';
+/// ```
 class AllowedChars extends Validator {
   /// The string containing all allowed characters.
   final String allowedChars;
 
-  /// [Validator] that checks if a value contains only allowed characters.
-  /// Works on [String] fields.
+  /// Creates an [AllowedChars] validator.
+  ///
+  /// [allowedChars] specifies the characters that are allowed.
   const AllowedChars(this.allowedChars);
 
   @override
@@ -30,9 +39,17 @@ class AllowedChars extends Validator {
   }
 }
 
-// ignore: public_member_api_docs
+/// [Validator] that checks if a String value is all uppercase.
+///
+/// Works on [String] fields.
+///
+/// Example:
+/// ```dart
+/// @Uppercase()
+/// String code = 'ABC';
+/// ```
 class Uppercase extends Validator {
-  /// [Validator] that checks if a String value is all uppercase.
+  /// Creates an [Uppercase] validator.
   const Uppercase();
 
   @override
@@ -46,9 +63,17 @@ class Uppercase extends Validator {
   }
 }
 
-// ignore: public_member_api_docs
+/// [Validator] that checks if a String value is all lowercase.
+///
+/// Works on [String] fields.
+///
+/// Example:
+/// ```dart
+/// @Lowercase()
+/// String code = 'abc';
+/// ```
 class Lowercase extends Validator {
-  /// [Validator] that checks if a String value is all lowercase.
+  /// Creates a [Lowercase] validator.
   const Lowercase();
 
   @override
@@ -62,31 +87,71 @@ class Lowercase extends Validator {
   }
 }
 
-// ignore: public_member_api_docs
+/// [Validator] that checks if a value contains only numeric characters.
+///
+/// Works on [String] fields.
+///
+/// Example:
+/// ```dart
+/// @OnlyNumbers()
+/// String zipCode = '12345';
+/// ```
+///
+/// See also:
+/// - [Alphanumeric], for letters and numbers
+/// - [OnlyLetters], for letters only
 class OnlyNumbers extends RegEx {
-  /// [Validator] that checks if a value contains only numeric characters.
-  /// Works on [String] fields.
+  /// Creates an [OnlyNumbers] validator.
   const OnlyNumbers() : super(r'^[0-9]+$');
 }
 
-// ignore: public_member_api_docs
+/// [Validator] that checks if a value contains only letter characters.
+///
+/// Works on [String] fields.
+///
+/// Example:
+/// ```dart
+/// @OnlyLetters()
+/// String name = 'John';
+/// ```
+///
+/// See also:
+/// - [Alphanumeric], for letters and numbers
+/// - [OnlyNumbers], for numbers only
 class OnlyLetters extends RegEx {
-  /// [Validator] that checks if a value contains only letter characters.
-  /// Works on [String] fields.
+  /// Creates an [OnlyLetters] validator.
   const OnlyLetters() : super(r'^[a-zA-Z]+$');
 }
 
-// ignore: public_member_api_docs
+/// [Validator] that checks if a value contains only alphanumeric characters.
+///
+/// Works on [String] fields.
+///
+/// Example:
+/// ```dart
+/// @Alphanumeric()
+/// String username = 'user123';
+/// ```
+///
+/// See also:
+/// - [OnlyLetters], for letters only
+/// - [OnlyNumbers], for numbers only
 class Alphanumeric extends RegEx {
-  /// [Validator] that checks if a value contains only alphanumeric characters.
-  /// Works on [String] fields.
+  /// Creates an [Alphanumeric] validator.
   const Alphanumeric() : super(r'^[a-zA-Z0-9]+$');
 }
 
-// ignore: public_member_api_docs
+/// [Validator] that checks if a value contains no whitespace.
+///
+/// Works on [String] fields.
+///
+/// Example:
+/// ```dart
+/// @NoWhitespace()
+/// String username = 'john_doe';
+/// ```
 class NoWhitespace extends Validator {
-  /// [Validator] that checks if a value contains no whitespace.
-  /// Works on [String] fields.
+  /// Creates a [NoWhitespace] validator.
   const NoWhitespace();
 
   @override

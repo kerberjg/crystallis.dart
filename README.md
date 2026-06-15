@@ -1,6 +1,6 @@
 <div align="center">
 
-# crystallis.dart
+# crystallis
 💠✨ Data class codegen w/ validation &amp; runtime metadata for Dart
 
 ```bash
@@ -46,8 +46,9 @@ _also see [`crystallis_codegen`](https://github.com/kerberjg/crystallis_generato
 
 #### Coming up next:
 - Support for native/FFI types
-- `ByteBuffer` serialization/deserialization
-- More validators
+- Better serialization (more formats, customization, etc)
+- Performance improvements
+- ...[and more!](https://github.com/kerberjg/crystallis.dart/issues?q=is%3Aissue%20state%3Aopen%20label%3Afeature)
 
 ---
 
@@ -87,12 +88,53 @@ dart run build_runner watch
 ### Example
 
 ```dart
-/// TODO
+import 'package:crystallis/crystallis.dart';
+
+@Crystallise(mutable: false)
+class User {
+  @NotEmpty()
+  final String name = '';
+
+  @Email()
+  final String email = '';
+
+  @Range(0, 150)
+  final int age = 0;
+
+  @Length(min: 2, max: 50)
+  final String bio = '';
+
+  ...
+}
+
+// Usage
+void main() {
+  final user = User(
+    name: 'Jane Doe',
+    email: 'jane@example.com',
+    age: 25,
+    bio: 'Dart engineer',
+  );
+
+  // Validation
+  final errors = user.validate();
+  if (errors.isNotEmpty) {
+    print('Validation failed: $errors');
+  }
+
+  // Serialization
+  final json = user.serialize();
+  print(json); // {name: Jane Doe, email: jane@example.com, age: 25, bio: Dart engineer}
+
+  // Copy with changes
+  final updated = user.copyWith(age: 26);
+  print('${user.age}, ${updated.age}'); // 25, 26
+}
 ```
 
 ### Development & Maintenance
 
-TODO
+// TODO: this section should contain instructions on how to develop the library itself
 
 ---
 

@@ -1,17 +1,23 @@
+library;
+
 import 'package:meta/meta.dart';
 
 import '../api/serializer.dart';
 import 'mixins/base.dart';
 
-/// List of supported primitive types for serialization/deserialization
+/// Crystallis serialization utilities.
+
+/// List of supported primitive types for serialization/deserialization.
 const Set<Type> kSupportedPrimitiveTypes = {int, double, String, bool, Null};
 
-/// Basic serialization function. Handles:
+/// Basic serialization function.
+///
+/// Handles:
 /// - Primitive types: [int], [double], [String], [bool]
 /// - [Null]s
 /// - [List]s (recursively serializes elements)
 /// - [Map]s (recursively serializes keys and values)
-/// - [CrystallisData] objects (calls their [serialize] method)
+/// - [CrystallisData] objects (calls their [CrystallisData.serialize] method)
 /// - Other types result in an [ArgumentError]
 dynamic serializeValue(dynamic value) => switch (value) {
   null => null,
@@ -26,12 +32,18 @@ dynamic serializeValue(dynamic value) => switch (value) {
   ),
 };
 
-/// Serializes a [Map] to a JSON-compatible [Map<String, dynamic>]
-/// by converting keys to strings and recursively serializing values
+/// Serializes a [Map] to a JSON-compatible [Map<String, dynamic>].
+///
+/// Converts keys to strings and recursively serializes values.
+///
+/// See also:
+/// - [serializeValue], for general value serialization
 Map<String, V?> serializeMap<V>(Map<dynamic, V> map) => //
     map.map((k, v) => MapEntry(k.toString(), serializeValue(v)));
 
-/// Basic deserialization function. Handles:
+/// Basic deserialization function.
+///
+/// Handles:
 /// - Primitive types: [int], [double], [String], [bool]
 /// - [Null]s
 /// - [List]s (recursively deserializes elements)
@@ -114,11 +126,11 @@ T deserializeValue<T>(dynamic value) {
   );
 }
 
-/// Returns whether the given type [T] is a nullable of the given non-nullable type [C].
+/// Returns whether the given type `T` is a nullable of the given non-nullable type `C`.
 @pragma("vm:always-consider-inlining")
 bool isNullableSelf<C, T>() => isNullable<T>() && <C?>[] is List<T>;
 
-/// Returns whether the given type [T] is a nullable of the given non-nullable type [C].
+/// Returns whether the given type `T` is a nullable type.
 @pragma("vm:always-consider-inlining")
 bool isNullable<T>() => null is T;
 

@@ -1,33 +1,71 @@
+library;
+
 import 'package:crystallis/api/validator.dart' show ValidationException;
 import 'package:crystallis/crystallis.dart';
 import 'package:meta/meta.dart';
 
-import '../field_metadata.dart';
+import '../reflection.dart';
 
 /// Sentinel value used to represent true nullability in [copyWith] parameters.
 enum _NullableSentinel { i }
 
+/// Base mixin for Crystallis data classes.
+///
+/// Provides validation, get/set accessors, and serialization.
+/// Applied to classes generated with [Crystallise].
+///
+/// Subclasses:
+/// - [MutableCrystallisData]: allows mutation
+/// - [ImmutableCrystallisData]: prevents mutation
+///
+/// See also:
+/// - [CopyableCrystallisData], adds copy functionality
+
 /// Mixin class that provides validation functionality for data classes.
 /// Applied to classes generated with [Crystallise].
+///
+/// Provides:
+/// - Field get/set accessors
+/// - Per-field and full-object validation
+/// - Serialization to `Map<String, dynamic>`
+///
+/// Example:
+/// ```dart
+/// @Crystallise()
+/// class User {
+///   @NotEmpty()
+///   String name = '';
+/// }
+///
+/// void main() {
+///   final user = User()..name = 'John';
+///   final errors = user.validate();
+///   print(errors); // {name: [], ...}
+/// }
+/// ```
 abstract mixin class CrystallisData {
   /// Per-field metadata of this data class.
+  ///
+  /// Use this for runtime reflection or custom serialization.
   Map<String, FieldMetadata> get metadata;
 
-  /// [Crystallise] configuration
+  /// [Crystallise] configuration.
   @protected
   Crystallise get config;
 
-  /// Nullable value sentinel used in generated [copyWith] methods.
+  /// Nullable value sentinel used in generated copy methods.
   @protected
   // ignore: library_private_types_in_public_api
   static const _NullableSentinel nullValue = _NullableSentinel.i;
 
   /// Get the value of a field by name.
+  ///
   /// To see what type it might be, check [metadata].
   ///
   /// Throws an [ArgumentError] if the field does not exist.
   ///
-  /// (see [FieldMetadata.type])
+  /// See also:
+  /// - [tryGet], for safe retrieval
   Object? get(String field);
 
   /// Try to get the value of a field by name,
@@ -36,7 +74,8 @@ abstract mixin class CrystallisData {
   /// - the field value is not of type [T]
   /// - any [ArgumentError] is thrown during retrieval
   ///
-  /// (see [get])
+  /// See also:
+  /// - [get], for direct access
   T? tryGet<T>(String field) {
     var value = tryCopy(field);
     return value == nullValue ? null : value as T;
@@ -48,7 +87,8 @@ abstract mixin class CrystallisData {
   /// - the field value is not of type [T]
   /// - any [ArgumentError] is thrown during retrieval
   ///
-  /// (see [get])
+  /// See also:
+  /// - [get], for direct access
   Object? tryCopy<T>(String field) {
     try {
       final value = get(field);
@@ -61,7 +101,10 @@ abstract mixin class CrystallisData {
   /// Set the value of a field by name.
   void set<T>(String field, T value);
 
-  /// Validate a single field
+  /// Validate a single field.
+  ///
+  /// Returns a list of [ValidationException] for the field,
+  /// or throws [ArgumentError] if the field does not exist.
   List<ValidationException> validateField(String field) {
     final meta = metadata[field];
     if (meta == null) {
@@ -81,7 +124,9 @@ abstract mixin class CrystallisData {
     return errors;
   }
 
-  /// Validate all fields (including those with zero validators)
+  /// Validate all fields (including those with zero validators).
+  ///
+  /// Returns a map of field names to lists of validation exceptions.
   Map<String, List<ValidationException>> validate() {
     final result = <String, List<ValidationException>>{};
 
@@ -94,7 +139,9 @@ abstract mixin class CrystallisData {
 
   /// Asserts that the field can be set with the given value,
   /// and throws [List<ValidationException>] if any validators fail.
-  /// Throws [ArgumentError] if the field does not exist or if the value is of the wrong type.
+  ///
+  /// Throws [ArgumentError] if the field does not exist or if the
+  /// value is of the wrong type.
   void assertSet<T>(String field, T value) {
     final meta = metadata[field];
     if (meta == null) throw ArgumentError.value(field, 'field');
@@ -111,11 +158,12 @@ abstract mixin class CrystallisData {
   }
 
   /// Copies compatible fields from any [other] instance of [CrystallisData].
+  ///
   /// Incompatible fields (missing or type-mismatched) are skipped.
   /// Null values are skipped.
   void setFrom(CrystallisData other);
 
-  /// Serializes this object into a [Map<String, dynamic>]
+  /// Serializes this object into a [Map<String, dynamic>].
   Map<String, dynamic> serialize() {
     final result = <String, dynamic>{};
 

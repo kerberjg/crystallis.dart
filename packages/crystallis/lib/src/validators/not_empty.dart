@@ -1,9 +1,25 @@
-import '../../api/validator.dart';
+import 'package:crystallis/api/validator.dart';
 
-// ignore: public_member_api_docs
+/// [Validator] that checks if a value is not empty.
+///
+/// Works on [String], [Iterable], and [Map] fields.
+///
+/// Example:
+/// ```dart
+/// @Crystallise()
+/// class User {
+///   @NotEmpty()
+///   String name = '';
+///
+///   @NotEmpty()
+///   List<String> tags = [];
+/// }
+/// ```
+///
+/// See also:
+/// - [Length], for specific length requirements
 class NotEmpty extends Validator {
-  /// [Validator] that checks if a value is not empty.
-  /// Works on [String], [Iterable], [Map] fields.
+  /// Creates a [NotEmpty] validator.
   const NotEmpty();
 
   @override

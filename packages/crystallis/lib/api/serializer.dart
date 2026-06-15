@@ -1,7 +1,49 @@
+/// Crystallis API for custom serializers.
+///
+/// Extend [Serializer] to create custom serialization logic.
+///
+/// Example:
+/// ```dart
+/// import 'package:crystallis/api/serializer.dart';
+///
+/// class DateTimeSerializer extends Serializer<DateTime, String> {
+///   @override
+///   String serialize(DateTime value) => value.toIso8601String();
+///
+///   @override
+///   DateTime deserialize(String value) => DateTime.parse(value);
+/// }
+/// ```
+///
+/// You can then...
+///
+/// - Register globally: all fields of type `DateTime` will use this serializer.
+/// ```dart
+/// Crystallis.i.registerSerializer<DateTime>(DateTimeSerializer());
+/// ```
+///
+/// - Use as annotation on a specific field:
+/// ```dart
+/// @Crystallise()
+/// class Event {
+///   @DateTimeSerializer()
+///   DateTime timestamp = DateTime.now();
+/// }
+///
+/// @docImport 'package:crystallis/generated.dart';
+
+library;
+
 /// Abstract base class for custom serializers.
-/// See [Serializable] and [FieldMetadata.serializer] for details.
+///
+/// Implement this interface to create custom serializers.
+///
+/// See also:
+/// - [Serializable], for inline serializer definitions
+/// - [FieldMetadata.serializer], for field-level serializer configuration
+///
 abstract class Serializer<I, O> {
-  /// Creates a [Serializer]
+  /// Creates a [Serializer].
   const Serializer();
 
   /// Function that converts from type [I] to type [O]
@@ -20,8 +62,24 @@ abstract class Serializer<I, O> {
   Object? deserializeUntyped(Object? value) => deserialize(value as O);
 }
 
-/// Specifies a custom serializer/deserializer annotation for a field
-/// Converts between type [I] (the field type) and type [O] (the serialized type)
+/// Specifies a custom serializer/deserializer annotation for a field.
+///
+/// Converts between type [I] (the field type) and type [O] (the serialized type).
+///
+/// Example:
+/// ```dart
+/// @Crystallise()
+/// class Event {
+///   @Serializable(
+///     serialize: (value) => value.toIso8601String(),
+///     deserialize: (value) => DateTime.parse(value),
+///   )
+///   DateTime timestamp = DateTime.now();
+/// }
+/// ```
+///
+/// See also:
+/// - [Serializer], for class-based serializers
 class Serializable<I, O> extends Serializer<I, O> {
   /// Function that converts from type [I] to type [O]
   final O Function(I value) _serialize;
@@ -29,7 +87,7 @@ class Serializable<I, O> extends Serializer<I, O> {
   /// Function that converts from type [O] to type [I]
   final I Function(O value) _deserialize;
 
-  /// Creates a [Serializable] with the given [serialize] and [deserialize] functions
+  /// Creates a [Serializable] with the given [serialize] and [deserialize] functions.
   const Serializable({
     required O Function(I value) serialize,
     required I Function(O value) deserialize,

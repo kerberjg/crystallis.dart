@@ -4,11 +4,11 @@
 /// not by user code directly.
 library;
 
+export 'api/validator.dart';
 export 'src/mixins/base.dart';
 export 'src/mixins/mutable.dart';
 export 'src/mixins/immutable.dart';
 export 'src/mixins/copyable.dart';
-export 'src/field_metadata.dart';
-export 'api/validator.dart';
+export 'src/reflection.dart';
 export 'src/utils.dart';
 export 'src/crystallise_annotation.dart';
