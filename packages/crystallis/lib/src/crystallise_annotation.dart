@@ -1,17 +1,6 @@
-import 'package:crystallis/crystallis.dart';
 import 'package:meta/meta_meta.dart';
 
-export 'validators/range.dart';
-export 'validators/not_empty.dart';
-export 'validators/email.dart';
-export 'validators/chars.dart';
-export 'validators/length.dart';
-export 'validators/values.dart';
-export 'validators/regex.dart';
-
-// External exports
-export 'package:meta/meta.dart' show immutable;
-export 'package:collection/collection.dart' show DeepCollectionEquality;
+import 'crystallis_singleton.dart';
 
 /// Annotation to mark a class for code generation by Crystallis.
 ///

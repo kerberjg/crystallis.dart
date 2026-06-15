@@ -1,4 +1,4 @@
-import 'package:crystallis/validators/regex.dart';
+import 'regex.dart';
 
 // ignore: public_member_api_docs
 class Email extends RegEx {

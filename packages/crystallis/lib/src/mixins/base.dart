@@ -1,8 +1,8 @@
-import 'package:crystallis/annotations.dart';
+import 'package:crystallis/api/validator.dart' show ValidationException;
+import 'package:crystallis/crystallis.dart';
 import 'package:meta/meta.dart';
 
-import 'field_metadata.dart';
-import 'validator.dart';
+import '../field_metadata.dart';
 
 /// Sentinel value used to represent true nullability in [copyWith] parameters.
 enum _NullableSentinel { i }
@@ -127,75 +127,4 @@ abstract mixin class CrystallisData {
 
     return result;
   }
-}
-
-/// Mutable variant of [CrystallisData].
-/// Used on generated data classes when [Crystallise.mutable] is true.
-abstract mixin class MutableCrystallisData implements CrystallisData {
-  @override
-  void setFrom(CrystallisData other) {
-    // skip this both this and other are of the same type
-    final bool isSameType = this.runtimeType == other.runtimeType;
-
-    for (final name in metadata.keys) {
-      if (!isSameType) {
-        final thisMeta = metadata[name]!;
-        final otherMeta = other.metadata[name];
-
-        // dart format off
-        if (
-          otherMeta == null // missing
-          || otherMeta.type != thisMeta .type // type-mismatched fields
-          || !thisMeta.mutable // this field is immutable
-        ) {
-          continue;
-        }
-        // dart format on
-      }
-
-      final value = other.get(name);
-
-      // skip null values
-      if (value != null) {
-        set(name, value);
-      }
-    }
-  }
-}
-
-/// Immutable variant of [CrystallisData].
-/// Used on generated data classes when [Crystallise.mutable] is false.
-abstract mixin class ImmutableCrystallisData implements CrystallisData {
-  /// Always throws an [StateError] since immutable data classes
-  /// cannot be modified.
-  @override
-  void set<T>(String field, T value) {
-    throw StateError(
-      'Cannot set field "$field" on immutable data class',
-    );
-  }
-
-  /// Always throws an [StateError] since immutable data classes
-  /// cannot be modified.
-  @override
-  void setFrom(CrystallisData other) {
-    throw StateError(
-      'Cannot set fields from another instance on immutable data class',
-    );
-  }
-}
-
-/// Mixin class for data classes that support copy methods (e.g. [copyWith]).
-/// Applied to classes generated with [Crystallise] when [enableCopyWith] is true
-abstract mixin class CopyableCrystallisData<T extends CrystallisData> implements CrystallisData {
-  /// Creates a copy of this object, with the same values for all fields.
-  /// If [Crystallise.useDeepCopy] is true, performs a deep copy of all fields that are collections or other [CrystallisData] objects.
-  /// Otherwise, performs a shallow copy (i.e. just copies references) for all fields.
-  T Function() get copyWith;
-
-  /// Creates a copy of this object, with the same values for all fields except those provided in [other].
-  /// Fields from [other] that are missing, null, or of the wrong type are ignored and retain their original value in the copy.
-  /// If [Crystallise.useDeepCopy] is true, performs a deep copy of all fields that are collections or other [CrystallisData] objects.
-  /// Otherwise, performs a shallow copy (i.e. just copies references) for all fields.
-  T copyFrom(CrystallisData other);
 }

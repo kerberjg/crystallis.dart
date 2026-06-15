@@ -1,4 +1,4 @@
-import '../runtime/validator.dart';
+import '../../api/validator.dart';
 
 // ignore: public_member_api_docs
 class Length extends Validator {

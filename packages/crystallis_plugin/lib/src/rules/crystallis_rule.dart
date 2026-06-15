@@ -106,6 +106,7 @@ abstract class MutltiCrystallisRule<TCrystallisCode extends CrystallisCodeMixin>
   /// {@macro multi_crystallis_rule}
   MutltiCrystallisRule(this.ruleFlag) : super(name: ruleFlag.name, description: ruleFlag.description);
 
+  
   @override
   List<CrystallisLintCode> get diagnosticCodes => codes.map((c) => c.code).toList();
 

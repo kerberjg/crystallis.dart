@@ -2,8 +2,9 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
+import 'package:crystallis/api/serializer.dart';
+import 'package:crystallis/api/validator.dart';
 import 'package:crystallis/crystallis.dart';
-import 'package:crystallis/runtime/serializer.dart';
 import 'package:crystallis_generator/src/crystallis_enforcer.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
@@ -103,7 +104,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     final bool useDeepEquality = annotation.peek('useDeepEquality')?.boolValue ?? true;
     final bool enableCopyWith = annotation.peek('enableCopyWith')?.boolValue ?? true;
     final bool useDeepCopy = annotation.peek('useDeepCopy')?.boolValue ?? false;
-    const String importSerializer = '\'package:crystallis/runtime/serializer.dart\'';
+    const String importSerializer = '\'package:crystallis/serialization.dart\'';
     final bool enableDeserialize = annotation.peek('enableDeserialize')?.boolValue ?? true;
 
     final fields = element.fields.where((f) => !f.isStatic).where((f) => f.getter != null).toList();

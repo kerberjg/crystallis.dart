@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:crystallis/crystallis.dart';
+import 'package:crystallis/api/validator.dart' show ValidationException;
+
 import 'user_data.data.g.dart';
 
 void main() {

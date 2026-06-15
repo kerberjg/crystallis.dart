@@ -1,6 +1,5 @@
-import 'package:crystallis/validators/regex.dart';
-
-import '../runtime/validator.dart';
+import '../../api/validator.dart';
+import 'regex.dart';
 
 // ignore: public_member_api_docs
 class AllowedChars extends Validator {

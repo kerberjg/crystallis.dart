@@ -1,6 +1,7 @@
-import 'package:crystallis/runtime/serializer.dart';
+import 'package:crystallis/api/serializer.dart';
 
-import 'validator.dart';
+import '../api/validator.dart';
+import 'serializer.dart';
 
 /// Metadata of a field in a [CrystallisData] class.
 class FieldMetadata {

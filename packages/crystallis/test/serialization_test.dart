@@ -1,4 +1,4 @@
-import 'package:crystallis/runtime/serializer.dart';
+import 'package:crystallis/serialization.dart';
 import 'package:test/test.dart';
 
 void main() {

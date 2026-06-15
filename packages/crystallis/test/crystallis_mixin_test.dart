@@ -1,6 +1,7 @@
-import 'package:crystallis/runtime/serializer.dart';
+import 'package:crystallis/api/serializer.dart';
+import 'package:crystallis/validators.dart';
+import 'package:crystallis/generated.dart';
 import 'package:test/test.dart';
-import 'package:crystallis/crystallis.dart';
 
 class _ValidateHarness with CrystallisData, MutableCrystallisData {
   _ValidateHarness(this._x, this._y);
