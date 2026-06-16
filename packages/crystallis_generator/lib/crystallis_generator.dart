@@ -10,7 +10,10 @@ import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Comment flag used to indicate where imports should be added in the generated code.
-const String importFlag = '// crystallis_generator(add_import):';
+const String kImportFlag = '// crystallis_generator(add_import):';
+
+/// Import statement to be added for generated classes.
+const String kCrystallisGeneratedImport = "import 'package:crystallis/generated.dart';";
 
 /// Entry point for the Crystallis code generator.
 Builder crystallisBuilder(BuilderOptions options) {
@@ -44,19 +47,19 @@ Builder crystallisBuilder(BuilderOptions options) {
       // add imports after crystalllis import
       final Set<String> imports = code
           .split('\n')
-          .where((line) => line.trim().startsWith(importFlag))
-          .map((line) => 'import ${line.substring(importFlag.length + line.indexOf(importFlag)).trim()};')
+          .where((line) => line.trim().startsWith(kImportFlag))
+          .map((line) => 'import ${line.substring(kImportFlag.length + line.indexOf(kImportFlag)).trim()};')
           .toSet();
 
       // clean code of import flags
       code = code
           .split('\n') //
-          .where((line) => !line.trim().startsWith(importFlag))
+          .where((line) => !line.trim().startsWith(kImportFlag))
           .join('\n');
 
       final lines = code.split('\n');
       final int crystallisImportIndex = lines.indexWhere(
-        (line) => line.startsWith("import 'package:crystallis/crystallis.dart';"),
+        (line) => line.startsWith(kCrystallisGeneratedImport),
       );
 
       if (crystallisImportIndex != -1) {
@@ -140,7 +143,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
     // (write only if they haven't been written to this file before)
     if (!_librariesWithImports.contains(buildStep.inputId.uri)) {
       _librariesWithImports.add(buildStep.inputId.uri);
-      buffer.writeln("import 'package:crystallis/crystallis.dart';");
+      buffer.writeln(kCrystallisGeneratedImport);
       buffer.writeln("import '${buildStep.inputId.uri.asPackageOrBaseName}';");
       buffer.writeln();
     }
@@ -260,7 +263,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
       );
 
       if (serializers.isNotEmpty) {
-        buffer.writeln('  $importFlag $importSerializer');
+        buffer.writeln('  $kImportFlag $importSerializer');
 
         /*
          *  Custom serializer handling
@@ -283,7 +286,7 @@ class CrystallisGenerator extends GeneratorForAnnotation<Crystallise> {
          *  Default serializer handling
          */
         if (f.type.isDartCoreMap) {
-          buffer.writeln('  $importFlag $importSerializer');
+          buffer.writeln('  $kImportFlag $importSerializer');
           buffer.writeln(
             '      serializer: MapSerializer<${_typeArguments(f.type).join(', ')}>(),',
           );
