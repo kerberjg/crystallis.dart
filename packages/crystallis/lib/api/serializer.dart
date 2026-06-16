@@ -29,9 +29,9 @@
 ///   @DateTimeSerializer()
 ///   DateTime timestamp = DateTime.now();
 /// }
-///
-/// @docImport 'package:crystallis/generated.dart';
+/// ```
 
+/// @docImport 'package:crystallis/generated.dart';
 library;
 
 /// Abstract base class for custom serializers.
