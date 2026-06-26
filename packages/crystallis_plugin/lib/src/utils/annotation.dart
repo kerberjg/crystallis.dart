@@ -43,7 +43,7 @@ class Crystallise {
     );
   }
 
-  static final Uri _crystalliseUri = .parse('package:crystallis/annotations.dart');
+  static final Uri _crystalliseUri = Uri.parse('package:crystallis/crystallis.dart');
 
   /// Checks if a given [DartObject] is an instance of the @Crystallise annotation by comparing its type name and
   /// library URI.

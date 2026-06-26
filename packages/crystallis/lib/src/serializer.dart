@@ -1,19 +1,23 @@
-import 'package:crystallis/crystallis.dart';
+library;
+
 import 'package:meta/meta.dart';
 
-/*
- *  Basic utils
- */
+import '../api/serializer.dart';
+import 'mixins/base.dart';
 
-/// List of supported primitive types for serialization/deserialization
+/// Crystallis serialization utilities.
+
+/// List of supported primitive types for serialization/deserialization.
 const Set<Type> kSupportedPrimitiveTypes = {int, double, String, bool, Null};
 
-/// Basic serialization function. Handles:
+/// Basic serialization function.
+///
+/// Handles:
 /// - Primitive types: [int], [double], [String], [bool]
 /// - [Null]s
 /// - [List]s (recursively serializes elements)
 /// - [Map]s (recursively serializes keys and values)
-/// - [CrystallisData] objects (calls their [serialize] method)
+/// - [CrystallisData] objects (calls their [CrystallisData.serialize] method)
 /// - Other types result in an [ArgumentError]
 dynamic serializeValue(dynamic value) => switch (value) {
   null => null,
@@ -28,12 +32,18 @@ dynamic serializeValue(dynamic value) => switch (value) {
   ),
 };
 
-/// Serializes a [Map] to a JSON-compatible [Map<String, dynamic>]
-/// by converting keys to strings and recursively serializing values
+/// Serializes a [Map] to a JSON-compatible [Map<String, dynamic>].
+///
+/// Converts keys to strings and recursively serializes values.
+///
+/// See also:
+/// - [serializeValue], for general value serialization
 Map<String, V?> serializeMap<V>(Map<dynamic, V> map) => //
     map.map((k, v) => MapEntry(k.toString(), serializeValue(v)));
 
-/// Basic deserialization function. Handles:
+/// Basic deserialization function.
+///
+/// Handles:
 /// - Primitive types: [int], [double], [String], [bool]
 /// - [Null]s
 /// - [List]s (recursively deserializes elements)
@@ -116,11 +126,11 @@ T deserializeValue<T>(dynamic value) {
   );
 }
 
-/// Returns whether the given type [T] is a nullable of the given non-nullable type [C].
+/// Returns whether the given type `T` is a nullable of the given non-nullable type `C`.
 @pragma("vm:always-consider-inlining")
 bool isNullableSelf<C, T>() => isNullable<T>() && <C?>[] is List<T>;
 
-/// Returns whether the given type [T] is a nullable of the given non-nullable type [C].
+/// Returns whether the given type `T` is a nullable type.
 @pragma("vm:always-consider-inlining")
 bool isNullable<T>() => null is T;
 
@@ -135,54 +145,6 @@ Map<K, V?> deserializeMap<K, V>(Map<dynamic, dynamic> map) {
       deserializeValue<V>(v),
     ),
   );
-}
-
-/*
- *  Serializer classes
- */
-
-/// Abstract base class for custom serializers.
-/// See [Serializable] and [FieldMetadata.serializer] for details.
-abstract class Serializer<I, O> {
-  /// Creates a [Serializer]
-  const Serializer();
-
-  /// Function that converts from type [I] to type [O]
-  O serialize(I value);
-
-  /// Function that converts from type [O] to type [I]
-  I deserialize(O value);
-
-  // HACK: This avoids runtime type errors when a typed `Serializer<T, O>` is stored
-  // in an untyped location (for example, `FieldMetadata.serializer`).
-
-  /// Serialize a value without requiring the caller to know [I].
-  Object? serializeUntyped(Object? value) => serialize(value as I);
-
-  /// Deserialize a value without requiring the caller to know [O].
-  Object? deserializeUntyped(Object? value) => deserialize(value as O);
-}
-
-/// Specifies a custom serializer/deserializer annotation for a field
-/// Converts between type [I] (the field type) and type [O] (the serialized type)
-class Serializable<I, O> extends Serializer<I, O> {
-  /// Function that converts from type [I] to type [O]
-  final O Function(I value) _serialize;
-
-  /// Function that converts from type [O] to type [I]
-  final I Function(O value) _deserialize;
-
-  /// Creates a [Serializable] with the given [serialize] and [deserialize] functions
-  const Serializable({
-    required O Function(I value) serialize,
-    required I Function(O value) deserialize,
-  }) : _serialize = serialize,
-       _deserialize = deserialize;
-
-  @override
-  O serialize(I value) => _serialize(value);
-  @override
-  I deserialize(O value) => _deserialize(value);
 }
 
 /// Default [Serializer] that handles basic types and nested [CrystallisData]..

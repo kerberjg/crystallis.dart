@@ -1,8 +1,9 @@
-import 'package:crystallis/runtime/serializer.dart';
+import 'package:crystallis/api/serializer.dart';
 
-import 'validator.dart';
+import '../api/validator.dart';
+import 'serializer.dart';
 
-/// Metadata of a field in a [CrystallisData] class.
+/// Reflection data of a field in a [CrystallisData] class.
 class FieldMetadata {
   /// Name of the field.
   final String name;

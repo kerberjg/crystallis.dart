@@ -1,11 +1,22 @@
-import '../runtime/validator.dart';
+import 'package:crystallis/api/validator.dart';
 
-// ignore: public_member_api_docs
+/// [Validator] that checks if a String value has the exact given length.
+///
+/// Works on [String] fields.
+///
+/// Example:
+/// ```dart
+/// @Length(4)
+/// String zipCode = '1234';
+/// ```
+///
+/// See also:
+/// - [LengthRange], for range-based length validation
 class Length extends Validator {
   /// The exact length required.
   final int count;
 
-  /// [Validator] that checks if a String value has the exact given length.
+  /// Creates a [Length] validator.
   const Length(this.count);
 
   @override
@@ -17,7 +28,22 @@ class Length extends Validator {
   }
 }
 
-// ignore: public_member_api_docs
+/// [Validator] that checks if the length falls within a specified range.
+///
+/// Either [min], [max], or both must be provided.
+///
+/// Example:
+/// ```dart
+/// @LengthRange(min: 2, max: 50)
+/// String name = 'John';
+///
+/// // Exclusive range
+/// @LengthRange(min: 2, max: 10, inclusive: false)
+/// String code = 'abc'; // Length must be > 2 and < 10
+/// ```
+///
+/// See also:
+/// - [Length], for exact length validation
 class LengthRange extends Validator {
   /// (optional) The minimum length to check against.
   final int? min;
@@ -28,7 +54,8 @@ class LengthRange extends Validator {
   /// Whether the range is inclusive (default: true).
   final bool inclusive;
 
-  /// [Validator] that checks if the length falls within a specified range.
+  /// Creates a [LengthRange] validator.
+  ///
   /// Either [min], [max], or both must be provided.
   const LengthRange({this.min, this.max, this.inclusive = true});
 

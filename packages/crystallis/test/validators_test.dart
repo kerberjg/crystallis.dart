@@ -1,5 +1,6 @@
+import 'package:crystallis/validators.dart';
+
 import 'package:test/test.dart';
-import 'package:crystallis/crystallis.dart';
 
 void main() {
   group('Range', () {

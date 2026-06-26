@@ -1,4 +1,5 @@
 import 'package:crystallis/crystallis.dart';
+import 'package:crystallis/validators.dart';
 
 @Crystallise(mutable: true, useDeepEquality: true, useDeepCopy: true)
 class User {
